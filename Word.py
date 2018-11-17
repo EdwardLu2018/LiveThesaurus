@@ -6,6 +6,7 @@ class Word(object):
         self.word = word
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
+        self.synonymDict = self.getSynonymDict()
 
     # checks if word is invalid
     def isValidWord(self):
