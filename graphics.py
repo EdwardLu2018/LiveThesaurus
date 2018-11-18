@@ -87,7 +87,7 @@ class LiveThesaurus(object):
     def replaceWordWithSyn(self, event):
         try:
             currentSyn = self.synList.selection_get()
-            textBoxText = self.textBox.get('1.0', END)
+            textBoxText = self.textBox.get("1.0", END)
             textBoxText = str.replace(textBoxText, self.currentWord.word, currentSyn)
             textBoxText = textBoxText[:-1] # removes "\n" from end of text
             self.textBox.replace("1.0", END, textBoxText)
