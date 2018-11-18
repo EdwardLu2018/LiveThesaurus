@@ -15,7 +15,9 @@ class LiveThesaurus(object):
         # Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
-        master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))        
+        self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))  
+        
+        self.master.bind('<Return>', self.replaceWordWithSyn)
         
         self.leftFrame = Frame(self.master, borderwidth=2, relief="solid")
         # creates a text box and scroll bar, along with a button that will
@@ -28,6 +30,7 @@ class LiveThesaurus(object):
                              command=self.updateCurrentWord)
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
+        #self.textBox.bind('<<ListboxSelect>>', self.on_select2)
         
         # packs the textbox, scroll bar, and button all on the left side of the 
         # screen
@@ -42,13 +45,11 @@ class LiveThesaurus(object):
         self.wordInfoFrame = Frame(self.rightFrame, borderwidth=2, 
                                   relief="solid")
         self.synFrame = Frame(self.rightFrame, borderwidth=2, relief="solid")
-        self.synList = Listbox(self.synFrame, borderwidth=1, relief="solid")
         
         # creates and packs an option menu for definitions
         self.options = StringVar()
         self.definitionMenu = OptionMenu(self.wordInfoFrame, self.options, 
                               *self.currentDefList)
-        self.definitionMenu.pack(side=TOP, fill=X)
         self.options.set(self.currentDefList[0])
         
         # labels for the selected word, current definition, and synonyms
@@ -58,25 +59,35 @@ class LiveThesaurus(object):
         self.definitionLabel = Label(self.wordInfoFrame, 
                           text="Definiton: " + str(self.currentDefList[0]),
                           borderwidth=1, relief="solid", anchor=N)
-        self.synonymLabelTitle = Label(self.synFrame, text="List of Synonyms:",
+        self.synonymTitle = Label(self.synFrame, text="List of Synonyms:",
                                   borderwidth=1,
                                   relief="solid", anchor=N)
+        self.synList = Listbox(self.synFrame, borderwidth=1, relief="solid")
         
         self.synScrollBar = Scrollbar(self.synList)
         self.synScrollBar.config(command=self.synList.yview)
         self.synList.config(yscrollcommand=self.synScrollBar.set)
         
+        # draws everything in the right frame of application
         self.rightFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
         self.wordInfoFrame.pack(side=TOP, fill=X, padx=3, pady=3)
         self.currentWordLabel.pack(side=TOP, fill=X, padx=2, pady=2)
         self.definitionLabel.pack(side=TOP, fill=X, padx=2, pady=2)
-        
+        self.definitionMenu.pack(side=TOP, fill=X)
         self.synFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
-        self.synonymLabelTitle.pack(side=TOP, fill=X, padx=2, pady=2)
+        self.synonymTitle.pack(side=TOP, fill=X, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
         self.generateSynonymList()
     
+    # Key Binding Code From: https://stackoverflow.com/questions/35164873/selecting-values-simultaneously-from-different-tkinter-listbox-widgets-in-python
+    def replaceWordWithSyn(self, event):
+        currentSyn = self.synList.selection_get()
+        textBoxText = self.textBox.get('1.0','end')
+        textBoxText = str.replace(textBoxText, self.currentWord.word, currentSyn)
+        textBoxText = textBoxText[:-1]
+        self.textBox.replace("1.0", END, textBoxText)
+            
     # gets the prints the highlighted word when button is pressed and sets 
     # the above labels corresponding to the word
     def updateCurrentWord(self):
@@ -85,7 +96,8 @@ class LiveThesaurus(object):
             self.currentWord = Word(highlightedWord)
             if self.currentWord.isValidWord():
                 self.currentWord = Word(highlightedWord)
-                self.currentWordLabel.config(text = "Selected Word: " + self.currentWord.word)
+                self.currentWordLabel.config(text = "Selected Word: " + \
+                                             self.currentWord.word)
                 self.currentSynDict = self.currentWord.synonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
                 self.updateDefMenu()
@@ -118,6 +130,7 @@ class LiveThesaurus(object):
         if self.currentSynDict != None:
             for syn in self.currentSynDict[self.currentDef]:
                 self.synList.insert(END, syn["term"])
+    
     
 root = Tk()
 my_gui = LiveThesaurus(root)
