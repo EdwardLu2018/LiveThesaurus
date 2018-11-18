@@ -1,5 +1,6 @@
 from tkinter import *
 from Word import *
+from audio import *
 
 class LiveThesaurus(object):
     def __init__(self, master):
@@ -15,7 +16,7 @@ class LiveThesaurus(object):
         # Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
-        self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))  
+        self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
         
         self.master.bind('<Return>', self.replaceWordWithSyn)
         
@@ -28,9 +29,11 @@ class LiveThesaurus(object):
         self.getSynButton = Button(self.leftFrame, width=20, height=1, 
                              text="Get Synonyms!", 
                              command=self.updateCurrentWord)
+        self.audioButton = Button(self.leftFrame, width=20, height=1, 
+                             text="Audio", 
+                             command=self.runAudio)
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
-        #self.textBox.bind('<<ListboxSelect>>', self.on_select2)
         
         # packs the textbox, scroll bar, and button all on the left side of the 
         # screen
@@ -38,6 +41,7 @@ class LiveThesaurus(object):
         self.textScrollBar.pack(side=RIGHT, fill=Y)
         self.textBox.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.getSynButton.pack(side=TOP, fill=BOTH)
+        self.audioButton.pack(side=TOP, fill=BOTH)
         
         
         # creates the right frame of the window
@@ -80,13 +84,15 @@ class LiveThesaurus(object):
         self.synScrollBar.pack(side=RIGHT, fill=Y)
         self.generateSynonymList()
     
-    # Key Binding Code From: https://stackoverflow.com/questions/35164873/selecting-values-simultaneously-from-different-tkinter-listbox-widgets-in-python
     def replaceWordWithSyn(self, event):
-        currentSyn = self.synList.selection_get()
-        textBoxText = self.textBox.get('1.0','end')
-        textBoxText = str.replace(textBoxText, self.currentWord.word, currentSyn)
-        textBoxText = textBoxText[:-1]
-        self.textBox.replace("1.0", END, textBoxText)
+        try:
+            currentSyn = self.synList.selection_get()
+            textBoxText = self.textBox.get('1.0', END)
+            textBoxText = str.replace(textBoxText, self.currentWord.word, currentSyn)
+            textBoxText = textBoxText[:-1] # removes "\n" from end of text
+            self.textBox.replace("1.0", END, textBoxText)
+        except:
+            print("No Synonym Selected")
             
     # gets the prints the highlighted word when button is pressed and sets 
     # the above labels corresponding to the word
@@ -131,7 +137,6 @@ class LiveThesaurus(object):
             for syn in self.currentSynDict[self.currentDef]:
                 self.synList.insert(END, syn["term"])
     
-    
-root = Tk()
-my_gui = LiveThesaurus(root)
-mainloop()
+    def runAudio(self):
+        textBoxText = getAudio()
+        self.textBox.replace("1.0", END, textBoxText)
