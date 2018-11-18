@@ -84,6 +84,7 @@ class LiveThesaurus(object):
         self.synScrollBar.pack(side=RIGHT, fill=Y)
         self.generateSynonymList()
     
+    # replaces word in text box with ths chosen synonym
     def replaceWordWithSyn(self, event):
         try:
             currentSyn = self.synList.selection_get()
