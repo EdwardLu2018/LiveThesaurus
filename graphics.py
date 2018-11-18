@@ -26,6 +26,11 @@ class LiveThesaurus(object):
         self.textScrollBar = Scrollbar(self.leftFrame)
         self.textBox = Text(self.leftFrame, width=20, height=40, 
                             borderwidth=1, relief="sunken")
+        self.leftInstructionsLabel = Label(self.leftFrame, 
+                            text="Welcome To LiveThesaurus!\n"+
+                            "Type Text Below, Highlight a Word, and Click" + 
+                            " on the Get Synonyms Button to Get Started!",
+                            borderwidth=2, relief="solid", anchor=N)
         self.getSynButton = Button(self.leftFrame, width=20, height=1, 
                              text="Get Synonyms!", 
                              command=self.updateCurrentWord)
@@ -39,6 +44,7 @@ class LiveThesaurus(object):
         # screen
         self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
         self.textScrollBar.pack(side=RIGHT, fill=Y)
+        self.leftInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.textBox.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.getSynButton.pack(side=TOP, fill=BOTH)
         self.audioButton.pack(side=TOP, fill=BOTH)
@@ -64,6 +70,12 @@ class LiveThesaurus(object):
         self.definitionLabel = Label(self.wordInfoFrame, 
                           text="Definiton: " + str(self.currentDefList[0]),
                           borderwidth=1, relief="solid", anchor=N)
+        self.defInstructionsLabel = Label(self.wordInfoFrame, 
+                    text="Change Definitions Below!",
+                    borderwidth=2, relief="solid", anchor=N)
+        self.synInstructionsLabel = Label(self.synFrame, 
+                text="Pick a Synonym and Press the Enter Key to Change the Word",
+                borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.synFrame, text="List of Synonyms:",
                                   borderwidth=1,
                                   relief="solid", anchor=N)
@@ -78,8 +90,10 @@ class LiveThesaurus(object):
         self.wordInfoFrame.pack(side=TOP, fill=X, padx=3, pady=3)
         self.currentWordLabel.pack(side=TOP, fill=X, padx=2, pady=2)
         self.definitionLabel.pack(side=TOP, fill=X, padx=2, pady=2)
+        self.defInstructionsLabel.pack(side=TOP, fill=X, padx=2, pady=2)
         self.definitionMenu.pack(side=TOP, fill=X)
         self.synFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
+        self.synInstructionsLabel.pack(side=TOP, fill=X, padx=2, pady=2)
         self.synonymTitle.pack(side=TOP, fill=X, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
@@ -99,6 +113,7 @@ class LiveThesaurus(object):
     # gets the prints the highlighted word when button is pressed and sets 
     # the above labels corresponding to the word
     def updateCurrentWord(self):
+        
         try:
             highlightedWord = self.textBox.selection_get()
             self.currentWord = Word(highlightedWord)
