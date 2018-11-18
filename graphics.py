@@ -140,4 +140,5 @@ class LiveThesaurus(object):
     
     def runAudio(self):
         textBoxText = getAudio()
-        self.textBox.replace("1.0", END, textBoxText)
+        if textBoxText != None:
+            self.textBox.replace("1.0", END, textBoxText)
