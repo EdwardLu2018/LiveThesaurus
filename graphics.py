@@ -5,8 +5,8 @@ from audio import *
 class LiveThesaurus(object):
     def __init__(self, master):
         self.master = master
-        master.title('LiveThesaurus')
-        master.option_add('*font', ('Times New Roman', 14))
+        master.title("LiveThesaurus, powered by thesaurus.com")
+        master.option_add("*font", ("Times New Roman", 14))
         
         self.currentWord = None
         self.currentSynDict = None
@@ -50,11 +50,12 @@ class LiveThesaurus(object):
                                   relief="solid")
         self.synFrame = Frame(self.rightFrame, borderwidth=2, relief="solid")
         
+        # Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
-        self.options = StringVar()
-        self.definitionMenu = OptionMenu(self.wordInfoFrame, self.options, 
+        self.definitons = StringVar()
+        self.definitionMenu = OptionMenu(self.wordInfoFrame, self.definitons, 
                               *self.currentDefList)
-        self.options.set(self.currentDefList[0])
+        self.definitons.set(self.currentDefList[0])
         
         # labels for the selected word, current definition, and synonyms
         self.currentWordLabel = Label(self.wordInfoFrame, 
@@ -116,7 +117,7 @@ class LiveThesaurus(object):
     # Code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
     # Changes the definition label according to the user's choice
     def changeDefLabel(self, *args):
-        self.currentDef = str(self.options.get())
+        self.currentDef = str(self.definitons.get())
         self.definitionLabel.config(text="Definiton: " + self.currentDef)
         self.generateSynonymList()
     
@@ -126,10 +127,10 @@ class LiveThesaurus(object):
         menu.delete(0, "end")
         for d in self.currentDefList:
             menu.add_command(label=d, 
-                    command=lambda value=d: self.options.set(value))
+                    command=lambda value=d: self.definitons.set(value))
         # gives all options a command associated with changeDefLabel
-        self.options.trace("w", self.changeDefLabel)
-        self.options.set(self.currentDefList[0])
+        self.definitons.trace("w", self.changeDefLabel)
+        self.definitons.set(self.currentDefList[0])
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
