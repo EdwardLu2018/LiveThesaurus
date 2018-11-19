@@ -27,9 +27,9 @@ class LiveThesaurus(object):
         self.textBox = Text(self.leftFrame, width=20, height=40, 
                             borderwidth=1, relief="sunken")
         self.leftInstructionsLabel = Label(self.leftFrame, 
-                            text="Welcome To LiveThesaurus!\n"+
-                            "Type Text Below, Highlight a Word, and Click" + 
-                            " on the Get Synonyms Button to Get Started!",
+                            text="Welcome to LiveThesaurus!\n"+
+                            "Type text below, highlight a word, and click" + 
+                            " on the Get Synonyms button to get started!",
                             borderwidth=2, relief="solid", anchor=N)
         self.getSynButton = Button(self.leftFrame, width=20, height=1, 
                              text="Get Synonyms!", 
@@ -74,7 +74,7 @@ class LiveThesaurus(object):
                     text="Change Definitions Below!",
                     borderwidth=2, relief="solid", anchor=N)
         self.synInstructionsLabel = Label(self.synFrame, 
-                text="Pick a Synonym and Press the Enter Key to Change the Word",
+                text="Pick a synonym and press the Enter key to change the word",
                 borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.synFrame, text="List of Synonyms:",
                                   borderwidth=1,
@@ -101,6 +101,7 @@ class LiveThesaurus(object):
     
     # replaces word in text box with ths chosen synonym
     def replaceWordWithSyn(self, event):
+        print(self.textBox.search(self.currentWord.word, '1.0', stopindex=END))
         try:
             currentSyn = self.synList.selection_get()
             textBoxText = self.textBox.get("1.0", END)
@@ -158,3 +159,7 @@ class LiveThesaurus(object):
         textBoxText = getAudio()
         if textBoxText != None:
             self.textBox.replace("1.0", END, textBoxText)
+
+root = Tk()
+application = LiveThesaurus(root)
+mainloop()
