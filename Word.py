@@ -77,3 +77,6 @@ class Word(object):
     
     def __repr__(self):
         return "Word: " + self.word
+    
+    def __eq__(self, other):
+        return self.word == other.word

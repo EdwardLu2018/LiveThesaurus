@@ -8,7 +8,7 @@ class LiveThesaurus(object):
         master.title("LiveThesaurus, powered by thesaurus.com")
         master.option_add("*font", ("Times New Roman", 14))
         
-        self.timerDelay = 1000
+        self.timerDelay = 500
         self.currentWordObj = None
         self.currentWordIndex = 0
         self.currentDef = None
@@ -22,9 +22,7 @@ class LiveThesaurus(object):
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
-        
-        self.master.bind('<Return>', self.replaceWordWithSyn)
-        
+                
         self.leftFrame = Frame(self.master, borderwidth=2, relief="solid")
         # creates a text box and scroll bar, along with a button that will
         # print synonyms on the right side of the window
@@ -85,11 +83,12 @@ class LiveThesaurus(object):
                                   borderwidth=1,
                                   relief="solid", anchor=N)
         self.synList = Listbox(self.synFrame, borderwidth=1, relief="solid")
-        self.synList.config(exportselection=False)
         
         self.synScrollBar = Scrollbar(self.synList)
         self.synScrollBar.config(command=self.synList.yview)
         self.synList.config(yscrollcommand=self.synScrollBar.set)
+        self.synList.bind("<<ListboxSelect>>", self.updateCurrentSyn)
+        self.synList.bind("<Return>", self.replaceWordWithSyn)
         
         # draws everything in the right frame of application
         self.rightFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
@@ -106,18 +105,22 @@ class LiveThesaurus(object):
         self.generateSynonymList()
         
         self.timerFiredWrapper()
-        
+    
     def timerFiredWrapper(self):
         self.updateCurrentWord()
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
+    def updateCurrentSyn(self, event):
+        indexTuple = self.synList.curselection()
+        if len(indexTuple) > 0:
+            self.currentSynIndex = indexTuple[0]
+            self.synList.activate(self.currentSynIndex)
+            currentSynList = self.currentSynDict[self.currentDef]
+            self.currentSyn = currentSynList[self.currentSynIndex]["term"]
+    
     # replaces word in text box with the chosen synonym
     def replaceWordWithSyn(self, event):
         try:
-            indexTuple = self.synList.curselection()
-            self.currentSynIndex = indexTuple[0]
-            currentSynList = self.currentSynDict[self.currentDef]
-            self.currentSyn = currentSynList[self.currentSynIndex]["term"]
             textBoxText = self.textBox.get("1.0", END)
             textBoxText = textBoxText[:self.currentWordIndex] + self.currentSyn + \
                           textBoxText[self.currentWordIndex + \
@@ -127,7 +130,7 @@ class LiveThesaurus(object):
             self.currentWordObj = Word(self.currentSyn)
         except:
             pass
-            
+    
     # gets the prints the highlighted word when button is pressed and sets 
     # the above labels corresponding to the word
     def updateCurrentWord(self):
@@ -139,7 +142,6 @@ class LiveThesaurus(object):
                                              self.currentWordObj.word + "\"")
                 selFirstPos = float(self.textBox.index("sel.first"))
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
-                self.currentWordObj = Word(highlightedWord)
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
                 self.updateDefMenu(self.currentDefList)
@@ -174,6 +176,8 @@ class LiveThesaurus(object):
         if self.currentSynDict != None:
             for syn in self.currentSynDict[self.currentDef]:
                 self.synList.insert(END, syn["term"])
+        self.synList.select_set(self.currentSynIndex)
+        self.synList.activate(self.currentSynIndex)
     
     # records audio and displays it on the TextBox
     def runAudio(self):
