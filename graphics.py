@@ -106,7 +106,9 @@ class LiveThesaurus(object):
         try:
             self.currentSyn = self.synList.selection_get()
             textBoxText = self.textBox.get("1.0", END)
-            textBoxText = textBoxText.replace(self.currentWord.word, self.currentSyn)
+            textBoxText = textBoxText[:self.currentWordPos] + self.currentSyn + \
+                          textBoxText[self.currentWordPos + len(self.currentWord.word):]
+            textBoxText = textBoxText
             textBoxText = textBoxText[:-1] # removes "\n"
             self.textBox.replace("1.0", END, textBoxText)
         except:
@@ -116,11 +118,10 @@ class LiveThesaurus(object):
     # the above labels corresponding to the word
     def updateCurrentWord(self):
         try:
-            highlightedWord = self.textBox.selection_get()
+            highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWord = Word(highlightedWord)
             # https://stackoverflow.com/questions/30077503/find-string-position-in-text-python-tkinter
-            self.currentWordPos = float(self.textBox.search(self.currentWord.word, 
-                                                      '1.0', stopindex=END))
+            self.currentWordPos = float(self.textBox.index("sel.first"))
             # search returns a string of a float where the decimal is the position
             self.currentWordPos = int((self.currentWordPos - 1) * 10)
             if self.currentWord.isValidWord():
@@ -133,7 +134,6 @@ class LiveThesaurus(object):
             else:
                 currentWord = None
         except:
-            self.currentWordLabel.config(text="Selected word has no synonyms")
             print("No Word Selected")
 
     # Code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
