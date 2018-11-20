@@ -8,14 +8,15 @@ class LiveThesaurus(object):
         master.title("LiveThesaurus, powered by thesaurus.com")
         master.option_add("*font", ("Times New Roman", 14))
         
-        self.timerDelay = 500
+        self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordIndex = 0
-        self.currentDef = None
         self.currentSynDict = None
+        self.currentDefList = [None]
+        self.currentDef = None
+        self.currentDefIndex = 0
         self.currentSyn = None
         self.currentSynIndex = 0
-        self.currentDefList = [None]
         
         # Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
         # makes the application window full screen
@@ -102,14 +103,15 @@ class LiveThesaurus(object):
         self.synonymTitle.pack(side=TOP, fill=X, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
-        self.generateSynonymList()
         
+        self.generateSynonymList()
         self.timerFiredWrapper()
     
     def timerFiredWrapper(self):
         self.updateCurrentWord()
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
+    # updates the currrent synonym
     def updateCurrentSyn(self, event):
         indexTuple = self.synList.curselection()
         if len(indexTuple) > 0:
@@ -131,8 +133,8 @@ class LiveThesaurus(object):
         except:
             pass
     
-    # gets the prints the highlighted word when button is pressed and sets 
-    # the above labels corresponding to the word
+    # gets the highlighted word when button is pressed and sets  the above 
+    # labels corresponding to the word
     def updateCurrentWord(self):
         try:
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
@@ -155,9 +157,11 @@ class LiveThesaurus(object):
     # Changes the definition label according to the user's choice
     def changeDefLabel(self, *args):
         self.currentDef = str(self.definitons.get())
+        self.currentDefIndex = self.currentDefList.index(self.currentDef)
         self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
         self.generateSynonymList()
     
+    # SOme code from: https://stackoverflow.com/questions/26084620/tkinter-option-menu-update-options-on-fly
     # updates the definition menu according to the user's choice
     def updateDefMenu(self, defList):
         menu = self.definitionMenu["menu"]
@@ -165,10 +169,11 @@ class LiveThesaurus(object):
         for d in defList:
             menu.add_command(label=d, 
                     command=lambda value=d: self.definitons.set(value))
+        # loads menu with first definition
+        self.definitons.set(self.currentDefList[0])
+        self.currentDefIndex = 0
         # gives all options a command associated with changeDefLabel
         self.definitons.trace("w", self.changeDefLabel)
-        # loads menu with first definition
-        self.definitons.set(defList[0])
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
