@@ -98,15 +98,18 @@ class LiveThesaurus(object):
         self.synonymTitle.pack(side=TOP, fill=X, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
-        
+
         self.generateSynonymList()
         self.timerFiredWrapper()
     
-    # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: 
-    # Time-Based Animations in Tkinter
+    # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
+    # CITATION: Code that Keeps ScrollBar in same location from:
+    # https://stackoverflow.com/questions/36086474/python-tkinter-update-scrolled-listbox-wandering-scroll-position
     # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
+        currentView = self.synList.yview()
         self.updateCurrentWord()
+        self.synList.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
     # updates the current synonym whenever mouse is in the synonym ListBox
