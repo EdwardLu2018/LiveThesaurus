@@ -9,7 +9,9 @@ class LiveThesaurus(object):
         master.option_add("*font", ("Times New Roman", 14))
         
         self.currentWord = None
+        self.currentWordPos = 0
         self.currentSynDict = None
+        self.currentSyn = None
         self.currentDef = None
         self.currentDefList = [None]
         
@@ -101,12 +103,11 @@ class LiveThesaurus(object):
     
     # replaces word in text box with ths chosen synonym
     def replaceWordWithSyn(self, event):
-        print(self.textBox.search(self.currentWord.word, '1.0', stopindex=END))
         try:
-            currentSyn = self.synList.selection_get()
+            self.currentSyn = self.synList.selection_get()
             textBoxText = self.textBox.get("1.0", END)
-            textBoxText = str.replace(textBoxText, self.currentWord.word, currentSyn)
-            textBoxText = textBoxText[:-1] # removes "\n" from end of text
+            textBoxText = textBoxText.replace(self.currentWord.word, self.currentSyn)
+            textBoxText = textBoxText[:-1] # removes "\n"
             self.textBox.replace("1.0", END, textBoxText)
         except:
             print("No Synonym Selected")
@@ -114,20 +115,25 @@ class LiveThesaurus(object):
     # gets the prints the highlighted word when button is pressed and sets 
     # the above labels corresponding to the word
     def updateCurrentWord(self):
-        
         try:
             highlightedWord = self.textBox.selection_get()
             self.currentWord = Word(highlightedWord)
+            # https://stackoverflow.com/questions/30077503/find-string-position-in-text-python-tkinter
+            self.currentWordPos = float(self.textBox.search(self.currentWord.word, 
+                                                      '1.0', stopindex=END))
+            # search returns a string of a float where the decimal is the position
+            self.currentWordPos = int((self.currentWordPos - 1) * 10)
             if self.currentWord.isValidWord():
                 self.currentWord = Word(highlightedWord)
-                self.currentWordLabel.config(text = "Selected Word: " + \
+                self.currentWordLabel.config(text="Selected Word: " + \
                                              self.currentWord.word)
                 self.currentSynDict = self.currentWord.synonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
-                self.updateDefMenu()
+                self.updateDefMenu(self.currentDefList)
             else:
                 currentWord = None
         except:
+            self.currentWordLabel.config(text="Selected word has no synonyms")
             print("No Word Selected")
 
     # Code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
@@ -138,15 +144,15 @@ class LiveThesaurus(object):
         self.generateSynonymList()
     
     # updates the definition menu according to the user's choice
-    def updateDefMenu(self):
+    def updateDefMenu(self, currentDefList):
         menu = self.definitionMenu["menu"]
         menu.delete(0, "end")
-        for d in self.currentDefList:
+        for d in currentDefList:
             menu.add_command(label=d, 
                     command=lambda value=d: self.definitons.set(value))
         # gives all options a command associated with changeDefLabel
         self.definitons.trace("w", self.changeDefLabel)
-        self.definitons.set(self.currentDefList[0])
+        self.definitons.set(currentDefList[0])
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
@@ -156,9 +162,9 @@ class LiveThesaurus(object):
                 self.synList.insert(END, syn["term"])
     
     def runAudio(self):
-        textBoxText = getAudio()
-        if textBoxText != None:
-            self.textBox.replace("1.0", END, textBoxText)
+        audioText = getAudio()
+        if audioText != None:
+            self.textBox.replace("1.0", END, audioText)
 
 root = Tk()
 application = LiveThesaurus(root)
