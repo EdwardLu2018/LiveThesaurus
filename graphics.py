@@ -1,6 +1,6 @@
 from tkinter import *
 from Word import *
-from audio import *
+import audio as speechRecognizer
 
 class LiveThesaurus(object):
     def __init__(self, master):
@@ -108,7 +108,6 @@ class LiveThesaurus(object):
             textBoxText = self.textBox.get("1.0", END)
             textBoxText = textBoxText[:self.currentWordPos] + self.currentSyn + \
                           textBoxText[self.currentWordPos + len(self.currentWord.word):]
-            textBoxText = textBoxText
             textBoxText = textBoxText[:-1] # removes "\n"
             self.textBox.replace("1.0", END, textBoxText)
         except:
@@ -162,9 +161,10 @@ class LiveThesaurus(object):
                 self.synList.insert(END, syn["term"])
     
     def runAudio(self):
-        audioText = getAudio()
+        textBoxText = self.textBox.get("1.0", END)
+        audioText = speechRecognizer.getAudio()
         if audioText != None:
-            self.textBox.replace("1.0", END, audioText)
+            self.textBox.replace("1.0", END, textBoxText[:-1] + audioText)
 
 root = Tk()
 application = LiveThesaurus(root)
