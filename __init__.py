@@ -1,4 +1,4 @@
-from graphics import *
+from graphics import * 
 
 root = Tk()
 application = LiveThesaurus(root)

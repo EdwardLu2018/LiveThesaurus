@@ -18,7 +18,7 @@ class LiveThesaurus(object):
         self.currentSyn = None
         self.currentSynIndex = 0
         
-        # Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
+        # CITATION: Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
         # makes the application window full screen
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
@@ -31,26 +31,20 @@ class LiveThesaurus(object):
         self.textBox = Text(self.leftFrame, width=20, height=40, 
                             borderwidth=1, relief="sunken")
         self.leftInstructionsLabel = Label(self.leftFrame, 
-                            text="Welcome to LiveThesaurus!\n"+
-                            "Type text below, highlight a word, and click" + 
-                            " on the Get Synonyms button to get started!",
-                            borderwidth=2, relief="solid", anchor=N)
-        self.getSynButton = Button(self.leftFrame, width=20, height=1, 
-                             text="Get Synonyms!", 
-                             command=self.updateCurrentWord)
+                    text="Welcome to LiveThesaurus!\n" +
+                    "Type text below. Highlight a word to get its synonyms.",
+                    borderwidth=2, relief="solid", anchor=N)
         self.audioButton = Button(self.leftFrame, width=20, height=1, 
                              text="Audio", 
                              command=self.runAudio)
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
         
-        # packs the textbox, scroll bar, and button all on the left side of the 
-        # screen
+        # packs all widgets in the left frame of the application
         self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
         self.textScrollBar.pack(side=RIGHT, fill=Y)
         self.leftInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.textBox.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.getSynButton.pack(side=TOP, fill=BOTH)
         self.audioButton.pack(side=TOP, fill=BOTH)
         
         
@@ -59,13 +53,6 @@ class LiveThesaurus(object):
         self.wordInfoFrame = Frame(self.rightFrame, borderwidth=2, 
                                   relief="solid")
         self.synFrame = Frame(self.rightFrame, borderwidth=2, relief="solid")
-        
-        # Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
-        # creates and packs an option menu for definitions
-        self.definitons = StringVar()
-        self.definitionMenu = OptionMenu(self.wordInfoFrame, self.definitons, 
-                              *self.currentDefList)
-        self.definitons.set(self.currentDefList[0])
         
         # labels for the selected word, current definition, and synonyms
         self.currentWordLabel = Label(self.wordInfoFrame, 
@@ -85,13 +72,21 @@ class LiveThesaurus(object):
                                   relief="solid", anchor=N)
         self.synList = Listbox(self.synFrame, borderwidth=1, relief="solid")
         
+        # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
+        # creates and packs an option menu for definitions
+        self.definitons = StringVar()
+        self.definitionMenu = OptionMenu(self.wordInfoFrame, self.definitons, 
+                              *self.currentDefList)
+        self.definitons.set(self.currentDefList[0])
+        
         self.synScrollBar = Scrollbar(self.synList)
         self.synScrollBar.config(command=self.synList.yview)
         self.synList.config(yscrollcommand=self.synScrollBar.set)
         self.synList.bind("<<ListboxSelect>>", self.updateCurrentSyn)
         self.synList.bind("<Return>", self.replaceWordWithSyn)
         
-        # draws everything in the right frame of application
+        
+        # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
         self.wordInfoFrame.pack(side=TOP, fill=X, padx=3, pady=3)
         self.currentWordLabel.pack(side=TOP, fill=X, padx=2, pady=2)
@@ -107,31 +102,28 @@ class LiveThesaurus(object):
         self.generateSynonymList()
         self.timerFiredWrapper()
     
+    # timer fired function; constantly checks for highlighted words in TextBox
     def timerFiredWrapper(self):
         self.updateCurrentWord()
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
-    # updates the currrent synonym
+    # updates the current synonym whenever mouse is in the synonym ListBox
     def updateCurrentSyn(self, event):
         indexTuple = self.synList.curselection()
-        if len(indexTuple) > 0:
-            self.currentSynIndex = indexTuple[0]
-            self.synList.activate(self.currentSynIndex)
-            currentSynList = self.currentSynDict[self.currentDef]
-            self.currentSyn = currentSynList[self.currentSynIndex]["term"]
+        self.currentSynIndex = indexTuple[0]
+        self.synList.activate(self.currentSynIndex)
+        currentSynList = self.currentSynDict[self.currentDef]
+        self.currentSyn = currentSynList[self.currentSynIndex]["term"]
     
     # replaces word in text box with the chosen synonym
     def replaceWordWithSyn(self, event):
-        try:
-            textBoxText = self.textBox.get("1.0", END)
-            textBoxText = textBoxText[:self.currentWordIndex] + self.currentSyn + \
-                          textBoxText[self.currentWordIndex + \
-                                      len(self.currentWordObj.word):]
-            textBoxText = textBoxText[:-1] # removes "\n"
-            self.textBox.replace("1.0", END, textBoxText)
-            self.currentWordObj = Word(self.currentSyn)
-        except:
-            pass
+        textBoxText = self.textBox.get("1.0", END)
+        textBoxText = textBoxText[:self.currentWordIndex] + \
+                    self.currentSyn + textBoxText[self.currentWordIndex + \
+                    len(self.currentWordObj.word):]
+        textBoxText = textBoxText[:-1] # removes "\n"
+        self.textBox.replace("1.0", END, textBoxText)
+        self.currentWordObj = Word(self.currentSyn)
     
     # gets the highlighted word when button is pressed and sets  the above 
     # labels corresponding to the word
@@ -148,20 +140,11 @@ class LiveThesaurus(object):
                 self.currentDefList = list(self.currentSynDict.keys())
                 self.updateDefMenu(self.currentDefList)
             else:
-                self.currentWordLabel.config(text="Selected Word: Not a word!")
                 self.currentWordObj = None
         except:
             pass
-
-    # Code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
-    # Changes the definition label according to the user's choice
-    def changeDefLabel(self, *args):
-        self.currentDef = str(self.definitons.get())
-        self.currentDefIndex = self.currentDefList.index(self.currentDef)
-        self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
-        self.generateSynonymList()
     
-    # SOme code from: https://stackoverflow.com/questions/26084620/tkinter-option-menu-update-options-on-fly
+    # CITATION: code from: https://stackoverflow.com/questions/26084620/tkinter-option-menu-update-options-on-fly
     # updates the definition menu according to the user's choice
     def updateDefMenu(self, defList):
         menu = self.definitionMenu["menu"]
@@ -169,15 +152,22 @@ class LiveThesaurus(object):
         for d in defList:
             menu.add_command(label=d, 
                     command=lambda value=d: self.definitons.set(value))
-        # loads menu with first definition
-        self.definitons.set(self.currentDefList[0])
-        self.currentDefIndex = 0
-        # gives all options a command associated with changeDefLabel
-        self.definitons.trace("w", self.changeDefLabel)
+        # loads definition menu at the index of the current definition
+        self.definitons.set(defList[self.currentDefIndex])
+        # gives all options a command associated with updateCurrentDef
+        self.definitons.trace("w", self.updateCurrentDef)
+    
+    # CITATION: Some code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
+    # Changes the definition label according to the user's choice
+    def updateCurrentDef(self, *args):
+        self.currentDef = str(self.definitons.get())
+        self.currentDefIndex = self.currentDefList.index(self.currentDef)
+        self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
+        self.generateSynonymList()
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
-        self.synList.delete(0,'end')
+        self.synList.delete(0,"end")
         if self.currentSynDict != None:
             for syn in self.currentSynDict[self.currentDef]:
                 self.synList.insert(END, syn["term"])
@@ -197,7 +187,7 @@ def getDigitsAfterDecPt(flt):
     indexOfDecPt = strFloat.find(".")
     afterDecimal = int(strFloat[indexOfDecPt + 1:])
     return afterDecimal
-    
+
 root = Tk()
 application = LiveThesaurus(root)
 mainloop()

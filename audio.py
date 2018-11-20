@@ -1,4 +1,4 @@
-# Code from: https://pythonspot.com/speech-recognition-using-google-speech-api/
+# CITATION: Audio code from: https://pythonspot.com/speech-recognition-using-google-speech-api/
 import speech_recognition as sr
  
 # records audio from computer and returns the audio as str
