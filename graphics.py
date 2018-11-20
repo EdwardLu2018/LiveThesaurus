@@ -113,8 +113,6 @@ class LiveThesaurus(object):
     
     # replaces word in text box with the chosen synonym
     def replaceWordWithSyn(self, event):
-        indexTuple = self.synList.curselection()
-        print(indexTuple)
         try:
             indexTuple = self.synList.curselection()
             self.currentSynIndex = indexTuple[0]
