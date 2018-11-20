@@ -8,14 +8,17 @@ class LiveThesaurus(object):
         master.title("LiveThesaurus, powered by thesaurus.com")
         master.option_add("*font", ("Times New Roman", 14))
         
+        self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordIndex = 0
+        self.currentDef = None
         self.currentSynDict = None
         self.currentSyn = None
-        self.currentDef = None
+        self.currentSynIndex = 0
         self.currentDefList = [None]
         
         # Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
+        # makes the application window full screen
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
@@ -82,6 +85,7 @@ class LiveThesaurus(object):
                                   borderwidth=1,
                                   relief="solid", anchor=N)
         self.synList = Listbox(self.synFrame, borderwidth=1, relief="solid")
+        self.synList.config(exportselection=False)
         
         self.synScrollBar = Scrollbar(self.synList)
         self.synScrollBar.config(command=self.synList.yview)
@@ -100,11 +104,22 @@ class LiveThesaurus(object):
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
         self.generateSynonymList()
+        
+    #     self.timerFiredWrapper()
+    #     
+    # def timerFiredWrapper(self):
+    #     self.updateCurrentWord()
+    #     self.master.after(self.timerDelay, self.timerFiredWrapper)
     
     # replaces word in text box with ths chosen synonym
     def replaceWordWithSyn(self, event):
+        indexTuple = self.synList.curselection()
+        print(indexTuple)
         try:
-            self.currentSyn = self.synList.selection_get()
+            indexTuple = self.synList.curselection()
+            self.currentSynIndex = indexTuple[0]
+            currentSynList = self.currentSynDict[self.currentDef]
+            self.currentSyn = currentSynList[self.currentSynIndex]["term"]
             textBoxText = self.textBox.get("1.0", END)
             textBoxText = textBoxText[:self.currentWordIndex] + self.currentSyn + \
                           textBoxText[self.currentWordIndex + \
@@ -120,10 +135,10 @@ class LiveThesaurus(object):
     def updateCurrentWord(self):
         try:
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
-            self.currentWordObject = Word(highlightedWord)
-            if self.currentWordObject.isValidWord():
+            self.currentWordObj = Word(highlightedWord)
+            if self.currentWordObj.isValidWord():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
-                                             self.currentWordObject.word + "\"")
+                                             self.currentWordObj.word + "\"")
                 selFirstPos = float(self.textBox.index("sel.first"))
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
                 self.currentWordObj = Word(highlightedWord)
@@ -134,7 +149,7 @@ class LiveThesaurus(object):
                 self.currentWordLabel.config(text="Selected Word: Not a word!")
                 self.currentWordObj = None
         except:
-            print("No Word Selected")
+            pass
 
     # Code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
     # Changes the definition label according to the user's choice
@@ -175,7 +190,7 @@ def getDigitsAfterDecPt(flt):
     indexOfDecPt = strFloat.find(".")
     afterDecimal = int(strFloat[indexOfDecPt + 1:])
     return afterDecimal
-
+    
 root = Tk()
 application = LiveThesaurus(root)
 mainloop()
