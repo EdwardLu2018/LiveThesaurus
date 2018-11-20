@@ -10,7 +10,8 @@ class Word(object):
 
     # checks if word is invalid
     def isValidWord(self):
-        return not "no thesaurus results" in self.thesaurusSourceText
+        return not ("no thesaurus results" in self.thesaurusSourceText or \
+               "\n" in self.word or "\t" in self.word)
         
     # returns a dictionary mapping the definition of a given word to its synonyms
     def getSynonymDict(self):
