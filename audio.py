@@ -14,7 +14,7 @@ def getAudio():
         # key="GOOGLE_SPEECH_RECOGNITION_API_KEY")"
         # instead of `r.recognize_google(audio)"
         audioText = r.recognize_google(audio)
-        print("You said: " + audioText)
+        print("Speech to Text: " + audioText)
         return audioText
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")

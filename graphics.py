@@ -119,11 +119,10 @@ class LiveThesaurus(object):
         try:
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWord = Word(highlightedWord)
-            # https://stackoverflow.com/questions/30077503/find-string-position-in-text-python-tkinter
-            self.currentWordPos = float(self.textBox.index("sel.first"))
-            # search returns a string of a float where the decimal is the position
-            self.currentWordPos = int((self.currentWordPos - 1) * 10)
             if self.currentWord.isValidWord():
+                selFirstPos = float(self.textBox.index("sel.first"))
+                self.currentWordPos = getDigitsAfterDecPt(selFirstPos)
+                print(self.currentWordPos)
                 self.currentWord = Word(highlightedWord)
                 self.currentWordLabel.config(text="Selected Word: " + \
                                              self.currentWord.word)
@@ -143,15 +142,16 @@ class LiveThesaurus(object):
         self.generateSynonymList()
     
     # updates the definition menu according to the user's choice
-    def updateDefMenu(self, currentDefList):
+    def updateDefMenu(self, defList):
         menu = self.definitionMenu["menu"]
         menu.delete(0, "end")
-        for d in currentDefList:
+        for d in defList:
             menu.add_command(label=d, 
                     command=lambda value=d: self.definitons.set(value))
         # gives all options a command associated with changeDefLabel
         self.definitons.trace("w", self.changeDefLabel)
-        self.definitons.set(currentDefList[0])
+        # loads menu with first definition
+        self.definitons.set(defList[0])
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
@@ -160,11 +160,18 @@ class LiveThesaurus(object):
             for syn in self.currentSynDict[self.currentDef]:
                 self.synList.insert(END, syn["term"])
     
+    # records audio and displays it on the TextBox
     def runAudio(self):
         textBoxText = self.textBox.get("1.0", END)
         audioText = speechRecognizer.getAudio()
         if audioText != None:
             self.textBox.replace("1.0", END, textBoxText[:-1] + audioText)
+    
+def getDigitsAfterDecPt(flt):
+    strFloat = str(flt)
+    indexOfDecPt = strFloat.find(".")
+    afterDecimal = int(strFloat[indexOfDecPt + 1:])
+    return afterDecimal
 
 root = Tk()
 application = LiveThesaurus(root)
