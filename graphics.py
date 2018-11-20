@@ -8,7 +8,7 @@ class LiveThesaurus(object):
         master.title("LiveThesaurus, powered by thesaurus.com")
         master.option_add("*font", ("Times New Roman", 14))
         
-        self.timerDelay = 100
+        self.timerDelay = 1000
         self.currentWordObj = None
         self.currentWordIndex = 0
         self.currentDef = None
@@ -105,13 +105,13 @@ class LiveThesaurus(object):
         self.synScrollBar.pack(side=RIGHT, fill=Y)
         self.generateSynonymList()
         
-    #     self.timerFiredWrapper()
-    #     
-    # def timerFiredWrapper(self):
-    #     self.updateCurrentWord()
-    #     self.master.after(self.timerDelay, self.timerFiredWrapper)
+        self.timerFiredWrapper()
+        
+    def timerFiredWrapper(self):
+        self.updateCurrentWord()
+        self.master.after(self.timerDelay, self.timerFiredWrapper)
     
-    # replaces word in text box with ths chosen synonym
+    # replaces word in text box with the chosen synonym
     def replaceWordWithSyn(self, event):
         indexTuple = self.synList.curselection()
         print(indexTuple)
@@ -128,7 +128,7 @@ class LiveThesaurus(object):
             self.textBox.replace("1.0", END, textBoxText)
             self.currentWordObj = Word(self.currentSyn)
         except:
-            print("No Synonym Selected")
+            pass
             
     # gets the prints the highlighted word when button is pressed and sets 
     # the above labels corresponding to the word
