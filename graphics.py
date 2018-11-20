@@ -102,7 +102,9 @@ class LiveThesaurus(object):
         self.generateSynonymList()
         self.timerFiredWrapper()
     
-    # timer fired function; constantly checks for highlighted words in TextBox
+    # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: 
+    # Time-Based Animations in Tkinter
+    # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
         self.updateCurrentWord()
         self.master.after(self.timerDelay, self.timerFiredWrapper)
