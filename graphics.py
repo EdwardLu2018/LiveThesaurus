@@ -122,15 +122,16 @@ class LiveThesaurus(object):
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObject = Word(highlightedWord)
             if self.currentWordObject.isValidWord():
+                self.currentWordLabel.config(text="Selected Word: \"" + \
+                                             self.currentWordObject.word + "\"")
                 selFirstPos = float(self.textBox.index("sel.first"))
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
                 self.currentWordObj = Word(highlightedWord)
-                self.currentWordLabel.config(text="Selected Word: \"" + \
-                                             self.currentWordObj.word + "\"")
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
                 self.updateDefMenu(self.currentDefList)
             else:
+                self.currentWordLabel.config(text="Selected Word: Not a word!")
                 self.currentWordObj = None
         except:
             print("No Word Selected")
