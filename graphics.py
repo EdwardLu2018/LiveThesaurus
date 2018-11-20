@@ -8,8 +8,8 @@ class LiveThesaurus(object):
         master.title("LiveThesaurus, powered by thesaurus.com")
         master.option_add("*font", ("Times New Roman", 14))
         
-        self.currentWord = None
-        self.currentWordPos = 0
+        self.currentWordObj = None
+        self.currentWordIndex = 0
         self.currentSynDict = None
         self.currentSyn = None
         self.currentDef = None
@@ -67,7 +67,7 @@ class LiveThesaurus(object):
         
         # labels for the selected word, current definition, and synonyms
         self.currentWordLabel = Label(self.wordInfoFrame, 
-                                 text="Selected Word: " + str(self.currentWord),
+                                 text="Selected Word: " + str(self.currentWordObj),
                                  borderwidth=1, relief="solid", anchor=N)
         self.definitionLabel = Label(self.wordInfoFrame, 
                           text="Definiton: " + str(self.currentDefList[0]),
@@ -106,10 +106,12 @@ class LiveThesaurus(object):
         try:
             self.currentSyn = self.synList.selection_get()
             textBoxText = self.textBox.get("1.0", END)
-            textBoxText = textBoxText[:self.currentWordPos] + self.currentSyn + \
-                          textBoxText[self.currentWordPos + len(self.currentWord.word):]
+            textBoxText = textBoxText[:self.currentWordIndex] + self.currentSyn + \
+                          textBoxText[self.currentWordIndex + \
+                                      len(self.currentWordObj.word):]
             textBoxText = textBoxText[:-1] # removes "\n"
             self.textBox.replace("1.0", END, textBoxText)
+            self.currentWordObj = Word(self.currentSyn)
         except:
             print("No Synonym Selected")
             
@@ -118,19 +120,18 @@ class LiveThesaurus(object):
     def updateCurrentWord(self):
         try:
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
-            self.currentWord = Word(highlightedWord)
-            if self.currentWord.isValidWord():
+            self.currentWordObject = Word(highlightedWord)
+            if self.currentWordObject.isValidWord():
                 selFirstPos = float(self.textBox.index("sel.first"))
-                self.currentWordPos = getDigitsAfterDecPt(selFirstPos)
-                print(self.currentWordPos)
-                self.currentWord = Word(highlightedWord)
-                self.currentWordLabel.config(text="Selected Word: " + \
-                                             self.currentWord.word)
-                self.currentSynDict = self.currentWord.synonymDict
+                self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
+                self.currentWordObj = Word(highlightedWord)
+                self.currentWordLabel.config(text="Selected Word: \"" + \
+                                             self.currentWordObj.word + "\"")
+                self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
                 self.updateDefMenu(self.currentDefList)
             else:
-                currentWord = None
+                self.currentWordObj = None
         except:
             print("No Word Selected")
 
@@ -138,7 +139,7 @@ class LiveThesaurus(object):
     # Changes the definition label according to the user's choice
     def changeDefLabel(self, *args):
         self.currentDef = str(self.definitons.get())
-        self.definitionLabel.config(text="Definiton: " + self.currentDef)
+        self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
         self.generateSynonymList()
     
     # updates the definition menu according to the user's choice
@@ -166,7 +167,8 @@ class LiveThesaurus(object):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
             self.textBox.replace("1.0", END, textBoxText[:-1] + audioText)
-    
+
+# returns the digits after the decimal point in a float as an int
 def getDigitsAfterDecPt(flt):
     strFloat = str(flt)
     indexOfDecPt = strFloat.find(".")
