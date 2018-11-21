@@ -28,40 +28,42 @@ class LiveThesaurus(object):
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
-        self.master.config(background='black')
+        self.master.config(background="black")
         
         ## Left Frame
         self.leftFrame = Frame(self.master)
-        self.textScrollBar = Scrollbar(self.leftFrame)
+        self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         self.instructionsLabel = Label(self.leftFrame, 
                        text="Welcome to LiveThesaurus!\n" +
                        "Type text below. Highlight a word to get its synonyms.",
-                       anchor=N, borderwidth=1, relief="solid")
-        self.textBox = Text(self.leftFrame, width=40, height=37, 
-                            borderwidth=3, relief="sunken")
-        self.audioButton = Button(self.leftFrame, width=40, height=1, 
-                             text="Audio", 
-                             command=self.runAudio)
+                       anchor=N, borderwidth=2, relief="solid")
+        self.textBox = Text(self.leftFrame, borderwidth=2, relief="sunken")
+        self.audioButton = Button(self.audioFrame, width=40, height=1, 
+                             text="Audio", command=self.runAudio)
+        self.textScrollBar = Scrollbar(self.textBox)
+        
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
+        self.leftFrame.config(background="coral")
         
         # packs all widgets in the left frame of the application
         self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=8, pady=8)
+        self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
+        self.textBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
         self.textScrollBar.pack(side=RIGHT, fill=Y)
-        self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.textBox.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.audioButton.pack(side=TOP, fill=BOTH)
+        self.audioFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(0,3))
+        self.audioButton.pack(side=TOP)
         
         ## Right Frame
         self.rightFrame = Frame(self.master)
         self.wordAndDefFrame = Frame(self.rightFrame)
-        self.wordInfoFrame = Frame(self.wordAndDefFrame, borderwidth=1, 
+        self.wordInfoFrame = Frame(self.wordAndDefFrame, borderwidth=2, 
                                    relief="solid")
-        self.defInfoFrame = Frame(self.wordAndDefFrame, borderwidth=1, 
+        self.defInfoFrame = Frame(self.wordAndDefFrame, borderwidth=2, 
                                   relief="solid")
         self.innerDefFrame = Frame(self.defInfoFrame)
         self.termFrame = Frame(self.rightFrame)
-        self.innerTermFrame = Frame(self.termFrame, borderwidth=1, 
+        self.innerTermFrame = Frame(self.termFrame, borderwidth=2, 
                                     relief="solid")
         self.modeFrame = Frame(self.innerTermFrame)
         
@@ -71,15 +73,16 @@ class LiveThesaurus(object):
                             anchor=N)
         self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
                                      anchor=N)
-        self.synInstructionsLabel = Label(self.termFrame, 
+        self.termInstructionsLabel = Label(self.termFrame, 
                text="Pick a synonym and press the Enter key to change the word",
-               borderwidth=1, relief="solid", anchor=N)
+               borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
         self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
                              text="Synonyms", 
                              command=self.switchModes)
-        self.termBox = Listbox(self.termFrame, borderwidth=2, relief="solid")
-        self.termScrollBar = Scrollbar(self.termBox)
+        self.colonLabel = Label(self.modeFrame, text=": ", anchor=N)
+        self.termListBox = Listbox(self.termFrame, borderwidth=2, relief="solid")
+        self.termScrollBar = Scrollbar(self.termListBox)
         
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
@@ -89,28 +92,31 @@ class LiveThesaurus(object):
         self.definitons.set(self.currentDefList[0])
         
         self.rightFrame.config(background="black")
+        self.wordAndDefFrame.config(background="coral")
+        self.termFrame.config(background="coral")
         self.definitionMenu.config(width=35)
-        self.termScrollBar.config(command=self.termBox.yview)
-        self.termBox.config(yscrollcommand=self.termScrollBar.set)
-        self.termBox.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
-        self.termBox.bind("<Return>", self.replaceWordWithSynOrAnt)
+        self.termScrollBar.config(command=self.termListBox.yview)
+        self.termListBox.config(yscrollcommand=self.termScrollBar.set)
+        self.termListBox.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
+        self.termListBox.bind("<Return>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=5, pady=5)
         self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
         self.defInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.innerDefFrame.pack(side=TOP, padx=2, pady=2)
-        self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=2)
+        self.definitionLabel.pack(side=LEFT, fill=BOTH)
         self.definitionMenu.pack(side=LEFT, fill=BOTH)
         self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
-        self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.termInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.innerTermFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.modeFrame.pack(side=TOP, padx=2, pady=2)
-        self.synonymTitle.pack(side=LEFT, padx=2, pady=2)
+        self.modeFrame.pack(side=TOP, padx=2)
+        self.synonymTitle.pack(side=LEFT, pady=2)
         self.toggleSynOrAntButton.pack(side=LEFT, padx=2, pady=2)
-        self.termBox.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
+        self.colonLabel.pack(side=LEFT, pady=2)
+        self.termListBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=(0,3))
         self.termScrollBar.pack(side=RIGHT, fill=Y)
 
         self.generateTermList()
@@ -121,9 +127,9 @@ class LiveThesaurus(object):
     # https://stackoverflow.com/questions/36086474/python-tkinter-update-scrolled-listbox-wandering-scroll-position
     # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
-        currentView = self.termBox.yview()
+        currentView = self.termListBox.yview()
         self.updateCurrentWord()
-        self.termBox.yview_moveto(currentView[0])
+        self.termListBox.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
     # switches between synonym and antonym mode
@@ -138,9 +144,9 @@ class LiveThesaurus(object):
     # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
         try:
-            indexTuple = self.termBox.curselection()
+            indexTuple = self.termListBox.curselection()
             self.currentListBoxIndex = indexTuple[0]
-            self.termBox.activate(self.currentListBoxIndex)
+            self.termListBox.activate(self.currentListBoxIndex)
             if not self.antonymsMode:
                 defDict = self.currentSynDict[self.currentDef]
                 self.currentSyn = defDict[self.currentListBoxIndex]["term"]
@@ -187,7 +193,7 @@ class LiveThesaurus(object):
                 self.currentWordObj = None
                 self.currentDefList = [None]
                 self.currentDef = None
-                self.termBox.delete(0, "end")
+                self.termListBox.delete(0, "end")
                 self.currentSynDict = None
                 self.currentAntDict = None
                 self.definitons.set(None)
@@ -220,23 +226,23 @@ class LiveThesaurus(object):
     # draws and creates a list made out of non-changeable entry boxes that
     # contain synonyms or antonyms, depending on the mode
     def generateTermList(self):
-        self.termBox.delete(0, "end")
+        self.termListBox.delete(0, "end")
         if not self.antonymsMode:
             if self.currentSynDict != None:
                 if len(self.currentSynDict[self.currentDef]) == 0:
-                    self.termBox.insert(END, "No Synonyms!")
+                    self.termListBox.insert(END, "No Synonyms!")
                 else:
                     for synDict in self.currentSynDict[self.currentDef]:
-                        self.termBox.insert(END, synDict["term"])
+                        self.termListBox.insert(END, synDict["term"])
         else:
             if self.currentAntDict != None:
                 if len(self.currentAntDict[self.currentDef]) == 0:
-                    self.termBox.insert(END, "No Antonyms!")
+                    self.termListBox.insert(END, "No Antonyms!")
                 else:
                     for antDict in self.currentAntDict[self.currentDef]:
-                        self.termBox.insert(END, antDict["term"])
-        self.termBox.select_set(self.currentListBoxIndex)
-        self.termBox.activate(self.currentListBoxIndex)
+                        self.termListBox.insert(END, antDict["term"])
+        self.termListBox.select_set(self.currentListBoxIndex)
+        self.termListBox.activate(self.currentListBoxIndex)
     
     # records audio and displays it on the TextBox
     def runAudio(self):
