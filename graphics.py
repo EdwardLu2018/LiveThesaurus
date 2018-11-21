@@ -107,7 +107,7 @@ class LiveThesaurus(object):
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
         self.defInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.innerDefFrame.pack(side=TOP, padx=2, pady=2)
-        self.definitionLabel.pack(side=LEFT, fill=BOTH)
+        self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=(3,0))
         self.definitionMenu.pack(side=LEFT, fill=BOTH)
         self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
         self.termInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
