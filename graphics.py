@@ -146,12 +146,11 @@ class LiveThesaurus(object):
             else:
                 self.currentWordLabel.config(text="Selected Word has no synonyms")
                 self.definitionLabel.config(text="")
-                menu = self.definitionMenu["menu"]
-                menu.delete(0, "end")
-                self.currentDef = None
-                self.synList.delete(0,"end")
                 self.currentWordObj = None
                 self.currentDefList = [None]
+                self.currentDef = None
+                self.synList.delete(0, "end")
+                self.currentSynDict = None
                 self.definitons.set(None)
             self.updateDefMenu(self.currentDefList)
         except:
@@ -166,10 +165,10 @@ class LiveThesaurus(object):
             for d in defList:
                 menu.add_command(label=d, 
                         command=lambda value=d: self.definitons.set(value))
-            # loads definition menu at the index of the current definition
-            self.definitons.set(defList[self.currentDefIndex])
             # gives all options a command associated with updateCurrentDef
             self.definitons.trace("w", self.updateCurrentDef)
+            # loads definition menu at the index of the current definition
+            self.definitons.set(defList[self.currentDefIndex])
     
     # CITATION: Some code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
     # Changes the definition label according to the user's choice
@@ -182,7 +181,7 @@ class LiveThesaurus(object):
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
-        self.synList.delete(0,"end")
+        self.synList.delete(0, "end")
         if self.currentSynDict != None:
             for syn in self.currentSynDict[self.currentDef]:
                 self.synList.insert(END, syn["term"])

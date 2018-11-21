@@ -6,25 +6,27 @@ class Word(object):
         self.word = word
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
-        self.synonymDict = self.getSynonymDict()
+        self.synonymDict = self.get("synonyms")
+        self.antonymDict = self.get("antonyms")
 
     # checks if word is invalid
     def isValidWord(self):
         return not ("no thesaurus results" in self.thesaurusSourceText or \
                "\n" in self.word or "\t" in self.word)
         
-    # returns a dictionary mapping the definition of a given word to its synonyms
-    def getSynonymDict(self):
+    # returns a dictionary mapping the definition of a given word to its 
+    # synonyms or antonyms, depending on the type
+    def get(self, type):
         definitionList = []
-        synonymDict = {}
+        result = {}
         
         if not self.isValidWord():
             return None
         
-        # parses the javascript code with the dictionary of synonyms for word
-        indexOfSynonyms = 15
+        # parses javascript code
+        indexOfImportantDict = 15
         lenOfIgnore = len("window.INITIAL_STATE = ")
-        script = self.parser.find_all("script")[indexOfSynonyms]
+        script = self.parser.find_all("script")[indexOfImportantDict]
         script = script.text[lenOfIgnore:-1]
         script = script.replace("null", "None")
         script = script.replace("%20", " ")
@@ -38,32 +40,32 @@ class Word(object):
             definitionList += [defn]
             script = script[index2:]
             
-        # updates synonymDict mapping definitions to their synonyms
+        # updates result, mapping definitions to their synonyms
         for defn in definitionList:
-            index1 = copyScript.find("\"synonyms\":") + len("\"synonyms\":")
+            index1 = copyScript.find("\""+type+"\":") + len("\""+type+"\":")
             index2 = index1 + copyScript[index1:].find("]")
-            synonyms = copyScript[index1:index2] + "]"
-            synonymsList = eval(synonyms)
-            synonymDict[defn] = synonymsList
+            synOrAntListStr = copyScript[index1:index2] + "]"
+            synOrAntList = eval(synOrAntListStr)
+            result[defn] = synOrAntList
             copyScript = copyScript[index2:]
         
         # removes unecessary keys
-        for defn in synonymDict:
-            listOfAllSyns = synonymDict[defn]
-            for synDict in reversed(listOfAllSyns):
-                if "isInformal" in synDict.keys() and \
-                "targetTerm" in synDict.keys() and \
-                "targetSlug" in synDict.keys():
-                    del synDict["isInformal"]
-                    del synDict["targetTerm"]
-                    del synDict["targetSlug"]
-                if "isVulgar" in synDict.keys():
-                    if synDict["isVulgar"] != None:
-                        listOfAllSyns.remove(synDict)
+        for defn in result:
+            listOfAllTerms = result[defn]
+            for dict in reversed(listOfAllTerms):
+                if "isInformal" in dict.keys() and \
+                "targetTerm" in dict.keys() and \
+                "targetSlug" in dict.keys():
+                    del dict["isInformal"]
+                    del dict["targetTerm"]
+                    del dict["targetSlug"]
+                if "isVulgar" in dict.keys():
+                    if dict["isVulgar"] != None:
+                        listOfAllTerms.remove(dict)
                     else:
-                        del synDict["isVulgar"]
+                        del dict["isVulgar"]
         
-        return synonymDict
+        return result
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
