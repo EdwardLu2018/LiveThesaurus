@@ -23,25 +23,26 @@ class LiveThesaurus(object):
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
+        self.master.config(background='black')
                 
-        self.leftFrame = Frame(self.master, borderwidth=2, relief="solid")
+        self.leftFrame = Frame(self.master)
         # creates a text box and scroll bar, along with a button that will
         # print synonyms on the right side of the window
         self.textScrollBar = Scrollbar(self.leftFrame)
-        self.textBox = Text(self.leftFrame, width=20, height=40, 
-                            borderwidth=1, relief="sunken")
+        self.textBox = Text(self.leftFrame, width=40, height=40, 
+                            borderwidth=3, relief="sunken")
         self.leftInstructionsLabel = Label(self.leftFrame, 
-                    text="Welcome to LiveThesaurus!\n" +
-                    "Type text below. Highlight a word to get its synonyms.",
-                    borderwidth=2, relief="solid", anchor=N)
-        self.audioButton = Button(self.leftFrame, width=20, height=1, 
+                        text="Welcome to LiveThesaurus!\n" +
+                        "Type text below. Highlight a word to get its synonyms.",
+                        anchor=N)
+        self.audioButton = Button(self.leftFrame, width=40, height=1, 
                              text="Audio", 
                              command=self.runAudio)
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
         
         # packs all widgets in the left frame of the application
-        self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
+        self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=8, pady=8)
         self.textScrollBar.pack(side=RIGHT, fill=Y)
         self.leftInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.textBox.pack(side=TOP, fill=BOTH, padx=3, pady=3)
@@ -49,53 +50,53 @@ class LiveThesaurus(object):
         
         
         # creates the right frame of the window
-        self.rightFrame = Frame(self.master, borderwidth=2, relief="solid")
-        self.wordInfoFrame = Frame(self.rightFrame, borderwidth=2, 
-                                  relief="solid")
-        self.synFrame = Frame(self.rightFrame, borderwidth=2, relief="solid")
+        self.rightFrame = Frame(self.master)
+        self.wordAndDefFrame = Frame(self.rightFrame)
+        self.wordInfoFrame = Frame(self.wordAndDefFrame, borderwidth=1, relief="solid")
+        self.defInfoFrame = Frame(self.wordAndDefFrame, borderwidth=1, relief="solid")
+        self.innerDefFrame = Frame(self.defInfoFrame)
+        self.synFrame = Frame(self.rightFrame)
         
         # labels for the selected word, current definition, and synonyms
         self.currentWordLabel = Label(self.wordInfoFrame, 
-                                 text="Selected Word: " + str(self.currentWordObj),
-                                 borderwidth=1, relief="solid", anchor=N)
-        self.definitionLabel = Label(self.wordInfoFrame, 
-                          text="Definiton: " + str(self.currentDef),
-                          borderwidth=1, relief="solid", anchor=N)
-        self.defInstructionsLabel = Label(self.wordInfoFrame, 
-                    text="Change Definitions Below!",
-                    borderwidth=2, relief="solid", anchor=N)
+                            text="Selected Word: " + str(self.currentWordObj),
+                            anchor=N)
+        self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
+                                     anchor=N)
         self.synInstructionsLabel = Label(self.synFrame, 
                 text="Pick a synonym and press the Enter key to change the word",
-                borderwidth=2, relief="solid", anchor=N)
+                borderwidth=1, relief="solid", anchor=N)
         self.synonymTitle = Label(self.synFrame, text="List of Synonyms:",
-                                  borderwidth=1,
-                                  relief="solid", anchor=N)
-        self.synList = Listbox(self.synFrame, borderwidth=1, relief="solid")
+                                  anchor=N)
+        self.synList = Listbox(self.synFrame, borderwidth=2, relief="solid")
         
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
         self.definitons = StringVar()
-        self.definitionMenu = OptionMenu(self.wordInfoFrame, self.definitons, 
+        self.definitionMenu = OptionMenu(self.innerDefFrame, self.definitons,
                               *self.currentDefList)
         self.definitons.set(self.currentDefList[0])
         
+        self.rightFrame.config(background="black")
+        self.definitionMenu.config(width=40)
         self.synScrollBar = Scrollbar(self.synList)
         self.synScrollBar.config(command=self.synList.yview)
         self.synList.config(yscrollcommand=self.synScrollBar.set)
         self.synList.bind("<<ListboxSelect>>", self.updateCurrentSyn)
         self.synList.bind("<Return>", self.replaceWordWithSyn)
         
-        
         # packs all widgets in the right frame of the application
-        self.rightFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
-        self.wordInfoFrame.pack(side=TOP, fill=X, padx=3, pady=3)
-        self.currentWordLabel.pack(side=TOP, fill=X, padx=2, pady=2)
-        self.definitionLabel.pack(side=TOP, fill=X, padx=2, pady=2)
-        self.defInstructionsLabel.pack(side=TOP, fill=X, padx=2, pady=2)
-        self.definitionMenu.pack(side=TOP, fill=X)
+        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=5, pady=5)
+        self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
+        self.defInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.innerDefFrame.pack(side=TOP, pady=2)
+        self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=2)
+        self.definitionMenu.pack(side=LEFT, fill=BOTH)
         self.synFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
-        self.synInstructionsLabel.pack(side=TOP, fill=X, padx=2, pady=2)
-        self.synonymTitle.pack(side=TOP, fill=X, padx=2, pady=2)
+        self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=2, pady=2)
+        self.synonymTitle.pack(side=TOP, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
 
@@ -114,11 +115,14 @@ class LiveThesaurus(object):
     
     # updates the current synonym whenever mouse is in the synonym ListBox
     def updateCurrentSyn(self, event):
-        indexTuple = self.synList.curselection()
-        self.currentSynIndex = indexTuple[0]
-        self.synList.activate(self.currentSynIndex)
-        currentSynList = self.currentSynDict[self.currentDef]
-        self.currentSyn = currentSynList[self.currentSynIndex]["term"]
+        try:
+            indexTuple = self.synList.curselection()
+            self.currentSynIndex = indexTuple[0]
+            self.synList.activate(self.currentSynIndex)
+            currentSynList = self.currentSynDict[self.currentDef]
+            self.currentSyn = currentSynList[self.currentSynIndex]["term"]
+        except:
+            pass
     
     # replaces word in text box with the chosen synonym
     def replaceWordWithSyn(self, event):
@@ -145,7 +149,6 @@ class LiveThesaurus(object):
                 self.currentDefList = list(self.currentSynDict.keys())
             else:
                 self.currentWordLabel.config(text="Selected Word has no synonyms")
-                self.definitionLabel.config(text="")
                 self.currentWordObj = None
                 self.currentDefList = [None]
                 self.currentDef = None
@@ -176,7 +179,6 @@ class LiveThesaurus(object):
         if self.currentDefList != [None]:
             self.currentDef = str(self.definitons.get())
             self.currentDefIndex = self.currentDefList.index(self.currentDef)
-            self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
             self.generateSynonymList()
     
     # draws and creates a synonym list made out of non-changeable entry boxes
