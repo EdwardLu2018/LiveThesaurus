@@ -8,7 +8,18 @@ class Word(object):
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
         self.synonymDict = self.get("synonyms")
         self.antonymDict = self.get("antonyms")
-
+    
+    # gets the html text of thesaurus.com at a given word
+    def getThesaurusWebText(self):
+        HTMLTextWord = self.word.lower()
+        if HTMLTextWord == "" or HTMLTextWord.isdigit() or HTMLTextWord.isspace():
+            return None
+        elif " " in HTMLTextWord:
+            HTMLTextWord = HTMLTextWord.replace(" ", "%20")
+        url = "https://www.thesaurus.com/browse/"
+        thesaurusWebsite = requests.get(url + HTMLTextWord + "?s=t")
+        return thesaurusWebsite.text 
+    
     # checks if word is invalid
     def isValidWord(self):
         return not ("no thesaurus results" in self.thesaurusSourceText or \
@@ -42,7 +53,7 @@ class Word(object):
             
         # updates result, mapping definitions to their synonyms
         for defn in definitionList:
-            index1 = copyScript.find("\""+type+"\":") + len("\""+type+"\":")
+            index1 = copyScript.find("\"" + type + "\":") + len("\"" + type + "\":")
             index2 = index1 + copyScript[index1:].find("]")
             synOrAntListStr = copyScript[index1:index2] + "]"
             synOrAntList = eval(synOrAntListStr)
@@ -66,17 +77,6 @@ class Word(object):
                         del dict["isVulgar"]
         
         return result
-    
-    # gets the html text of thesaurus.com at a given word
-    def getThesaurusWebText(self):
-        HTMLTextWord = self.word.lower()
-        if HTMLTextWord == "" or HTMLTextWord.isdigit() or HTMLTextWord.isspace():
-            return None
-        elif " " in HTMLTextWord:
-            HTMLTextWord = HTMLTextWord.replace(" ", "%20")
-        url = "https://www.thesaurus.com/browse/"
-        thesaurusWebsite = requests.get(url + HTMLTextWord + "?s=t")
-        return thesaurusWebsite.text 
     
     def __repr__(self):
         return "Word: " + self.word
