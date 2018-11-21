@@ -59,7 +59,7 @@ class LiveThesaurus(object):
                                  text="Selected Word: " + str(self.currentWordObj),
                                  borderwidth=1, relief="solid", anchor=N)
         self.definitionLabel = Label(self.wordInfoFrame, 
-                          text="Definiton: " + str(self.currentDefList[0]),
+                          text="Definiton: " + str(self.currentDef),
                           borderwidth=1, relief="solid", anchor=N)
         self.defInstructionsLabel = Label(self.wordInfoFrame, 
                     text="Change Definitions Below!",
@@ -143,9 +143,17 @@ class LiveThesaurus(object):
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
-                self.updateDefMenu(self.currentDefList)
             else:
+                self.currentWordLabel.config(text="Selected Word has no synonyms")
+                self.definitionLabel.config(text="")
+                menu = self.definitionMenu["menu"]
+                menu.delete(0, "end")
+                self.currentDef = None
+                self.synList.delete(0,"end")
                 self.currentWordObj = None
+                self.currentDefList = [None]
+                self.definitons.set(None)
+            self.updateDefMenu(self.currentDefList)
         except:
             pass
     
@@ -154,21 +162,23 @@ class LiveThesaurus(object):
     def updateDefMenu(self, defList):
         menu = self.definitionMenu["menu"]
         menu.delete(0, "end")
-        for d in defList:
-            menu.add_command(label=d, 
-                    command=lambda value=d: self.definitons.set(value))
-        # loads definition menu at the index of the current definition
-        self.definitons.set(defList[self.currentDefIndex])
-        # gives all options a command associated with updateCurrentDef
-        self.definitons.trace("w", self.updateCurrentDef)
+        if defList != None:
+            for d in defList:
+                menu.add_command(label=d, 
+                        command=lambda value=d: self.definitons.set(value))
+            # loads definition menu at the index of the current definition
+            self.definitons.set(defList[self.currentDefIndex])
+            # gives all options a command associated with updateCurrentDef
+            self.definitons.trace("w", self.updateCurrentDef)
     
     # CITATION: Some code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
     # Changes the definition label according to the user's choice
     def updateCurrentDef(self, *args):
-        self.currentDef = str(self.definitons.get())
-        self.currentDefIndex = self.currentDefList.index(self.currentDef)
-        self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
-        self.generateSynonymList()
+        if self.currentDefList != [None]:
+            self.currentDef = str(self.definitons.get())
+            self.currentDefIndex = self.currentDefList.index(self.currentDef)
+            self.definitionLabel.config(text="Definiton: \"" + self.currentDef + "\"")
+            self.generateSynonymList()
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynonymList(self):
