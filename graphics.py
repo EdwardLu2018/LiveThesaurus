@@ -11,13 +11,18 @@ class LiveThesaurus(object):
         self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordIndex = 0
+        
+        self.antonymsMode = False
         self.currentSynDict = None
+        self.currentSyn = None
+        self.currentAntDict = None        
+        self.currentAnt = None
+        self.currentListBoxIndex = 0
+        
         self.currentDefList = [None]
         self.currentDef = None
         self.currentDefIndex = 0
-        self.currentSyn = None
-        self.currentSynIndex = 0
-        
+                
         # CITATION: Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
         # makes the application window full screen
         screenWidth = master.winfo_screenwidth()
@@ -68,6 +73,9 @@ class LiveThesaurus(object):
                 borderwidth=1, relief="solid", anchor=N)
         self.synonymTitle = Label(self.synFrame, text="List of Synonyms:",
                                   anchor=N)
+        self.toggleSynOrAnt = Button(self.synFrame, width=10, height=1, 
+                             text="Synonyms", 
+                             command=self.switchModes)
         self.synList = Listbox(self.synFrame, borderwidth=2, relief="solid")
         
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
@@ -78,12 +86,12 @@ class LiveThesaurus(object):
         self.definitons.set(self.currentDefList[0])
         
         self.rightFrame.config(background="black")
-        self.definitionMenu.config(width=40)
+        self.definitionMenu.config(width=35)
         self.synScrollBar = Scrollbar(self.synList)
         self.synScrollBar.config(command=self.synList.yview)
         self.synList.config(yscrollcommand=self.synScrollBar.set)
-        self.synList.bind("<<ListboxSelect>>", self.updateCurrentSyn)
-        self.synList.bind("<Return>", self.replaceWordWithSyn)
+        self.synList.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
+        self.synList.bind("<Return>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=5, pady=5)
@@ -97,10 +105,11 @@ class LiveThesaurus(object):
         self.synFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
         self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.synonymTitle.pack(side=TOP, padx=2, pady=2)
+        self.toggleSynOrAnt.pack(side=TOP, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
 
-        self.generateSynonymList()
+        self.generateSynOrAntList()
         self.timerFiredWrapper()
     
     # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
@@ -113,26 +122,43 @@ class LiveThesaurus(object):
         self.synList.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
+    def switchModes(self):
+        self.antonymsMode = not self.antonymsMode
+        if not self.antonymsMode:
+            self.toggleSynOrAnt.config(text="Synonyms")
+        else:
+            self.toggleSynOrAnt.config(text="Antonyms")
+        self.generateSynOrAntList()
+    
     # updates the current synonym whenever mouse is in the synonym ListBox
-    def updateCurrentSyn(self, event):
+    def updateCurrentSynOrAnt(self, event):
         try:
             indexTuple = self.synList.curselection()
-            self.currentSynIndex = indexTuple[0]
-            self.synList.activate(self.currentSynIndex)
-            currentSynList = self.currentSynDict[self.currentDef]
-            self.currentSyn = currentSynList[self.currentSynIndex]["term"]
+            self.currentListBoxIndex = indexTuple[0]
+            self.synList.activate(self.currentListBoxIndex)
+            if not self.antonymsMode:
+                currentSynList = self.currentSynDict[self.currentDef]
+                self.currentSyn = currentSynList[self.currentListBoxIndex]["term"]
+            else:
+                currentAntList = self.currentAntDict[self.currentDef]
+                self.currentAnt = currentAntList[self.currentListBoxIndex]["term"]
         except:
             pass
     
     # replaces word in text box with the chosen synonym
-    def replaceWordWithSyn(self, event):
+    def replaceWordWithSynOrAnt(self, event):
+        synOrAnt = None
+        if not self.antonymsMode:
+            synOrAnt = self.currentSyn
+        else:
+            synOrAnt = self.currentAnt
         textBoxText = self.textBox.get("1.0", END)
         textBoxText = textBoxText[:self.currentWordIndex] + \
-                    self.currentSyn + textBoxText[self.currentWordIndex + \
+                    synOrAnt + textBoxText[self.currentWordIndex + \
                     len(self.currentWordObj.word):]
         textBoxText = textBoxText[:-1] # removes "\n"
         self.textBox.replace("1.0", END, textBoxText)
-        self.currentWordObj = Word(self.currentSyn)
+        self.currentWordObj = Word(synOrAnt)
     
     # gets the highlighted word when button is pressed and sets  the above 
     # labels corresponding to the word
@@ -146,6 +172,7 @@ class LiveThesaurus(object):
                 selFirstPos = float(self.textBox.index("sel.first"))
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
                 self.currentSynDict = self.currentWordObj.synonymDict
+                self.currentAntDict = self.currentWordObj.antonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
             else:
                 self.currentWordLabel.config(text="Selected Word has no synonyms")
@@ -154,6 +181,7 @@ class LiveThesaurus(object):
                 self.currentDef = None
                 self.synList.delete(0, "end")
                 self.currentSynDict = None
+                self.currentAntDict = None
                 self.definitons.set(None)
             self.updateDefMenu(self.currentDefList)
         except:
@@ -179,16 +207,21 @@ class LiveThesaurus(object):
         if self.currentDefList != [None]:
             self.currentDef = str(self.definitons.get())
             self.currentDefIndex = self.currentDefList.index(self.currentDef)
-            self.generateSynonymList()
+            self.generateSynOrAntList()
     
     # draws and creates a synonym list made out of non-changeable entry boxes
-    def generateSynonymList(self):
+    def generateSynOrAntList(self):
         self.synList.delete(0, "end")
-        if self.currentSynDict != None:
-            for syn in self.currentSynDict[self.currentDef]:
-                self.synList.insert(END, syn["term"])
-        self.synList.select_set(self.currentSynIndex)
-        self.synList.activate(self.currentSynIndex)
+        if not self.antonymsMode:
+            if self.currentSynDict != None:
+                for syn in self.currentSynDict[self.currentDef]:
+                    self.synList.insert(END, syn["term"])
+        else:
+            if self.currentAntDict != None:
+                for ant in self.currentAntDict[self.currentDef]:
+                    self.synList.insert(END, ant["term"])
+        self.synList.select_set(self.currentListBoxIndex)
+        self.synList.activate(self.currentListBoxIndex)
     
     # records audio and displays it on the TextBox
     def runAudio(self):
