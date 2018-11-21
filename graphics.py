@@ -110,7 +110,7 @@ class LiveThesaurus(object):
         self.termBox.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.termScrollBar.pack(side=RIGHT, fill=Y)
 
-        self.generateSynOrAntList()
+        self.generateTermList()
         self.timerFiredWrapper()
     
     # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
@@ -130,9 +130,9 @@ class LiveThesaurus(object):
             self.toggleSynOrAntButton.config(text="Synonyms")
         else:
             self.toggleSynOrAntButton.config(text="Antonyms")
-        self.generateSynOrAntList()
+        self.generateTermList()
     
-    # updates the current synonym whenever mouse is in the synonym ListBox
+    # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
         try:
             indexTuple = self.termBox.curselection()
@@ -149,18 +149,21 @@ class LiveThesaurus(object):
     
     # replaces word in text box with the chosen synonym
     def replaceWordWithSynOrAnt(self, event):
-        synOrAnt = None
-        if not self.antonymsMode:
-            synOrAnt = self.currentSyn
-        else:
-            synOrAnt = self.currentAnt
-        textBoxText = self.textBox.get("1.0", END)
-        textBoxText = textBoxText[:self.currentWordIndex] + \
-                    synOrAnt + textBoxText[self.currentWordIndex + \
-                    len(self.currentWordObj.word):]
-        textBoxText = textBoxText[:-1] # removes "\n"
-        self.textBox.replace("1.0", END, textBoxText)
-        self.currentWordObj = Word(synOrAnt)
+        try:
+            synOrAnt = None
+            if not self.antonymsMode:
+                synOrAnt = self.currentSyn
+            else:
+                synOrAnt = self.currentAnt
+            textBoxText = self.textBox.get("1.0", END)
+            textBoxText = textBoxText[:self.currentWordIndex] + \
+                        synOrAnt + textBoxText[self.currentWordIndex + \
+                        len(self.currentWordObj.word):]
+            textBoxText = textBoxText[:-1] # removes "\n"
+            self.textBox.replace("1.0", END, textBoxText)
+            self.currentWordObj = Word(synOrAnt)
+        except:
+            pass
     
     # gets the highlighted word when button is pressed and sets  the above 
     # labels corresponding to the word
@@ -209,19 +212,26 @@ class LiveThesaurus(object):
         if self.currentDefList != [None]:
             self.currentDef = str(self.definitons.get())
             self.currentDefIndex = self.currentDefList.index(self.currentDef)
-            self.generateSynOrAntList()
+            self.generateTermList()
     
-    # draws and creates a synonym list made out of non-changeable entry boxes
-    def generateSynOrAntList(self):
+    # draws and creates a list made out of non-changeable entry boxes that
+    # contain synonyms or antonyms, depending on the mode
+    def generateTermList(self):
         self.termBox.delete(0, "end")
         if not self.antonymsMode:
             if self.currentSynDict != None:
-                for synDict in self.currentSynDict[self.currentDef]:
-                    self.termBox.insert(END, synDict["term"])
+                if len(self.currentSynDict[self.currentDef]) == 0:
+                    self.termBox.insert(END, "No Synonyms!")
+                else:
+                    for synDict in self.currentSynDict[self.currentDef]:
+                        self.termBox.insert(END, synDict["term"])
         else:
             if self.currentAntDict != None:
-                for antDict in self.currentAntDict[self.currentDef]:
-                    self.termBox.insert(END, antDict["term"])
+                if len(self.currentAntDict[self.currentDef]) == 0:
+                    self.termBox.insert(END, "No Antonyms!")
+                else:
+                    for antDict in self.currentAntDict[self.currentDef]:
+                        self.termBox.insert(END, antDict["term"])
         self.termBox.select_set(self.currentListBoxIndex)
         self.termBox.activate(self.currentListBoxIndex)
     
