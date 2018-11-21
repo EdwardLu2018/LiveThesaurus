@@ -142,8 +142,8 @@ class LiveThesaurus(object):
             self.currentListBoxIndex = indexTuple[0]
             self.termBox.activate(self.currentListBoxIndex)
             if not self.antonymsMode:
-                currentTermDict = self.currentSynDict[self.currentDef]
-                self.currentSyn = currentTermDict[self.currentListBoxIndex]["term"]
+                currentSynList = self.currentSynDict[self.currentDef]
+                self.currentSyn = currentSynList[self.currentListBoxIndex]["term"]
             else:
                 currentAntList = self.currentAntDict[self.currentDef]
                 self.currentAnt = currentAntList[self.currentListBoxIndex]["term"]
