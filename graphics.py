@@ -76,7 +76,7 @@ class LiveThesaurus(object):
         self.toggleSynOrAnt = Button(self.synFrame, width=10, height=1, 
                              text="Synonyms", 
                              command=self.switchModes)
-        self.synList = Listbox(self.synFrame, borderwidth=2, relief="solid")
+        self.termBox = Listbox(self.synFrame, borderwidth=2, relief="solid")
         
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
@@ -87,11 +87,11 @@ class LiveThesaurus(object):
         
         self.rightFrame.config(background="black")
         self.definitionMenu.config(width=35)
-        self.synScrollBar = Scrollbar(self.synList)
-        self.synScrollBar.config(command=self.synList.yview)
-        self.synList.config(yscrollcommand=self.synScrollBar.set)
-        self.synList.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
-        self.synList.bind("<Return>", self.replaceWordWithSynOrAnt)
+        self.synScrollBar = Scrollbar(self.termBox)
+        self.synScrollBar.config(command=self.termBox.yview)
+        self.termBox.config(yscrollcommand=self.synScrollBar.set)
+        self.termBox.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
+        self.termBox.bind("<Return>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=5, pady=5)
@@ -106,7 +106,7 @@ class LiveThesaurus(object):
         self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.synonymTitle.pack(side=TOP, padx=2, pady=2)
         self.toggleSynOrAnt.pack(side=TOP, padx=2, pady=2)
-        self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
+        self.termBox.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
 
         self.generateSynOrAntList()
@@ -117,9 +117,9 @@ class LiveThesaurus(object):
     # https://stackoverflow.com/questions/36086474/python-tkinter-update-scrolled-listbox-wandering-scroll-position
     # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
-        currentView = self.synList.yview()
+        currentView = self.termBox.yview()
         self.updateCurrentWord()
-        self.synList.yview_moveto(currentView[0])
+        self.termBox.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
     def switchModes(self):
@@ -133,12 +133,12 @@ class LiveThesaurus(object):
     # updates the current synonym whenever mouse is in the synonym ListBox
     def updateCurrentSynOrAnt(self, event):
         try:
-            indexTuple = self.synList.curselection()
+            indexTuple = self.termBox.curselection()
             self.currentListBoxIndex = indexTuple[0]
-            self.synList.activate(self.currentListBoxIndex)
+            self.termBox.activate(self.currentListBoxIndex)
             if not self.antonymsMode:
-                currentSynList = self.currentSynDict[self.currentDef]
-                self.currentSyn = currentSynList[self.currentListBoxIndex]["term"]
+                currenttermBox = self.currentSynDict[self.currentDef]
+                self.currentSyn = currenttermBox[self.currentListBoxIndex]["term"]
             else:
                 currentAntList = self.currentAntDict[self.currentDef]
                 self.currentAnt = currentAntList[self.currentListBoxIndex]["term"]
@@ -179,7 +179,7 @@ class LiveThesaurus(object):
                 self.currentWordObj = None
                 self.currentDefList = [None]
                 self.currentDef = None
-                self.synList.delete(0, "end")
+                self.termBox.delete(0, "end")
                 self.currentSynDict = None
                 self.currentAntDict = None
                 self.definitons.set(None)
@@ -211,17 +211,17 @@ class LiveThesaurus(object):
     
     # draws and creates a synonym list made out of non-changeable entry boxes
     def generateSynOrAntList(self):
-        self.synList.delete(0, "end")
+        self.termBox.delete(0, "end")
         if not self.antonymsMode:
             if self.currentSynDict != None:
                 for syn in self.currentSynDict[self.currentDef]:
-                    self.synList.insert(END, syn["term"])
+                    self.termBox.insert(END, syn["term"])
         else:
             if self.currentAntDict != None:
                 for ant in self.currentAntDict[self.currentDef]:
-                    self.synList.insert(END, ant["term"])
-        self.synList.select_set(self.currentListBoxIndex)
-        self.synList.activate(self.currentListBoxIndex)
+                    self.termBox.insert(END, ant["term"])
+        self.termBox.select_set(self.currentListBoxIndex)
+        self.termBox.activate(self.currentListBoxIndex)
     
     # records audio and displays it on the TextBox
     def runAudio(self):
