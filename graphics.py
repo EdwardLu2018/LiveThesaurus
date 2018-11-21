@@ -6,7 +6,7 @@ class LiveThesaurus(object):
     def __init__(self, master):
         self.master = master
         master.title("LiveThesaurus, powered by thesaurus.com")
-        master.option_add("*font", ("Times New Roman", 16))
+        master.option_add("*font", ("Times New Roman", 15))
         
         self.timerDelay = 100
         self.currentWordObj = None
@@ -24,12 +24,12 @@ class LiveThesaurus(object):
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
         self.master.config(background='black')
-                
+        
         self.leftFrame = Frame(self.master)
         # creates a text box and scroll bar, along with a button that will
         # print synonyms on the right side of the window
         self.textScrollBar = Scrollbar(self.leftFrame)
-        self.textBox = Text(self.leftFrame, width=40, height=40, 
+        self.textBox = Text(self.leftFrame, width=40, height=37, 
                             borderwidth=3, relief="sunken")
         self.leftInstructionsLabel = Label(self.leftFrame, 
                         text="Welcome to LiveThesaurus!\n" +
