@@ -34,12 +34,12 @@ class LiveThesaurus(object):
         # creates a text box and scroll bar, along with a button that will
         # print synonyms on the right side of the window
         self.textScrollBar = Scrollbar(self.leftFrame)
-        self.textBox = Text(self.leftFrame, width=40, height=37, 
-                            borderwidth=3, relief="sunken")
-        self.leftInstructionsLabel = Label(self.leftFrame, 
+        self.instructionsLabel = Label(self.leftFrame, 
                         text="Welcome to LiveThesaurus!\n" +
                         "Type text below. Highlight a word to get its synonyms.",
-                        anchor=N)
+                        anchor=N, borderwidth=1, relief="solid")
+        self.textBox = Text(self.leftFrame, width=40, height=37, 
+                            borderwidth=3, relief="sunken")
         self.audioButton = Button(self.leftFrame, width=40, height=1, 
                              text="Audio", 
                              command=self.runAudio)
@@ -49,7 +49,7 @@ class LiveThesaurus(object):
         # packs all widgets in the left frame of the application
         self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=8, pady=8)
         self.textScrollBar.pack(side=RIGHT, fill=Y)
-        self.leftInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.textBox.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.audioButton.pack(side=TOP, fill=BOTH)
         
@@ -61,6 +61,8 @@ class LiveThesaurus(object):
         self.defInfoFrame = Frame(self.wordAndDefFrame, borderwidth=1, relief="solid")
         self.innerDefFrame = Frame(self.defInfoFrame)
         self.synFrame = Frame(self.rightFrame)
+        self.innerSynFrame = Frame(self.synFrame, borderwidth=1, relief="solid")
+        self.modeFrame = Frame(self.innerSynFrame)
         
         # labels for the selected word, current definition, and synonyms
         self.currentWordLabel = Label(self.wordInfoFrame, 
@@ -71,9 +73,8 @@ class LiveThesaurus(object):
         self.synInstructionsLabel = Label(self.synFrame, 
                 text="Pick a synonym and press the Enter key to change the word",
                 borderwidth=1, relief="solid", anchor=N)
-        self.synonymTitle = Label(self.synFrame, text="List of Synonyms:",
-                                  anchor=N)
-        self.toggleSynOrAnt = Button(self.synFrame, width=10, height=1, 
+        self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
+        self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
                              text="Synonyms", 
                              command=self.switchModes)
         self.termBox = Listbox(self.synFrame, borderwidth=2, relief="solid")
@@ -99,13 +100,15 @@ class LiveThesaurus(object):
         self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
         self.defInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.innerDefFrame.pack(side=TOP, pady=2)
+        self.innerDefFrame.pack(side=TOP, padx=2, pady=2)
         self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=2)
         self.definitionMenu.pack(side=LEFT, fill=BOTH)
         self.synFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
         self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.synonymTitle.pack(side=TOP, padx=2, pady=2)
-        self.toggleSynOrAnt.pack(side=TOP, padx=2, pady=2)
+        self.innerSynFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.modeFrame.pack(side=TOP, padx=2, pady=2)
+        self.synonymTitle.pack(side=LEFT, padx=2, pady=2)
+        self.toggleSynOrAntButton.pack(side=LEFT, padx=2, pady=2)
         self.termBox.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
 
@@ -122,12 +125,13 @@ class LiveThesaurus(object):
         self.termBox.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
+    # switches between synonym and antonym mode
     def switchModes(self):
         self.antonymsMode = not self.antonymsMode
         if not self.antonymsMode:
-            self.toggleSynOrAnt.config(text="Synonyms")
+            self.toggleSynOrAntButton.config(text="Synonyms")
         else:
-            self.toggleSynOrAnt.config(text="Antonyms")
+            self.toggleSynOrAntButton.config(text="Antonyms")
         self.generateSynOrAntList()
     
     # updates the current synonym whenever mouse is in the synonym ListBox
@@ -214,12 +218,12 @@ class LiveThesaurus(object):
         self.termBox.delete(0, "end")
         if not self.antonymsMode:
             if self.currentSynDict != None:
-                for syn in self.currentSynDict[self.currentDef]:
-                    self.termBox.insert(END, syn["term"])
+                for synDict in self.currentSynDict[self.currentDef]:
+                    self.termBox.insert(END, synDict["term"])
         else:
             if self.currentAntDict != None:
-                for ant in self.currentAntDict[self.currentDef]:
-                    self.termBox.insert(END, ant["term"])
+                for antDict in self.currentAntDict[self.currentDef]:
+                    self.termBox.insert(END, antDict["term"])
         self.termBox.select_set(self.currentListBoxIndex)
         self.termBox.activate(self.currentListBoxIndex)
     
