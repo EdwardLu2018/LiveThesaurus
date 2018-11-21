@@ -6,7 +6,7 @@ class LiveThesaurus(object):
     def __init__(self, master):
         self.master = master
         master.title("LiveThesaurus, powered by thesaurus.com")
-        master.option_add("*font", ("Times New Roman", 14))
+        master.option_add("*font", ("Times New Roman", 16))
         
         self.timerDelay = 100
         self.currentWordObj = None
@@ -95,7 +95,7 @@ class LiveThesaurus(object):
         self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=2)
         self.definitionMenu.pack(side=LEFT, fill=BOTH)
         self.synFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
-        self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=2, pady=2)
+        self.synInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.synonymTitle.pack(side=TOP, padx=2, pady=2)
         self.synList.pack(side=TOP, fill=BOTH, expand=YES, padx=2)
         self.synScrollBar.pack(side=RIGHT, fill=Y)
