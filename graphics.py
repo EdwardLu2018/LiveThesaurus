@@ -51,7 +51,7 @@ class LiveThesaurus(object):
         self.leftFrame.config(background="coral")
         
         # packs all widgets in the left frame of the application
-        self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=8, pady=8)
+        self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=8)
         self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.textFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=(3,0))
         self.textBox.pack(side=LEFT, fill=BOTH, expand=YES, padx=2, pady=2)
@@ -106,7 +106,7 @@ class LiveThesaurus(object):
         self.termListBox.bind("<Return>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
-        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=5, pady=5)
+        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), pady=5)
         self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
@@ -169,7 +169,9 @@ class LiveThesaurus(object):
                 synOrAnt = self.currentSyn
             else:
                 synOrAnt = self.currentAnt
+                
             textBoxText = self.textBox.get("1.0", END)
+            print(self.currentWordIndex)
             textBoxText = textBoxText[:self.currentWordIndex] + \
                         synOrAnt + textBoxText[self.currentWordIndex + \
                         len(self.currentWordObj.word):]
@@ -188,8 +190,9 @@ class LiveThesaurus(object):
             if self.currentWordObj.isValidWord():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
-                selFirstPos = float(self.textBox.index("sel.first"))
+                selFirstPos = self.textBox.index("sel.first")
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
+                print(self.textBox.index("sel.first"))
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentAntDict = self.currentWordObj.antonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
@@ -257,10 +260,9 @@ class LiveThesaurus(object):
             self.textBox.replace("1.0", END, textBoxText[:-1] + audioText)
 
 # returns the digits after the decimal point in a float as an int
-def getDigitsAfterDecPt(flt):
-    strFloat = str(flt)
-    indexOfDecPt = strFloat.find(".")
-    afterDecimal = int(strFloat[indexOfDecPt + 1:])
+def getDigitsAfterDecPt(str):
+    indexOfDecPt = str.find(".")
+    afterDecimal = int(str[indexOfDecPt + 1:])
     return afterDecimal
 
 root = Tk()
