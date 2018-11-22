@@ -33,24 +33,26 @@ class LiveThesaurus(object):
         ## Left Frame
         self.leftFrame = Frame(self.master)
         self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
+        self.textScrollBar = Scrollbar(self.leftFrame)
         self.instructionsLabel = Label(self.leftFrame, 
                        text="Welcome to LiveThesaurus!\n" +
                        "Type text below. Highlight a word to get its synonyms.",
                        anchor=N, borderwidth=2, relief="solid")
+            
         self.textBox = Text(self.leftFrame, borderwidth=2, relief="sunken")
         self.audioButton = Button(self.audioFrame, width=40, height=1, 
                              text="Audio", command=self.runAudio)
-        self.textScrollBar = Scrollbar(self.textBox)
         
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
+        
         self.leftFrame.config(background="coral")
         
         # packs all widgets in the left frame of the application
         self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=8, pady=8)
+        self.textScrollBar.pack(side=RIGHT, fill=Y)
         self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.textBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
-        self.textScrollBar.pack(side=RIGHT, fill=Y)
         self.audioFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(0,3))
         self.audioButton.pack(side=TOP)
         
@@ -82,7 +84,7 @@ class LiveThesaurus(object):
                              command=self.switchModes)
         self.colonLabel = Label(self.modeFrame, text=": ", anchor=N)
         self.termListBox = Listbox(self.termFrame, borderwidth=2, relief="solid")
-        self.termScrollBar = Scrollbar(self.termListBox)
+        self.termScrollBar = Scrollbar(self.rightFrame)
         
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
