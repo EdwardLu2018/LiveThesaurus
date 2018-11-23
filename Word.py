@@ -81,5 +81,8 @@ class Word(object):
     def __repr__(self):
         return "Word: " + self.word
     
+    def __hash__(self):
+        return hash(self.word)
+    
     def __eq__(self, other):
-        return self.word == other.word
+        return isinstance(other, Word) and self.word == other.word

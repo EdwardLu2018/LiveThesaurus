@@ -10,6 +10,7 @@ class LiveThesaurus(object):
         
         self.timerDelay = 100
         self.currentWordObj = None
+        self.currentWordList = [None]
         self.currentWordIndex = 0
         
         self.antonymsMode = False
@@ -29,17 +30,20 @@ class LiveThesaurus(object):
         screenWidth = master.winfo_screenwidth()
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
+        
         self.master.config(background="black")
+        self.master.bind("<Command-z>", self.undo)
         
         ## Left Frame
         self.leftFrame = Frame(self.master)
-        self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
-        self.textFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         self.instructionsLabel = Label(self.leftFrame, 
                        text="Welcome to LiveThesaurus!\n" +
                        "Type text below. Highlight a word to get its synonyms.",
                        anchor=N, borderwidth=2, relief="solid")
-            
+        self.textFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
+        self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
+        
+        # creates the widgets on left side of the screen
         self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken")
         self.textScrollBar = Scrollbar(self.textFrame)
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
@@ -72,7 +76,7 @@ class LiveThesaurus(object):
                                     relief="solid")
         self.modeFrame = Frame(self.innerTermFrame)
         
-        # labels for the selected word, current definition, and synonyms
+        # creates the widgets on the right side of the screen
         self.currentWordLabel = Label(self.wordInfoFrame, 
                             text="Selected Word: " + str(self.currentWordObj),
                             anchor=N)
@@ -146,6 +150,17 @@ class LiveThesaurus(object):
             self.toggleSynOrAntButton.config(text="Antonyms")
         self.generateTermList()
     
+    # undoes a word replacement
+    def undo(self, *args):
+        lastWordObj = None
+        if len(self.currentWordList) > 1:
+            self.currentWordList.pop()
+            lastWordObj = self.currentWordList[len(self.currentWordList) - 1]
+        else:
+            lastWordObj = self.currentWordList[0]
+        self.replaceWordInTextBox(lastWordObj.word)
+        self.currentWordObj = lastWordObj
+    
     # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
         try:
@@ -169,17 +184,24 @@ class LiveThesaurus(object):
                 synOrAnt = self.currentSyn
             else:
                 synOrAnt = self.currentAnt
-                
-            textBoxText = self.textBox.get("1.0", END)
-            print(self.currentWordIndex)
-            textBoxText = textBoxText[:self.currentWordIndex] + \
-                        synOrAnt + textBoxText[self.currentWordIndex + \
-                        len(self.currentWordObj.word):]
-            textBoxText = textBoxText[:-1] # removes "\n"
-            self.textBox.replace("1.0", END, textBoxText)
+            self.replaceWordInTextBox(synOrAnt)
             self.currentWordObj = Word(synOrAnt)
+            self.addToWordList(self.currentWordObj)
         except:
             pass
+    
+    # repalces the current word with another word in the textBox
+    def replaceWordInTextBox(self, newWord):
+        textBoxText = self.textBox.get("1.0", END)
+        textBoxText = textBoxText[:self.currentWordIndex] + \
+                    newWord + textBoxText[self.currentWordIndex + \
+                    len(self.currentWordObj.word):]
+        textBoxText = textBoxText[:-1] # removes "\n"
+        self.textBox.replace("1.0", END, textBoxText)
+    
+    def addToWordList(self, word):
+        if word not in self.currentWordList:
+            self.currentWordList += [word]
     
     # gets the highlighted word when button is pressed and sets  the above 
     # labels corresponding to the word
@@ -187,20 +209,22 @@ class LiveThesaurus(object):
         try:
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObj = Word(highlightedWord)
+            self.currentWordList[0] = self.currentWordObj
             if self.currentWordObj.isValidWord():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
                 selFirstPos = self.textBox.index("sel.first")
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
-                print(self.textBox.index("sel.first"))
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentAntDict = self.currentWordObj.antonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
             else:
                 self.currentWordLabel.config(text="Selected Word has no synonyms")
                 self.currentWordObj = None
+                self.currentWordList = [None]
                 self.currentDefList = [None]
                 self.currentDef = None
+                self.currentDefIndex = 0
                 self.termListBox.delete(0, "end")
                 self.currentSynDict = None
                 self.currentAntDict = None
