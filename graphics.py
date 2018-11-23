@@ -44,8 +44,7 @@ class LiveThesaurus(object):
         self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         
         # creates the widgets on left side of the screen
-        self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken", 
-                            undo=True, autoseparators=True, maxundo=-1)
+        self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken")
         self.textScrollBar = Scrollbar(self.textFrame)
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
                                   text="Audio", command=self.runAudio)
@@ -153,21 +152,14 @@ class LiveThesaurus(object):
     
     # undoes a word replacement
     def undo(self, *args):
-        if self.currentWordList != [None]:
-            lastWordObj = None
-            if len(self.currentWordList) > 1:
-                self.currentWordList.pop()
-                lastWordObj = self.currentWordList[len(self.currentWordList) - 1]
-            else:
-                lastWordObj = self.currentWordList[0]
-            self.replaceWordInTextBox(lastWordObj.word)
-            self.currentWordObj = lastWordObj
+        lastWordObj = None
+        if len(self.currentWordList) > 1:
+            self.currentWordList.pop()
+            lastWordObj = self.currentWordList[len(self.currentWordList) - 1]
         else:
-            try:
-                # Regular textBox Undo Feature Code From: https://stackoverflow.com/questions/3169344/undo-and-redo-features-in-a-tkinter-text-widget
-                self.textBox.edit_undo()
-            except:
-                pass
+            lastWordObj = self.currentWordList[0]
+        self.replaceWordInTextBox(lastWordObj.word)
+        self.currentWordObj = lastWordObj
     
     # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
