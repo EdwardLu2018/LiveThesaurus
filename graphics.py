@@ -44,7 +44,8 @@ class LiveThesaurus(object):
         self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         
         # creates the widgets on left side of the screen
-        self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken", undo=True)
+        self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken", 
+                            undo=True, autoseparators=True, maxundo=-1)
         self.textScrollBar = Scrollbar(self.textFrame)
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
                                   text="Audio", command=self.runAudio)
