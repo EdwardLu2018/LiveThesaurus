@@ -152,14 +152,15 @@ class LiveThesaurus(object):
     
     # undoes a word replacement
     def undo(self, *args):
-        lastWordObj = None
-        if len(self.currentWordList) > 1:
-            self.currentWordList.pop()
-            lastWordObj = self.currentWordList[len(self.currentWordList) - 1]
-        else:
-            lastWordObj = self.currentWordList[0]
-        self.replaceWordInTextBox(lastWordObj.word)
-        self.currentWordObj = lastWordObj
+        if self.currentWordList != [None]:
+            lastWordObj = None
+            if len(self.currentWordList) > 1:
+                self.currentWordList.pop()
+                lastWordObj = self.currentWordList[len(self.currentWordList) - 1]
+            else:
+                lastWordObj = self.currentWordList[0]
+            self.replaceWordInTextBox(lastWordObj.word)
+            self.currentWordObj = lastWordObj
     
     # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
