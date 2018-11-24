@@ -29,6 +29,7 @@ class Word(object):
     # synonyms or antonyms, depending on the type
     def get(self, type):
         definitionList = []
+        partOfSpeechList = []
         result = {}
         
         if not self.isValidWord():
@@ -44,12 +45,20 @@ class Word(object):
         copyScript = script
         
         # updates definitionList with all definitions of word
-        while "\"0\",\"definition\":" in script:
-            index1 = script.find("\"definition\":") + len("\"definition\":") + 1
-            index2 = index1 + script[index1:].find(",\"") - 1
-            defn = script[index1:index2]
-            definitionList += [defn]
-            script = script[index2:]
+        while "\"0\",\"definition\":" in script and "\"pos\":":
+            defn = ""
+            pos = ""
+            startIndexOfDef = script.find("\"definition\":") + len("\"definition\":") + 1
+            endIndexOfDef = startIndexOfDef + script[startIndexOfDef:].find(",\"") - 1
+            defnition = script[startIndexOfDef:endIndexOfDef]
+            script = script[endIndexOfDef:]
+            
+            startIndexOfPos = script.find("\"pos\":") + len("\"pos\":") + 1
+            endIndexOfPos = startIndexOfPos + script[startIndexOfPos:].find(",\"") - 1
+            partOfSpeech = script[startIndexOfPos:endIndexOfPos]
+            script = script[endIndexOfPos:]
+            
+            definitionList += [defnition + " (" + partOfSpeech + ")"]
             
         # updates result, mapping definitions to their synonyms
         for defn in definitionList:
@@ -78,11 +87,14 @@ class Word(object):
         
         return result
     
+    # string representation
     def __repr__(self):
         return "Word: " + self.word
     
+    # hash function
     def __hash__(self):
         return hash(self.word)
     
+    # equivalence check
     def __eq__(self, other):
         return isinstance(other, Word) and self.word == other.word
