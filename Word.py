@@ -7,14 +7,9 @@ class Word(object):
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
         self.script = self.getScript()
-        if self.hasSynOrAnt():
-            self.definitionList = self.getDefList()
-            self.synonymDict = self.getDict("synonyms")
-            self.antonymDict = self.getDict("antonyms")
-        else:
-            self.definitionList = None
-            self.synonymDict = None
-            self.antonymDict = None
+        self.definitionList = self.getDefList()
+        self.synonymDict = self.getDict("synonyms")
+        self.antonymDict = self.getDict("antonyms")
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
@@ -27,7 +22,7 @@ class Word(object):
         thesaurusWebsite = requests.get(url + HTMLTextWord + "?s=t")
         return thesaurusWebsite.text 
     
-    # checks if word is invalid
+    # checks if word has synonyms or antonyms
     def hasSynOrAnt(self):
         return not ("no thesaurus results" in self.thesaurusSourceText or \
                     "\n" in self.word or "\t" in self.word)
@@ -35,14 +30,23 @@ class Word(object):
     # gets a javascript dictionary containing defintions, parts of speech, 
     # synonyms and antonyms
     def getScript(self):
+        scriptList = self.parser.find_all("script")
+        
+        # finds the index of the javascript dictionary that contains the 
+        # defintions, synonyms, etc
+        indexOfImportantDict = -1
+        for script in scriptList:
+            if "window.INITIAL_STATE = " not in str(script):
+                indexOfImportantDict += 1
+        
         # parses javascript code
-        indexOfImportantDict = 15
         lenOfIgnore = len("window.INITIAL_STATE = ")
-        script = self.parser.find_all("script")[indexOfImportantDict]
+        script = scriptList[indexOfImportantDict]
         script = script.text[lenOfIgnore:-1] # subtract 1 to remove closing "}" 
                                              # of javascript dictionary
         script = script.replace("null", "None")
         self.script = script.replace("%20", " ")
+        
         return self.script
     
     # gets a list of defintions of the word

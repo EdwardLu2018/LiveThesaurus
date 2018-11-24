@@ -222,7 +222,7 @@ class LiveThesaurus(object):
                 self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentAntDict = self.currentWordObj.antonymDict
-                self.currentDefList = list(self.currentSynDict.keys())
+                self.currentDefList = self.currentWordObj.definitionList
             else:
                 self.currentWordLabel.config(text="Selected Word has no " + 
                                                   "synonyms")
@@ -231,10 +231,12 @@ class LiveThesaurus(object):
                 self.currentDefList = [None]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                self.currentSynDict = None
-                self.currentAntDict = None
                 self.definitons.set(None)
                 self.termListBox.delete(0, "end")
+                if not self.antonymsMode:
+                    self.termListBox.insert(END, "No Synonyms!")
+                else:
+                    self.termListBox.insert(END, "No Antonyms!")
             self.updateDefMenu(self.currentDefList)
         except:
             pass
@@ -265,20 +267,18 @@ class LiveThesaurus(object):
     # contain synonyms or antonyms, depending on the mode
     def generateTermList(self):
         self.termListBox.delete(0, "end")
-        if not self.antonymsMode:
-            if self.currentSynDict != None:
-                if len(self.currentSynDict[self.currentDef]) == 0:
-                    self.termListBox.insert(END, "No Synonyms!")
-                else:
-                    for synDict in self.currentSynDict[self.currentDef]:
-                        self.termListBox.insert(END, synDict["term"])
-        else:
-            if self.currentAntDict != None:
-                if len(self.currentAntDict[self.currentDef]) == 0:
-                    self.termListBox.insert(END, "No Antonyms!")
-                else:
-                    for antDict in self.currentAntDict[self.currentDef]:
-                        self.termListBox.insert(END, antDict["term"])
+        if not self.antonymsMode and self.currentSynDict != None:
+            if self.currentSynDict[self.currentDef] == []: # no synonyms
+                self.termListBox.insert(END, "No Synonyms!")
+            else:
+                for synDict in self.currentSynDict[self.currentDef]:
+                    self.termListBox.insert(END, synDict["term"])
+        elif self.antonymsMode and self.currentAntDict != None:
+            if self.currentAntDict[self.currentDef] == []: # no antonyms
+                self.termListBox.insert(END, "No Antonyms!")
+            else:
+                for antDict in self.currentAntDict[self.currentDef]:
+                    self.termListBox.insert(END, antDict["term"])
         self.termListBox.select_set(self.currentListBoxIndex)
         self.termListBox.activate(self.currentListBoxIndex)
     
