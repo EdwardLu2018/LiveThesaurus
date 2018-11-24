@@ -204,7 +204,7 @@ class LiveThesaurus(object):
     
     # adds a Word object to a list of user-chosen Word objects
     def addToWordList(self, word):
-        if word not in self.currentWordList:
+        if word != self.currentWordList[len(self.currentWordList)-1]:
             self.currentWordList += [word]
     
     # gets the user's highlighted word, creates a Word object of that word, 
