@@ -90,7 +90,8 @@ class LiveThesaurus(object):
                              text="Synonyms", 
                              command=self.switchModes)
         self.colonLabel = Label(self.modeFrame, text=": ", anchor=N)
-        self.termListBox = Listbox(self.termFrame, borderwidth=2, relief="solid")
+        self.termListBox = Listbox(self.termFrame, borderwidth=2, 
+                                   relief="solid")
         self.termScrollBar = Scrollbar(self.termListBox)
         
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
@@ -110,7 +111,8 @@ class LiveThesaurus(object):
         self.termListBox.bind("<Return>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
-        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), pady=5)
+        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), 
+                                                                pady=5)
         self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
@@ -125,7 +127,8 @@ class LiveThesaurus(object):
         self.synonymTitle.pack(side=LEFT, pady=2)
         self.toggleSynOrAntButton.pack(side=LEFT, padx=2, pady=2)
         self.colonLabel.pack(side=LEFT, pady=2)
-        self.termListBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=(0,3))
+        self.termListBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
+                                                               pady=(0,3))
         self.termScrollBar.pack(side=RIGHT, fill=Y)
         
         self.generateTermList()
@@ -140,7 +143,7 @@ class LiveThesaurus(object):
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
-    
+        
     # switches between synonym and antonym mode
     def switchModes(self):
         self.antonymsMode = not self.antonymsMode
@@ -156,7 +159,7 @@ class LiveThesaurus(object):
             lastWordObj = None
             if len(self.currentWordList) > 1:
                 self.currentWordList.pop()
-                lastWordObj = self.currentWordList[len(self.currentWordList) - 1]
+                lastWordObj = self.currentWordList[len(self.currentWordList)-1]
             else:
                 lastWordObj = self.currentWordList[0]
             self.replaceWordInTextBox(lastWordObj.word)
@@ -200,12 +203,14 @@ class LiveThesaurus(object):
         textBoxText = textBoxText[:-1] # removes "\n"
         self.textBox.replace("1.0", END, textBoxText)
     
+    # adds a Word object to a list of user-chosen Word objects
     def addToWordList(self, word):
         if word not in self.currentWordList:
             self.currentWordList += [word]
     
-    # gets the highlighted word when button is pressed and sets  the above 
-    # labels corresponding to the word
+    # gets the user's highlighted word, creates a Word object of that word, 
+    # updates the current word label, and sets all variables to the 
+    # corresponding instance variable of the Word object 
     def updateCurrentWord(self):
         try:
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
@@ -220,16 +225,17 @@ class LiveThesaurus(object):
                 self.currentAntDict = self.currentWordObj.antonymDict
                 self.currentDefList = list(self.currentSynDict.keys())
             else:
-                self.currentWordLabel.config(text="Selected Word has no synonyms")
+                self.currentWordLabel.config(text="Selected Word has no " + 
+                                                  "synonyms")
                 self.currentWordObj = None
                 self.currentWordList = [None]
                 self.currentDefList = [None]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                self.termListBox.delete(0, "end")
                 self.currentSynDict = None
                 self.currentAntDict = None
                 self.definitons.set(None)
+                self.termListBox.delete(0, "end")
             self.updateDefMenu(self.currentDefList)
         except:
             pass
