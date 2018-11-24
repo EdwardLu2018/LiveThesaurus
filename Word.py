@@ -48,6 +48,7 @@ class Word(object):
         while "\"0\",\"definition\":" in script and "\"pos\":":
             defn = ""
             pos = ""
+            
             startIndexOfDef = script.find("\"definition\":") + len("\"definition\":") + 1
             endIndexOfDef = startIndexOfDef + script[startIndexOfDef:].find(",\"") - 1
             defnition = script[startIndexOfDef:endIndexOfDef]
