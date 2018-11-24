@@ -130,7 +130,6 @@ class LiveThesaurus(object):
                                                                pady=(0,3))
         self.termScrollBar.pack(side=RIGHT, fill=Y)
         
-        self.generateTermList()
         self.timerFiredWrapper()
     
     # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
@@ -202,7 +201,8 @@ class LiveThesaurus(object):
         textBoxText = textBoxText[:-1] # removes "\n"
         self.textBox.replace("1.0", END, textBoxText)
     
-    # adds a Word object to a list of user-chosen Word objects
+    # adds a Word object to a list of user-chosen Word objects if the last 
+    # element of the list is not the Word
     def addToWordList(self, word):
         if word != self.currentWordList[len(self.currentWordList)-1]:
             self.currentWordList += [word]
