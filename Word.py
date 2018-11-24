@@ -32,6 +32,8 @@ class Word(object):
         return not ("no thesaurus results" in self.thesaurusSourceText or \
                     "\n" in self.word or "\t" in self.word)
     
+    # gets a javascript dictionary containing defintions, parts of speech, 
+    # synonyms and antonyms
     def getScript(self):
         # parses javascript code
         indexOfImportantDict = 15
@@ -43,6 +45,7 @@ class Word(object):
         self.script = script.replace("%20", " ")
         return self.script
     
+    # gets a list of defintions of the word
     def getDefList(self):
         script = self.script
         definitionList = []
