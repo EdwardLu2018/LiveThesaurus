@@ -211,7 +211,7 @@ class LiveThesaurus(object):
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObj = Word(highlightedWord)
             self.currentWordList[0] = self.currentWordObj
-            if self.currentWordObj.isValidWord():
+            if self.currentWordObj.hasSynOrAnt():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
                 selFirstPos = self.textBox.index("sel.first")

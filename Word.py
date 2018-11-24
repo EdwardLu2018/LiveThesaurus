@@ -6,8 +6,15 @@ class Word(object):
         self.word = word
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
-        self.synonymDict = self.get("synonyms")
-        self.antonymDict = self.get("antonyms")
+        self.script = self.getScript()
+        if self.hasSynOrAnt():
+            self.definitionList = self.getDefList()
+            self.synonymDict = self.get("synonyms")
+            self.antonymDict = self.get("antonyms")
+        else:
+            self.definitionList = None
+            self.synonymDict = None
+            self.antonymDict = None
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
@@ -21,54 +28,60 @@ class Word(object):
         return thesaurusWebsite.text 
     
     # checks if word is invalid
-    def isValidWord(self):
+    def hasSynOrAnt(self):
         return not ("no thesaurus results" in self.thesaurusSourceText or \
-               "\n" in self.word or "\t" in self.word)
-        
-    # returns a dictionary mapping the definition of a given word to its 
-    # synonyms or antonyms, depending on the type
-    def get(self, type):
-        definitionList = []
-        partOfSpeechList = []
-        result = {}
-        
-        if not self.isValidWord():
-            return None
-        
+                    "\n" in self.word or "\t" in self.word)
+    
+    def getScript(self):
         # parses javascript code
         indexOfImportantDict = 15
         lenOfIgnore = len("window.INITIAL_STATE = ")
         script = self.parser.find_all("script")[indexOfImportantDict]
-        script = script.text[lenOfIgnore:-1]
+        script = script.text[lenOfIgnore:-1] # subtract 1 to remove closing "}" 
+                                             # of javascript dictionary
         script = script.replace("null", "None")
-        script = script.replace("%20", " ")
-        copyScript = script
+        self.script = script.replace("%20", " ")
+        return self.script
+    
+    def getDefList(self):
+        script = self.script
+        definitionList = []
         
         # updates definitionList with all definitions of word
         while "\"0\",\"definition\":" in script and "\"pos\":":
             defn = ""
             pos = ""
             
+            # finds definitions
             startIndexOfDef = script.find("\"definition\":") + len("\"definition\":") + 1
             endIndexOfDef = startIndexOfDef + script[startIndexOfDef:].find(",\"") - 1
             defnition = script[startIndexOfDef:endIndexOfDef]
             script = script[endIndexOfDef:]
             
+            # finds part of speech
             startIndexOfPos = script.find("\"pos\":") + len("\"pos\":") + 1
             endIndexOfPos = startIndexOfPos + script[startIndexOfPos:].find(",\"") - 1
             partOfSpeech = script[startIndexOfPos:endIndexOfPos]
             script = script[endIndexOfPos:]
             
             definitionList += [defnition + " (" + partOfSpeech + ")"]
-            
+        
+        return definitionList
+        
+    # returns a dictionary mapping the definition of a given word to its 
+    # synonyms or antonyms, depending on the type
+    def get(self, type):
+        script = self.script
+        result = {}
+        
         # updates result, mapping definitions to their synonyms
-        for defn in definitionList:
-            index1 = copyScript.find("\"" + type + "\":") + len("\"" + type + "\":")
-            index2 = index1 + copyScript[index1:].find("]")
-            synOrAntListStr = copyScript[index1:index2] + "]"
+        for defn in self.definitionList:
+            index1 = script.find("\"" + type + "\":") + len("\"" + type + "\":")
+            index2 = index1 + script[index1:].find("]")
+            synOrAntListStr = script[index1:index2] + "]"
             synOrAntList = eval(synOrAntListStr)
             result[defn] = synOrAntList
-            copyScript = copyScript[index2:]
+            script = script[index2:]
         
         # removes unecessary keys
         for defn in result:
