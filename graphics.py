@@ -4,10 +4,6 @@ import audio as speechRecognizer
 
 class LiveThesaurus(object):
     def __init__(self, master):
-        self.master = master
-        master.title("LiveThesaurus, powered by thesaurus.com")
-        master.option_add("*font", ("Times New Roman", 15))
-        
         self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordList = [None]
@@ -25,6 +21,9 @@ class LiveThesaurus(object):
         self.currentDefIndex = 0
         
         ## Master
+        self.master = master
+        master.title("LiveThesaurus, powered by thesaurus.com")
+        master.option_add("*font", ("Times New Roman", 15))
         # CITATION: Code from: https://stackoverflow.com/questions/15981000/tkinter-python-maximize-window
         # makes the application window full screen
         screenWidth = master.winfo_screenwidth()
@@ -295,7 +294,3 @@ def getDigitsAfterDecPt(str):
     indexOfDecPt = str.find(".")
     afterDecimal = int(str[indexOfDecPt + 1:])
     return afterDecimal
-
-root = Tk()
-application = LiveThesaurus(root)
-mainloop()

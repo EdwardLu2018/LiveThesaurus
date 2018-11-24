@@ -9,8 +9,8 @@ class Word(object):
         self.script = self.getScript()
         if self.hasSynOrAnt():
             self.definitionList = self.getDefList()
-            self.synonymDict = self.get("synonyms")
-            self.antonymDict = self.get("antonyms")
+            self.synonymDict = self.getDict("synonyms")
+            self.antonymDict = self.getDict("antonyms")
         else:
             self.definitionList = None
             self.synonymDict = None
@@ -73,7 +73,7 @@ class Word(object):
         
     # returns a dictionary mapping the definition of a given word to its 
     # synonyms or antonyms, depending on the type
-    def get(self, type):
+    def getDict(self, type):
         script = self.script
         result = {}
         
