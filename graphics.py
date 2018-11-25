@@ -301,7 +301,3 @@ def getDigitsBeforeDecPt(strNum):
     indexOfDecPt = strNum.find(".")
     beforeDecimal = int(strNum[:indexOfDecPt])
     return beforeDecimal
-
-root = Tk()
-application = LiveThesaurus(root)
-mainloop()
