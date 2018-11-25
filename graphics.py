@@ -82,7 +82,7 @@ class LiveThesaurus(object):
         self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
                                      anchor=N)
         self.termInstructionsLabel = Label(self.termFrame, 
-               text="Pick a term below and press the \"Enter\" key to change the word",
+               text="Highlight a term below and press the \"Enter\" key to change the word",
                borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
         self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
@@ -166,15 +166,15 @@ class LiveThesaurus(object):
     # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
         try:
-            indexTuple = self.termListBox.curselection()
-            self.currentListBoxIndex = indexTuple[0]
+            curSelectionTuple = self.termListBox.curselection()
+            self.currentListBoxIndex = curSelectionTuple[0]
             self.termListBox.activate(self.currentListBoxIndex)
             if not self.antonymsMode:
-                defDict = self.currentSynDict[self.currentDef]
-                self.currentSyn = defDict[self.currentListBoxIndex]["term"]
+                currDefDict = self.currentSynDict[self.currentDef]
+                self.currentSyn = currDefDict[self.currentListBoxIndex]["term"]
             else:
-                defDict = self.currentAntDict[self.currentDef]
-                self.currentAnt = defDict[self.currentListBoxIndex]["term"]
+                currDefDict = self.currentAntDict[self.currentDef]
+                self.currentAnt = currDefDict[self.currentListBoxIndex]["term"]
         except:
             pass
     
@@ -254,8 +254,8 @@ class LiveThesaurus(object):
                         command=lambda value=d: self.definitons.set(value))
             # gives all options a command associated with updateCurrentDef
             self.definitons.trace("w", self.updateCurrentDef)
-            # loads definition menu at the index of the current definition
-            self.definitons.set(defList[self.currentDefIndex])
+            # loads definition menu with the first definition
+            self.definitons.set(defList[0])
     
     # CITATION: Some code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
     # Changes the definition label according to the user's choice
@@ -290,19 +290,19 @@ class LiveThesaurus(object):
         if audioText != None:
             self.textBox.insert(END, audioText)
 
-# returns the digits after the decimal point in a string representation of a 
-# float
-def getDigitsAfterDecPt(strNum):
-    indexOfDecPt = strNum.find(".")
-    afterDecimal = int(strNum[indexOfDecPt + 1:])
-    return afterDecimal
-
 # returns the digits before the decimal point in a string representation of a 
 # float
 def getDigitsBeforeDecPt(strNum):
     indexOfDecPt = strNum.find(".")
     beforeDecimal = int(strNum[:indexOfDecPt])
     return beforeDecimal
+
+# returns the digits after the decimal point in a string representation of a 
+# float
+def getDigitsAfterDecPt(strNum):
+    indexOfDecPt = strNum.find(".")
+    afterDecimal = int(strNum[indexOfDecPt + 1:])
+    return afterDecimal
 
 root = Tk()
 application = LiveThesaurus(root)
