@@ -200,10 +200,10 @@ class LiveThesaurus(object):
     
     # repalces the current word with another word in the textBox
     def replaceWordInTextBox(self, newWord):
-        textBoxRow = getDigitsBeforeDecPt(self.currentWordIndex)
+        textBoxLine = getDigitsBeforeDecPt(self.currentWordIndex)
         textBoxCol = getDigitsAfterDecPt(self.currentWordIndex)
         endofcurrWordCol = textBoxCol + len(self.currentWordObj.word)
-        endofcurrWordIndex = str(textBoxRow) + "." + str(endofcurrWordCol)
+        endofcurrWordIndex = str(textBoxLine) + "." + str(endofcurrWordCol)
         textBoxText = self.textBox.get(self.currentWordIndex, endofcurrWordIndex)
         self.textBox.replace(self.currentWordIndex, endofcurrWordIndex, newWord)
     
