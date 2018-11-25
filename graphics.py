@@ -82,7 +82,7 @@ class LiveThesaurus(object):
         self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
                                      anchor=N)
         self.termInstructionsLabel = Label(self.termFrame, 
-               text="Pick a new term and press the \"Enter\" key to change the word",
+               text="Pick a term below and press the \"Enter\" key to change the word",
                borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
         self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
