@@ -7,7 +7,7 @@ class LiveThesaurus(object):
         self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordList = [None]
-        self.currentWordIndex = 0
+        self.currentWordIndex = ""
         
         self.antonymsMode = False
         self.currentSynDict = None
@@ -192,20 +192,20 @@ class LiveThesaurus(object):
         except:
             pass
     
-    # repalces the current word with another word in the textBox
-    def replaceWordInTextBox(self, newWord):
-        textBoxText = self.textBox.get("1.0", END)
-        textBoxText = textBoxText[:self.currentWordIndex] + \
-                    newWord + textBoxText[self.currentWordIndex + \
-                    len(self.currentWordObj.word):]
-        textBoxText = textBoxText[:-1] # removes "\n"
-        self.textBox.replace("1.0", END, textBoxText)
-    
     # adds a Word object to a list of user-chosen Word objects if the last 
     # element of the list is not the Word
     def addToWordList(self, word):
         if word != self.currentWordList[len(self.currentWordList)-1]:
             self.currentWordList += [word]
+    
+    # repalces the current word with another word in the textBox
+    def replaceWordInTextBox(self, newWord):
+        textBoxRow = getDigitsBeforeDecPt(self.currentWordIndex)
+        textBoxCol = getDigitsAfterDecPt(self.currentWordIndex)
+        endofcurrWordCol = textBoxCol + len(self.currentWordObj.word)
+        endofcurrWordIndex = str(textBoxRow) + "." + str(endofcurrWordCol)
+        textBoxText = self.textBox.get(self.currentWordIndex, endofcurrWordIndex)
+        self.textBox.replace(self.currentWordIndex, endofcurrWordIndex, newWord)
     
     # gets the user's highlighted word, creates a Word object of that word, 
     # updates the current word label, and sets all variables to the 
@@ -219,8 +219,7 @@ class LiveThesaurus(object):
             if self.currentWordObj.hasSynOrAnt():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
-                selFirstPos = self.textBox.index("sel.first")
-                self.currentWordIndex = getDigitsAfterDecPt(selFirstPos)
+                self.currentWordIndex = self.textBox.index("sel.first")
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentAntDict = self.currentWordObj.antonymDict
                 self.currentDefList = self.currentWordObj.definitionList
@@ -285,13 +284,24 @@ class LiveThesaurus(object):
     
     # records audio and displays it on the TextBox
     def runAudio(self):
-        textBoxText = self.textBox.get("1.0", END)
         audioText = speechRecognizer.getAudio()
         if audioText != None:
-            self.textBox.replace("1.0", END, textBoxText[:-1] + audioText)
+            self.textBox.insert(END, audioText)
 
-# returns the digits after the decimal point in a float as an int
-def getDigitsAfterDecPt(str):
-    indexOfDecPt = str.find(".")
-    afterDecimal = int(str[indexOfDecPt + 1:])
+# returns the digits after the decimal point in a string representation of a 
+# float
+def getDigitsAfterDecPt(strNum):
+    indexOfDecPt = strNum.find(".")
+    afterDecimal = int(strNum[indexOfDecPt + 1:])
     return afterDecimal
+
+# returns the digits before the decimal point in a string representation of a 
+# float
+def getDigitsBeforeDecPt(strNum):
+    indexOfDecPt = strNum.find(".")
+    beforeDecimal = int(strNum[:indexOfDecPt])
+    return beforeDecimal
+
+root = Tk()
+application = LiveThesaurus(root)
+mainloop()
