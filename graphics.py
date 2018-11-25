@@ -232,6 +232,8 @@ class LiveThesaurus(object):
                 self.currentDef = None
                 self.currentDefIndex = 0
                 self.definitons.set(None)
+                self.currentSynDict = None
+                self.currentAntDict = None
                 self.termListBox.delete(0, "end")
                 if not self.antonymsMode:
                     self.termListBox.insert(END, "No Synonyms!")
@@ -301,3 +303,7 @@ def getDigitsBeforeDecPt(strNum):
     indexOfDecPt = strNum.find(".")
     beforeDecimal = int(strNum[:indexOfDecPt])
     return beforeDecimal
+
+root = Tk()
+application = LiveThesaurus(root)
+mainloop()
