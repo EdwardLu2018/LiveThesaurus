@@ -36,7 +36,7 @@ class LiveThesaurus(object):
         ## Left Frame
         self.leftFrame = Frame(self.master)
         self.instructionsLabel = Label(self.leftFrame, 
-                                    text="Welcome to LiveThesaurus!\n",
+                                    text="Welcome to LiveThesaurus!",
                                     anchor=N, borderwidth=2, relief="solid")
         self.textFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
