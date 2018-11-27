@@ -1,6 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 
+# verb file from NodeBox Linguistics:
+# https://www.nodebox.net/code/index.php/Linguistics#verb_conjugation
+from verb import verb_tense, verb_conjugate
+
+import inflect
+inflect = inflect.engine()
+
 class Word(object):
     def __init__(self, word):
         self.word = word
@@ -62,7 +69,7 @@ class Word(object):
             # finds definitions
             startIndexOfDef = script.find("\"definition\":") + len("\"definition\":") + 1
             endIndexOfDef = startIndexOfDef + script[startIndexOfDef:].find(",\"") - 1
-            defnition = script[startIndexOfDef:endIndexOfDef]
+            definition = script[startIndexOfDef:endIndexOfDef]
             script = script[endIndexOfDef:]
             
             # finds part of speech
@@ -71,7 +78,17 @@ class Word(object):
             partOfSpeech = script[startIndexOfPos:endIndexOfPos]
             script = script[endIndexOfPos:]
             
-            definitionList += [defnition + " (" + partOfSpeech + ")"]
+            if partOfSpeech == "noun":
+                if self.checkSingOrPlur(self.word) == "plural":
+                    definition = inflect.plural(definition)
+            elif partOfSpeech == "verb":
+                try:
+                    wordTense = verb_tense(self.word)
+                    definition = self.conjugatePhrase(definition, wordTense)
+                except:
+                    pass
+            
+            definitionList += [definition + " (" + partOfSpeech + ")"]
         
         return definitionList
         
@@ -83,12 +100,27 @@ class Word(object):
         
         # updates result, mapping definitions to their synonyms
         for defn in self.definitionList:
-            index1 = script.find("\"" + type + "\":") + len("\"" + type + "\":")
-            index2 = index1 + script[index1:].find("]")
-            synOrAntListStr = script[index1:index2] + "]"
-            synOrAntList = eval(synOrAntListStr)
-            result[defn] = synOrAntList
-            script = script[index2:]
+            startIndex = script.find("\"" + type + "\":") + len("\"" + type + "\":")
+            endIndex = startIndex + script[startIndex:].find("]")
+            termListStr = script[startIndex:endIndex] + "]"
+            termList = eval(termListStr)
+            
+            posStartIndex = defn.find("(") + 1
+            posEndIndex = defn.find(")")
+            pos = defn[posStartIndex:posEndIndex]
+            
+            # conjugates every term if the part of speech is a verb
+            if pos == "verb":
+                try:
+                    wordTense = verb_tense(self.word)
+                    for termSet in termList:
+                        newTerm = self.conjugatePhrase(termSet["term"], wordTense)
+                        termSet["term"] = newTerm
+                except:
+                    pass
+            
+            result[defn] = termList
+            script = script[endIndex:]
         
         # removes unecessary keys
         for defn in result:
@@ -107,6 +139,56 @@ class Word(object):
                         del dict["isVulgar"]
         
         return result
+        
+    # checks if a noun is singular or plural
+    def checkSingOrPlur(self, word):
+        if inflect.singular_noun(word):
+            return "plural"
+        else:
+            return "singular"
+    
+    # conjugates a phrase into a certain tense
+    def conjugatePhrase(self, definition, tense):
+        # splits a phrase into seperate words and conjugates accoringly
+        
+        # if there is a comma, then there are multiple verbs in the 
+        # phrase and each verb must be conjugated
+        if ", " in definition:
+            defWords = definition.split(", ")
+            for i in range(len(defWords)):
+                word = defWords[i]
+                word = self.conjugate(word, tense)
+                defWords[i] = word
+                # if there are multiple words, conjugate first word
+                if " " in defWords[i]:
+                    wordsInPhrase = defWords[i].split(" ")
+                    firstWord = wordsInPhrase[0]
+                    firstWord = self.conjugate(firstWord, tense)
+                    wordsInPhrase[0] = firstWord
+                    defWords[i] = " ".join(wordsInPhrase)
+            definition = ", ".join(defWords)
+        # if there are no commas, but the phrase has multiple words, only 
+        # conjugate the first verb
+        elif " " in definition:
+            defWords = definition.split(" ")
+            for i in range(len(defWords)):
+                word = defWords[i]
+                word = self.conjugate(word, tense)
+                defWords[i] = word
+            definition = " ".join(defWords)
+        # if there is only one verb in the phrase, then just conjugate the 
+        # phrase
+        else:
+            definition = self.conjugate(definition, tense)
+        return definition
+    
+    # conjugates a word into a given tense
+    def conjugate(self, word, tense):
+        try:
+            word = verb_conjugate(word, tense)
+        except:
+            pass
+        return word
     
     # string representation
     def __repr__(self):

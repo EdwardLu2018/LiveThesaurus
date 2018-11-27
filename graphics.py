@@ -30,28 +30,33 @@ class LiveThesaurus(object):
         screenHeight = master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
         
-        self.master.config(background="black")
+        self.master.config(background="gainsboro")
         self.master.bind("<Command-z>", self.undo)
         
         ## Left Frame
         self.leftFrame = Frame(self.master)
         self.instructionsLabel = Label(self.leftFrame, 
-                       text="Welcome to LiveThesaurus!\n" +
-                       "Type text below. Highlight a word to get its synonyms.",
-                       anchor=N, borderwidth=2, relief="solid")
+                                    text="Welcome to LiveThesaurus!\n",
+                                    anchor=N, borderwidth=2, relief="solid")
         self.textFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         
         # creates the widgets on left side of the screen
-        self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken")
-        self.textScrollBar = Scrollbar(self.textFrame)
+        self.textBox = Text(self.textFrame, borderwidth=2, relief="sunken", 
+                            cursor="pencil", wrap=WORD)
+        self.makePlaceHolderText()
+        self.audioLabel = Label(self.audioFrame, text="Hit Button Below to " + \
+                                "Record Audio:", borderwidth=2, relief="solid")
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
-                                  text="Audio", command=self.runAudio)
+                                  text="Record Audio", command=self.runAudio)
         
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
-        
-        self.leftFrame.config(background="coral")
+        self.textBox.bind("<FocusIn>", self.clearTextBoxText)
+        self.textBox.bind("<FocusOut>", self.addPlaceHolderText)
+
+        self.leftFrame.config(background="orange")
+        self.textFrame.config(background="gainsboro")
         
         # packs all widgets in the left frame of the application
         self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=8)
@@ -60,7 +65,8 @@ class LiveThesaurus(object):
         self.textBox.pack(side=LEFT, fill=BOTH, expand=YES, padx=2, pady=2)
         self.textScrollBar.pack(side=LEFT, fill=Y)
         self.audioFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
-        self.audioButton.pack(side=TOP)
+        self.audioLabel.pack(side=TOP, fill=BOTH, padx=2, pady=(2,0))
+        self.audioButton.pack(side=TOP, padx=2, pady=2)
         
         ## Right Frame
         self.rightFrame = Frame(self.master)
@@ -82,30 +88,32 @@ class LiveThesaurus(object):
         self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
                                      anchor=N)
         self.termInstructionsLabel = Label(self.termFrame, 
-               text="Highlight a term below and press the \"Enter\" key to change the word",
-               borderwidth=2, relief="solid", anchor=N)
+                                text="Choose a term below and press the " + \
+                                        "\"Enter\" key to change the word",
+                                borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
         self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
-                             text="Synonyms", 
-                             command=self.switchModes)
-        self.colonLabel = Label(self.modeFrame, text=": ", anchor=N)
+                                           text="Synonyms", 
+                                           command=self.switchModes)
+        self.colonLabel = Label(self.modeFrame, text=":", anchor=N)
         self.termListBox = Listbox(self.termFrame, borderwidth=2, 
-                                   relief="solid")
+                                   relief="solid", cursor="hand2")
         self.termScrollBar = Scrollbar(self.termListBox)
-        
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
         self.definitons = StringVar()
         self.definitionMenu = OptionMenu(self.innerDefFrame, self.definitons,
                               *self.currentDefList)
-        self.definitons.set(self.currentDefList[0])
+        # initially loads definition menu with None
+        self.definitons.set(None)
         
-        self.rightFrame.config(background="black")
-        self.wordAndDefFrame.config(background="coral")
-        self.termFrame.config(background="coral")
-        self.definitionMenu.config(width=35)
+        self.rightFrame.config(background="gainsboro")
+        self.wordAndDefFrame.config(background="orange")
+        self.termFrame.config(background="orange")
+        self.definitionMenu.config(width=40)
         self.termScrollBar.config(command=self.termListBox.yview)
         self.termListBox.config(yscrollcommand=self.termScrollBar.set)
+        
         self.termListBox.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
         self.termListBox.bind("<Return>", self.replaceWordWithSynOrAnt)
         
@@ -117,14 +125,14 @@ class LiveThesaurus(object):
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
         self.defInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.innerDefFrame.pack(side=TOP, padx=2, pady=2)
-        self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=(3,0))
-        self.definitionMenu.pack(side=LEFT, fill=BOTH)
+        self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=(2,0))
+        self.definitionMenu.pack(side=LEFT)
         self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
         self.termInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.innerTermFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.modeFrame.pack(side=TOP, padx=2)
         self.synonymTitle.pack(side=LEFT, pady=2)
-        self.toggleSynOrAntButton.pack(side=LEFT, padx=2, pady=2)
+        self.toggleSynOrAntButton.pack(side=LEFT, pady=2)
         self.colonLabel.pack(side=LEFT, pady=2)
         self.termListBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
                                                                pady=(0,3))
@@ -141,7 +149,33 @@ class LiveThesaurus(object):
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
-        
+    
+    def makePlaceHolderText(self):
+        self.textBox.insert(END, "Type text here!\n\n")
+        instructions = "Highlight a word to get its synonyms or antonyms"
+        self.textBox.insert(END, instructions)
+        # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
+        self.textBox.tag_configure("highlight", background="orange")
+        self.textBox.tag_add("highlight", "3." + \
+                             str(len("Highlight a ")), "3." + \
+                             str(len("word") + len("Highlight a ")))
+        self.textScrollBar = Scrollbar(self.textFrame)
+    
+    # adds placeholder text to TextBox
+    def addPlaceHolderText(self, *args):
+        textBoxText = self.textBox.get("1.0", END)
+        if textBoxText == "\n":
+            self.makePlaceHolderText()
+        print(textBoxText)
+    
+    # clears text in TextBox
+    def clearTextBoxText(self, *args):
+        textBoxText = self.textBox.get("1.0", END)
+        placeHolderText = "Type text here!\n\nHighlight a word to get its " + \
+                          "synonyms or antonyms\n"
+        if textBoxText == placeHolderText:
+            self.textBox.delete("1.0", END)
+
     # switches between synonym and antonym mode
     def switchModes(self):
         self.antonymsMode = not self.antonymsMode
@@ -212,8 +246,12 @@ class LiveThesaurus(object):
     # corresponding instance variable of the Word object 
     def updateCurrentWord(self):
         try:
+            copyWord = self.currentWordObj
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObj = Word(highlightedWord)
+            # if user picked a new word, reset the definition index
+            if self.currentWordObj != copyWord:
+                self.currentDefIndex = 0
             self.currentWordList = [None]
             self.currentWordList[0] = self.currentWordObj
             if self.currentWordObj.hasSynOrAnt():
@@ -224,7 +262,7 @@ class LiveThesaurus(object):
                 self.currentAntDict = self.currentWordObj.antonymDict
                 self.currentDefList = self.currentWordObj.definitionList
             else:
-                self.currentWordLabel.config(text="Selected Word has no " + 
+                self.currentWordLabel.config(text="Selected Word has no " + \
                                                   "synonyms")
                 self.currentWordObj = None
                 self.currentWordList = [None]
@@ -254,8 +292,8 @@ class LiveThesaurus(object):
                         command=lambda value=d: self.definitons.set(value))
             # gives all options a command associated with updateCurrentDef
             self.definitons.trace("w", self.updateCurrentDef)
-            # loads definition menu with the first definition
-            self.definitons.set(defList[0])
+            # loads definition menu with the first definition in defList
+            self.definitons.set(defList[self.currentDefIndex])
     
     # CITATION: Some code from: https://stackoverflow.com/questions/37704176/how-to-update-the-command-of-an-optionmenu
     # Changes the definition label according to the user's choice
@@ -288,7 +326,12 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
+            self.audioLabel.config(text="Recording...")
             self.textBox.insert(END, audioText)
+            self.audioLabel.config(text="Hit Button Below to " + \
+                                        "Record Audio")
+        else:
+            self.audioLabel.config(text="Unable to Get Audio. Please Try Again.")
 
 # returns the digits before the decimal point in a string representation of a 
 # float
