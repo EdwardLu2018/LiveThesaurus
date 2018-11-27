@@ -198,9 +198,6 @@ class LiveThesaurus(object):
                                     "Hit the \"ENTER\" key to change the word")
             self.termListBox.insert(END, "Click the \"Synonyms\" button " + \
                                  "above to swap between synonyms and antonyms")
-            self.termListBox.insert(END, "Hit the \"Record Audio\" button " + \
-                                         "on the bottom left corner to " + \
-                                         "record audio and convert it to text")
             try:
                 curSelectionTuple = self.termListBox.curselection()
                 self.currentListBoxIndex = curSelectionTuple[0]
