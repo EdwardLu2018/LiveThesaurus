@@ -33,11 +33,19 @@ class LiveThesaurus(object):
         self.master.config(background="gainsboro")
         self.master.bind("<Command-z>", self.undo)
         
-        ## Left Frame
-        self.leftFrame = Frame(self.master)
-        self.instructionsLabel = Label(self.leftFrame, 
+        ## Instructions Frame
+        self.instructionsFrame = Frame(self.master)
+        self.instructionsLabel = Label(self.instructionsFrame, 
                                     text="Welcome to LiveThesaurus!",
                                     anchor=N, borderwidth=2, relief="solid")
+        self.instructionsFrame.pack(side=TOP, fill=BOTH, padx=5, pady=(5,0))
+        self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        
+        self.instructionsFrame.config(background="orange")
+        self.instructionsLabel.config(font=("Helvetica", 22, "bold"))
+        
+        ## Left Frame
+        self.leftFrame = Frame(self.master)
         self.textFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         self.audioFrame = Frame(self.leftFrame, borderwidth=2, relief="solid")
         
@@ -59,8 +67,7 @@ class LiveThesaurus(object):
         self.textFrame.config(background="gainsboro")
         
         # packs all widgets in the left frame of the application
-        self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=8)
-        self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
+        self.leftFrame.pack(side=LEFT, fill=BOTH, expand=YES, padx=5, pady=5)
         self.textFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=(3,0))
         self.textBox.pack(side=LEFT, fill=BOTH, expand=YES, padx=2, pady=2)
         self.textScrollBar.pack(side=LEFT, fill=Y)
@@ -80,6 +87,8 @@ class LiveThesaurus(object):
         self.innerTermFrame = Frame(self.termFrame, borderwidth=2, 
                                     relief="solid")
         self.modeFrame = Frame(self.innerTermFrame)
+        self.listBoxFrame = Frame(self.innerTermFrame, borderwidth=2, 
+                                    relief="solid")
         
         # creates the widgets on the right side of the screen
         self.currentWordLabel = Label(self.wordInfoFrame, 
@@ -96,9 +105,15 @@ class LiveThesaurus(object):
                                            text="Synonyms", 
                                            command=self.switchModes)
         self.colonLabel = Label(self.modeFrame, text=":", anchor=N)
-        self.termListBox = Listbox(self.termFrame, borderwidth=2, 
+        self.termListBox = Listbox(self.listBoxFrame, borderwidth=0, 
                                    relief="solid", cursor="hand2")
-        self.termScrollBar = Scrollbar(self.termListBox)
+        self.termListBox.insert(END,
+                        "After highlighting a word, click here to browse terms")
+        self.termListBox.insert(END,
+                        "Hit the \"ENTER\" key to change the word")
+        self.termListBox.insert(END, "Click the \"Synonyms\" button above " + \
+                                     "to swap between synonyms and antonyms")
+        self.termScrollBar = Scrollbar(self.listBoxFrame)
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
         self.definitons = StringVar()
@@ -119,24 +134,26 @@ class LiveThesaurus(object):
         
         # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), 
-                                                                pady=5)
-        self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+                                                                pady=2)
+        self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=(3,0), pady=3)
         self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
         self.defInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         self.innerDefFrame.pack(side=TOP, padx=2, pady=2)
         self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=(2,0))
         self.definitionMenu.pack(side=LEFT)
-        self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
+        self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=(3,0), pady=3)
         self.termInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
-        self.innerTermFrame.pack(side=TOP, fill=BOTH, padx=3, pady=3)
+        self.innerTermFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
+                                                                  pady=3)
         self.modeFrame.pack(side=TOP, padx=2)
         self.synonymTitle.pack(side=LEFT, pady=2)
         self.toggleSynOrAntButton.pack(side=LEFT, pady=2)
         self.colonLabel.pack(side=LEFT, pady=2)
-        self.termListBox.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
-                                                               pady=(0,3))
-        self.termScrollBar.pack(side=RIGHT, fill=Y)
+        self.listBoxFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
+                                                                pady=(0,3))
+        self.termListBox.pack(side=LEFT, fill=BOTH, expand=YES)
+        self.termScrollBar.pack(side=LEFT, fill=Y)
         
         self.timerFiredWrapper()
     
@@ -150,23 +167,23 @@ class LiveThesaurus(object):
         self.termListBox.yview_moveto(currentView[0])
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
-    def makePlaceHolderText(self):
-        self.textBox.insert(END, "Type text here!\n\n")
-        instructions = "Highlight a word to get its synonyms or antonyms"
-        self.textBox.insert(END, instructions)
-        # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
-        self.textBox.tag_configure("highlight", background="orange")
-        self.textBox.tag_add("highlight", "3." + \
-                             str(len("Highlight a ")), "3." + \
-                             str(len("word") + len("Highlight a ")))
-        self.textScrollBar = Scrollbar(self.textFrame)
-    
     # adds placeholder text to TextBox
     def addPlaceHolderText(self, *args):
         textBoxText = self.textBox.get("1.0", END)
         if textBoxText == "\n":
             self.makePlaceHolderText()
         print(textBoxText)
+    
+    # makes the instructions/placeholder text
+    def makePlaceHolderText(self):
+        self.textBox.insert(END, "Type text here!\n\n" + \
+                            "Highlight a word to get its synonyms or antonyms")
+        # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
+        self.textBox.tag_configure("highlight", background="lightskyblue1")
+        self.textBox.tag_add("highlight", "3." + \
+                             str(len("Highlight a ")), "3." + \
+                             str(len("word") + len("Highlight a ")))
+        self.textScrollBar = Scrollbar(self.textFrame)
     
     # clears text in TextBox
     def clearTextBoxText(self, *args):
