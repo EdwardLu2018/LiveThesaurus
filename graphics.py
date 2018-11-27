@@ -107,12 +107,7 @@ class LiveThesaurus(object):
         self.colonLabel = Label(self.modeFrame, text=":", anchor=N)
         self.termListBox = Listbox(self.listBoxFrame, borderwidth=0, 
                                    relief="solid", cursor="hand2")
-        self.termListBox.insert(END,
-                        "After highlighting a word, click here to browse terms")
-        self.termListBox.insert(END,
-                        "Hit the \"ENTER\" key to change the word")
-        self.termListBox.insert(END, "Click the \"Synonyms\" button above " + \
-                                     "to swap between synonyms and antonyms")
+        self.addTermBoxInstr()
         self.termScrollBar = Scrollbar(self.listBoxFrame)
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
@@ -162,6 +157,7 @@ class LiveThesaurus(object):
     # https://stackoverflow.com/questions/36086474/python-tkinter-update-scrolled-listbox-wandering-scroll-position
     # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
+        self.addTermBoxInstr()
         currentView = self.termListBox.yview()
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
@@ -192,6 +188,17 @@ class LiveThesaurus(object):
                           "synonyms or antonyms\n"
         if textBoxText == placeHolderText:
             self.textBox.delete("1.0", END)
+    
+    # adds instructions to TermBox
+    def addTermBoxInstr(self, *args):
+        if self.currentSynDict == None and self.currentAntDict == None:
+            self.termListBox.delete(0, "end")
+            self.termListBox.insert(END,
+                            "After highlighting a word, click here to browse terms")
+            self.termListBox.insert(END,
+                            "Hit the \"ENTER\" key to change the word")
+            self.termListBox.insert(END, "Click the \"Synonyms\" button above " + \
+                                        "to swap between synonyms and antonyms")
 
     # switches between synonym and antonym mode
     def switchModes(self):
