@@ -4,6 +4,12 @@ import audio as speechRecognizer
 
 class LiveThesaurus(object):
     def __init__(self, master):
+        self.instructions = "Type text here!\n\n" + \
+                            "Highlight a word to get its synonyms or " + \
+                            "antonyms on the menu on the right.\n\n" + \
+                            "Please read all instructions here and on the " + \
+                            "right."
+        
         self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordList = [None]
@@ -96,10 +102,6 @@ class LiveThesaurus(object):
                             anchor=N)
         self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
                                      anchor=N)
-        self.termInstructionsLabel = Label(self.termFrame, 
-                                text="Choose a term below and press the " + \
-                                        "\"Enter\" key to change the word",
-                                borderwidth=2, relief="solid", anchor=N)
         self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
         self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
                                            text="Synonyms", 
@@ -137,7 +139,6 @@ class LiveThesaurus(object):
         self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=(2,0))
         self.definitionMenu.pack(side=LEFT)
         self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=(3,0), pady=3)
-        self.termInstructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.innerTermFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
                                                                   pady=3)
         self.modeFrame.pack(side=TOP, padx=2)
@@ -170,20 +171,17 @@ class LiveThesaurus(object):
     
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
-        self.textBox.insert(END, "Type text here!\n\n" + \
-                            "Highlight a word to get its synonyms or antonyms")
+        self.textBox.insert(END, self.instructions)
         # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
         self.textBox.tag_configure("highlight", background="lightskyblue1")
-        self.textBox.tag_add("highlight", "3." + \
-                             str(len("Highlight a ")), "3." + \
-                             str(len("word") + len("Highlight a ")))
+        self.textBox.tag_add("highlight", "3.0", "3." + \
+                             str(len("Highlight")))
         self.textScrollBar = Scrollbar(self.textFrame)
     
     # clears text in TextBox
     def clearTextBoxText(self, *args):
         textBoxText = self.textBox.get("1.0", END)
-        placeHolderText = "Type text here!\n\nHighlight a word to get its " + \
-                          "synonyms or antonyms\n"
+        placeHolderText = self.instructions + "\n"
         if textBoxText == placeHolderText:
             self.textBox.delete("1.0", END)
     
@@ -191,12 +189,18 @@ class LiveThesaurus(object):
     def addTermBoxInstr(self, *args):
         if self.currentSynDict == None and self.currentAntDict == None:
             self.termListBox.delete(0, "end")
-            self.termListBox.insert(END, "After highlighting a word, " + \
+            self.termListBox.insert(END, "Change definitions with the " + \
+                                         "dropdown menu next to " + \
+                                         "\"Definition: \"")
+            self.termListBox.insert(END, "After picking a definition, " + \
                                          "click here to browse terms")
             self.termListBox.insert(END,
                                     "Hit the \"ENTER\" key to change the word")
             self.termListBox.insert(END, "Click the \"Synonyms\" button " + \
-                                  "above to swap between synonyms and antonyms")
+                                 "above to swap between synonyms and antonyms")
+            self.termListBox.insert(END, "Hit the \"Record Audio\" button " + \
+                                         "on the bottom left corner to " + \
+                                         "record audio and convert it to text")
             try:
                 curSelectionTuple = self.termListBox.curselection()
                 self.currentListBoxIndex = curSelectionTuple[0]
