@@ -168,6 +168,7 @@ class LiveThesaurus(object):
         textBoxText = self.textBox.get("1.0", END)
         if textBoxText == "\n":
             self.makePlaceHolderText()
+            return True
     
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
@@ -357,7 +358,7 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
-            self.audioLabel.config(text="Recording...")
+            self.clearTextBoxText()
             self.textBox.insert(END, audioText)
             self.audioLabel.config(text="Hit Button Below to " + \
                                         "Record Audio")
