@@ -54,7 +54,7 @@ class LiveThesaurus(object):
                             cursor="pencil", wrap=WORD)
         self.makePlaceHolderText()
         self.audioLabel = Label(self.audioFrame, text="Hit Button Below to " + \
-                                "Record Audio:", borderwidth=2, relief="solid")
+                                "Record Audio:", borderwidth=1, relief="solid")
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
                                   text="Record Audio", command=self.runAudio)
         
@@ -107,7 +107,6 @@ class LiveThesaurus(object):
         self.colonLabel = Label(self.modeFrame, text=":", anchor=N)
         self.termListBox = Listbox(self.listBoxFrame, borderwidth=0, 
                                    relief="solid", cursor="hand2")
-        self.addTermBoxInstr()
         self.termScrollBar = Scrollbar(self.listBoxFrame)
         # CITATION: Option Menu Code from: https://stackoverflow.com/questions/35132221/tkinter-optionmenu-how-to-get-the-selected-choice
         # creates and packs an option menu for definitions
@@ -168,7 +167,6 @@ class LiveThesaurus(object):
         textBoxText = self.textBox.get("1.0", END)
         if textBoxText == "\n":
             self.makePlaceHolderText()
-        print(textBoxText)
     
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
@@ -193,12 +191,20 @@ class LiveThesaurus(object):
     def addTermBoxInstr(self, *args):
         if self.currentSynDict == None and self.currentAntDict == None:
             self.termListBox.delete(0, "end")
+            self.termListBox.insert(END, "After highlighting a word, " + \
+                                         "click here to browse terms")
             self.termListBox.insert(END,
-                            "After highlighting a word, click here to browse terms")
-            self.termListBox.insert(END,
-                            "Hit the \"ENTER\" key to change the word")
-            self.termListBox.insert(END, "Click the \"Synonyms\" button above " + \
-                                        "to swap between synonyms and antonyms")
+                                    "Hit the \"ENTER\" key to change the word")
+            self.termListBox.insert(END, "Click the \"Synonyms\" button " + \
+                                  "above to swap between synonyms and antonyms")
+            try:
+                curSelectionTuple = self.termListBox.curselection()
+                self.currentListBoxIndex = curSelectionTuple[0]
+                self.termListBox.activate(self.currentListBoxIndex)
+            except:
+                pass
+            self.termListBox.select_set(self.currentListBoxIndex)
+            self.termListBox.activate(self.currentListBoxIndex)
 
     # switches between synonym and antonym mode
     def switchModes(self):
