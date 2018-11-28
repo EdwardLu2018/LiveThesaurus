@@ -1,10 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-
 # verb file from NodeBox Linguistics:
 # https://www.nodebox.net/code/index.php/Linguistics#verb_conjugation
 from verb import verb_tense, verb_conjugate
-
 import inflect
 inflect = inflect.engine()
 
@@ -53,6 +51,7 @@ class Word(object):
                                              # of javascript dictionary
         script = script.replace("null", "None")
         self.script = script.replace("%20", " ")
+        self.script = script.replace("\\u002F", "/")
         
         return self.script
     

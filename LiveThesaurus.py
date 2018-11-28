@@ -5,10 +5,10 @@ import audio as speechRecognizer
 class LiveThesaurus(object):
     def __init__(self, master):
         self.instructions = "Type text here!\n\n" + \
-                            "Highlight a word to get its synonyms or " + \
-                            "antonyms on the menu on the right.\n\n" + \
-                            "Please read all instructions here and on the " + \
-                            "right."
+                            "Highlight a word to get its Synonyms or " + \
+                            "Antonyms on the Menu on the Right.\n\n" + \
+                            "Please read all Instructions here and on the " + \
+                            "Right."
         
         self.timerDelay = 100
         self.currentWordObj = None
@@ -127,6 +127,7 @@ class LiveThesaurus(object):
         
         self.termListBox.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
         self.termListBox.bind("<Return>", self.replaceWordWithSynOrAnt)
+        self.termListBox.bind("<Double-Button-1>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), 
@@ -191,14 +192,15 @@ class LiveThesaurus(object):
         if self.currentSynDict == None and self.currentAntDict == None:
             self.termListBox.delete(0, "end")
             self.termListBox.insert(END, "Change definitions with the " + \
-                                         "dropdown menu next to " + \
+                                         "Dropdown Menu above next to " + \
                                          "\"Definition: \"")
             self.termListBox.insert(END, "After picking a definition, " + \
-                                         "click here to browse terms")
+                                         "Click Here to Browse Terms")
             self.termListBox.insert(END,
-                                    "Hit the \"ENTER\" key to change the word")
+                                "Double Click with the Mouse or Hit the " + \
+                                "\"ENTER\" key to change the word")
             self.termListBox.insert(END, "Click the \"Synonyms\" button " + \
-                                 "above to swap between synonyms and antonyms")
+                                "above to swap between Synonyms and Antonyms")
             try:
                 curSelectionTuple = self.termListBox.curselection()
                 self.currentListBoxIndex = curSelectionTuple[0]
@@ -278,12 +280,13 @@ class LiveThesaurus(object):
     # corresponding instance variable of the Word object 
     def updateCurrentWord(self):
         try:
-            copyWord = self.currentWordObj
+            prevWordObj = self.currentWordObj
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObj = Word(highlightedWord)
-            # if user picked a new word, reset the definition index
-            if self.currentWordObj != copyWord:
+            # if user picked a new word, reset all indices
+            if self.currentWordObj != prevWordObj:
                 self.currentDefIndex = 0
+                self.currentListBoxIndex = 0
             self.currentWordList = [None]
             self.currentWordList[0] = self.currentWordObj
             if self.currentWordObj.hasSynOrAnt():
@@ -331,7 +334,11 @@ class LiveThesaurus(object):
     # Changes the definition label according to the user's choice
     def updateCurrentDef(self, *args):
         if self.currentDefList != [None]:
+            preDef = self.currentDef
             self.currentDef = str(self.definitons.get())
+            # if user picked a new def, reset the ListBox Index
+            if self.currentDef != preDef:
+                self.currentListBoxIndex = 0
             self.currentDefIndex = self.currentDefList.index(self.currentDef)
             self.generateTermList()
     

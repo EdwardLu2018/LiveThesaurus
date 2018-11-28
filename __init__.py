@@ -1,5 +1,6 @@
-from graphics import *
+import LiveThesaurus as application
 
+# creates a LiveThesaurus application and runs application
 root = Tk()
-application = LiveThesaurus(root)
+application = application.LiveThesaurus(root)
 mainloop()
