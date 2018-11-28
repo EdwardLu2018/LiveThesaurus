@@ -360,13 +360,15 @@ class LiveThesaurus(object):
     # contain synonyms or antonyms, depending on the mode
     def generateTermList(self):
         self.termListBox.delete(0, "end")
-        if not self.antonymsMode and self.currentSynDict != None:
+        if not self.antonymsMode and self.currentSynDict != None and \
+           self.currentDef in self.currentSynDict:
             if self.currentSynDict[self.currentDef] == []: # no synonyms
                 self.termListBox.insert(END, "No Synonyms!")
             else:
                 for synDict in self.currentSynDict[self.currentDef]:
                     self.termListBox.insert(END, synDict["term"])
-        elif self.antonymsMode and self.currentAntDict != None:
+        elif self.antonymsMode and self.currentAntDict != None and \
+           self.currentDef in self.currentAntDict:
             if self.currentAntDict[self.currentDef] == []: # no antonyms
                 self.termListBox.insert(END, "No Antonyms!")
             else:
