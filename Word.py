@@ -209,6 +209,9 @@ class Word(object):
         
     # makes a phrase plural
     def makePhrasePlural(self, phrase):
+        if "," in phrase:
+            phrase = inflect.plural(phrase)
+            
         # tokenizes the words and creates a list of tuples containing words
         # and their POS
         phraseList = nltk.word_tokenize(phrase)
@@ -223,7 +226,6 @@ class Word(object):
         phraseList[indexOfFirstNoun] = self.makePlural(phraseList[indexOfFirstNoun])
         
         phrase = " ".join(phraseList)
-        phrase = inflect.plural(phrase)
         phrase = phrase.replace(" ,", ",")
         
         return phrase
@@ -242,3 +244,6 @@ class Word(object):
 
 a = Word("apples")
 print(a.synonymDict)
+phraseList = nltk.word_tokenize("big blue marbles")
+posTags = nltk.pos_tag(phraseList)
+print(posTags)
