@@ -81,6 +81,7 @@ class Word(object):
             if partOfSpeech == "noun":
                 if self.checkSingOrPlur(self.word) == "plural":
                     definition = self.makePhrasePlural(definition)
+            
             elif partOfSpeech == "verb":
                 try:
                     wordTense = verb_tense(self.word)
@@ -114,6 +115,7 @@ class Word(object):
                     for termSet in termList:
                         newTerm = self.makePhrasePlural(termSet["term"])
                         termSet["term"] = newTerm
+            
             elif pos == "verb":
                 try:
                     wordTense = verb_tense(self.word)
