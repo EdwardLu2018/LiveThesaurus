@@ -114,7 +114,6 @@ class Word(object):
                     for termSet in termList:
                         newTerm = self.makePhrasePlural(termSet["term"])
                         termSet["term"] = newTerm
-            # conjugates every term if the part of speech is a verb
             elif pos == "verb":
                 try:
                     wordTense = verb_tense(self.word)
