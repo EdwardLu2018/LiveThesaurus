@@ -308,10 +308,10 @@ class LiveThesaurus(object):
                 self.currentWordIndex = self.textBox.index("sel.first")
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentAntDict = self.currentWordObj.antonymDict
-                self.currentDefList = self.currentWordObj.definitionList
+                self.currentDefList = list(self.currentWordObj.synonymDict.keys())
             else:
                 self.currentWordLabel.config(text="Selected Word has no " + \
-                                                  "synonyms")
+                                                  "Synonyms or Antonyms!")
                 self.currentWordObj = None
                 self.currentWordList = []
                 self.previousWordList = []

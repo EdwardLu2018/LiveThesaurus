@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 # verb file from NodeBox Linguistics:
 # https://www.nodebox.net/code/index.php/Linguistics#verb_conjugation
-from verb import verb_tense, verb_conjugate
+from verb import *
 import inflect
 inflect = inflect.engine()
 import nltk as nltk
@@ -13,9 +13,17 @@ class Word(object):
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
         self.script = self.getScript()
-        self.definitionList = self.getDefList()
-        self.synonymDict = self.getDict(self.word, "synonyms")
-        self.antonymDict = self.getDict(self.word, "antonyms")
+        self.wordTense = None
+        try:
+            self.wordTense = verb_tense(self.word)
+            if "past" in self.wordTense:
+                self.wordTense = "past"
+            elif "present" in self.wordTense:
+                self.wordTense = "present"
+        except:
+            pass
+        self.synonymDict = self.getDict("synonyms", self.wordTense)
+        self.antonymDict = self.getDict("antonyms", self.wordTense)
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
@@ -57,7 +65,7 @@ class Word(object):
         return self.script
     
     # gets a list of defintions of the word
-    def getDefList(self):
+    def getDefList(self, tense):
         script = self.script
         definitionList = []
         
@@ -83,11 +91,8 @@ class Word(object):
                     definition = self.makePhrasePlural(definition)
             
             elif partOfSpeech == "verb":
-                try:
-                    wordTense = verb_tense(self.word)
-                    definition = self.conjugatePhrase(definition, wordTense)
-                except:
-                    pass
+                wordTense = tense
+                definition = self.conjugatePhrase(definition, wordTense)
             
             definitionList += [definition + " (" + partOfSpeech + ")"]
         
@@ -95,12 +100,12 @@ class Word(object):
         
     # returns a dictionary mapping the definition of a given word to its 
     # synonyms or antonyms, depending on the type
-    def getDict(self, word, type):
+    def getDict(self, type, tense):
         script = self.script
         result = {}
         
         # updates result, mapping definitions to their synonyms
-        for defn in self.definitionList:
+        for defn in self.getDefList(tense):
             startIndex = script.find("\"" + type + "\":") + len("\"" + type + "\":")
             endIndex = startIndex + script[startIndex:].find("]")
             termListStr = script[startIndex:endIndex] + "]"
@@ -116,14 +121,11 @@ class Word(object):
                         newTerm = self.makePhrasePlural(termSet["term"])
                         termSet["term"] = newTerm
             
-            elif pos == "verb":
-                try:
-                    wordTense = verb_tense(self.word)
-                    for termSet in termList:
-                        newTerm = self.conjugatePhrase(termSet["term"], wordTense)
-                        termSet["term"] = newTerm
-                except:
-                    pass
+            elif pos == "verb" and tense != None:
+                wordTense = tense
+                for termSet in termList:
+                    newTerm = self.conjugatePhrase(termSet["term"], wordTense)
+                    termSet["term"] = newTerm
             
             result[defn] = termList
             script = script[endIndex:]
@@ -132,21 +134,40 @@ class Word(object):
         for defn in result:
             listOfAllTerms = result[defn]
             for dict in reversed(listOfAllTerms):
-                if "isInformal" in dict.keys() and \
-                "targetTerm" in dict.keys() and \
-                "targetSlug" in dict.keys():
-                    del dict["isInformal"]
-                    del dict["targetTerm"]
-                    del dict["targetSlug"]
-                if "isVulgar" in dict.keys():
-                    if dict["isVulgar"] != None:
-                        listOfAllTerms.remove(dict)
-                    else:
-                        del dict["isVulgar"]
+                del dict["isInformal"]
+                del dict["targetTerm"]
+                del dict["targetSlug"]
+                del dict["isVulgar"]
         
-        
+        infinitiveVerbDict = self.getInfinitiveVerbDict(type)
+        if infinitiveVerbDict != None:
+            result.update(infinitiveVerbDict)
         
         return result
+    
+    # returns a syn of ant dict of the infinitive form of a verb
+    def getInfinitiveVerbDict(self, type):
+        infinitiveDict = None
+        try:
+            tense = self.wordTense
+            if tense != "infinitive":
+                infinitive = verb_infinitive(self.word)
+                infinitiveWordObj = Word(infinitive)
+                if type == "synonyms":
+                    infinitiveDict = infinitiveWordObj.getDict("synonyms", tense)
+                elif type == "antonyms":
+                    infinitiveDict = infinitiveWordObj.getDict("antonyms", tense)
+                
+                for defn in reversed(list(infinitiveDict.keys())):
+                    posStartIndex = defn.find("(") + 1
+                    posEndIndex = defn.find(")")
+                    pos = defn[posStartIndex:posEndIndex]
+                    if pos != "verb":
+                        del infinitiveDict[defn]
+        except:
+            pass
+        
+        return infinitiveDict
     
     # conjugates a word into a given tense
     def conjugate(self, word, tense):
@@ -177,20 +198,34 @@ class Word(object):
                     wordsInPhrase[0] = firstWord
                     phraseWords[i] = " ".join(wordsInPhrase)
             phrase = ", ".join(phraseWords)
+        elif "; " in phrase:
+            phraseWords = phrase.split("; ")
+            for i in range(len(phraseWords)):
+                word = phraseWords[i]
+                word = self.conjugate(word, tense)
+                phraseWords[i] = word
+                # if there are multiple words, conjugate first word
+                if " " in phraseWords[i]:
+                    wordsInPhrase = phraseWords[i].split(" ")
+                    firstWord = wordsInPhrase[0]
+                    firstWord = self.conjugate(firstWord, tense)
+                    wordsInPhrase[0] = firstWord
+                    phraseWords[i] = " ".join(wordsInPhrase)
+            phrase = "; ".join(phraseWords)
         # if there are no commas, but the phrase has multiple words, only 
         # conjugate the first verb
         elif " " in phrase:
             phraseWords = phrase.split(" ")
             for i in range(len(phraseWords)):
-                word = phraseWords[i]
+                word = phraseWords[0]
                 word = self.conjugate(word, tense)
-                phraseWords[i] = word
+                phraseWords[0] = word
             phrase = " ".join(phraseWords)
         # if there is only one verb in the phrase, then just conjugate the 
         # phrase
         else:
             phrase = self.conjugate(phrase, tense)
-            
+        
         return phrase
         
     # checks if a noun is singular or plural
@@ -245,3 +280,6 @@ class Word(object):
     # equivalence check
     def __eq__(self, other):
         return isinstance(other, Word) and self.word == other.word
+
+a = Word("was")
+print(a.synonymDict)
