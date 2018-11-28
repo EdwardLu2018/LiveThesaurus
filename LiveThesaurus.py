@@ -228,9 +228,10 @@ class LiveThesaurus(object):
             if len(self.currentWordList) > 0:
                 poppedWord = self.currentWordList.pop()
                 lastWordObj = self.currentWordList[len(self.currentWordList)-1]
-                self.previousWordList += [poppedWord]
-                self.replaceWordInTextBox(lastWordObj.word)
-                self.currentWordObj = lastWordObj
+                if lastWordObj != None:
+                    self.previousWordList += [poppedWord]
+                    self.replaceWordInTextBox(lastWordObj.word)
+                    self.currentWordObj = lastWordObj
     
     # undoes an undo
     def redo(self, *args):
