@@ -38,8 +38,11 @@ class LiveThesaurus(object):
         self.master.geometry("%dx%d+0+0" % (screenWidth, screenHeight))
         
         self.master.config(background="gainsboro")
+        
         self.master.bind("<Command-z>", self.undo)
         self.master.bind("<Command-y>", self.redo)
+        self.master.bind("<Command-d>", self.deleteText)
+        self.master.bind("<Command-q>", self.quit)
         
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
@@ -68,7 +71,7 @@ class LiveThesaurus(object):
         
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
-        self.textBox.bind("<FocusIn>", self.clearTextBoxText)
+        self.textBox.bind("<FocusIn>", self.checkForPlaceHolderText)
         self.textBox.bind("<FocusOut>", self.addPlaceHolderText)
 
         self.leftFrame.config(background="orange")
@@ -182,12 +185,12 @@ class LiveThesaurus(object):
                              str(len("Highlight")))
         self.textScrollBar = Scrollbar(self.textFrame)
     
-    # clears text in TextBox
-    def clearTextBoxText(self, *args):
+    # if the placeholdertext is in the TextBox, delete text
+    def checkForPlaceHolderText(self, *args):
         textBoxText = self.textBox.get("1.0", END)
         placeHolderText = self.instructions + "\n"
         if textBoxText == placeHolderText:
-            self.textBox.delete("1.0", END)
+            self.deleteText()
     
     # adds instructions to TermBox
     def addTermBoxInstr(self, *args):
@@ -376,12 +379,20 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
-            self.clearTextBoxText()
+            self.checkForPlaceHolderText()
             self.textBox.insert(END, audioText)
             self.audioLabel.config(text="Hit Button Below to " + \
                                         "Record Audio")
         else:
             self.audioLabel.config(text="Unable to Get Audio. Please Try Again.")
+    
+    # clears text from TextBox after key press
+    def deleteText(self, *args):
+        self.textBox.delete("1.0", END)
+    
+    # exits application
+    def quit(self, *args):
+        self.master.destroy()
 
 # returns the digits before the decimal point in a string representation of a 
 # float
