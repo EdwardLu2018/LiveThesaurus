@@ -166,9 +166,34 @@ class LiveThesaurus(object):
     def timerFiredWrapper(self):
         self.addTermBoxInstr()
         currentView = self.termListBox.yview()
+        
+        prevWordObj = self.currentWordObj
+        prevWordIndex = self.currentWordIndex
+        
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
+        if self.currentWordObj != prevWordObj or \
+           prevWordIndex != self.currentWordIndex:
+            self.highlight(False, prevWordIndex, prevWordObj)
+        else:
+            self.highlight(True, self.currentWordIndex, self.currentWordObj)
         self.master.after(self.timerDelay, self.timerFiredWrapper)
+    
+    # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
+    # handles highlights, which help users locate their current word
+    def highlight(self, add, index, wordObj):
+        try:
+            textBoxLine = getDigitsBeforeDecPt(index)
+            textBoxCol = getDigitsAfterDecPt(index)
+            endofcurrWordCol = textBoxCol + len(wordObj.word)
+            endofcurrWordIndex = str(textBoxLine) + "." + str(endofcurrWordCol)
+            if add == True:
+                self.textBox.tag_configure("highlight", background="lightskyblue1")
+                self.textBox.tag_add("highlight", index, endofcurrWordIndex)
+            else:
+                self.textBox.tag_remove("highlight", index, endofcurrWordIndex)
+        except:
+            pass
     
     # adds placeholder text to TextBox
     def addPlaceHolderText(self, event):
@@ -179,7 +204,6 @@ class LiveThesaurus(object):
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
         self.textBox.insert(END, self.instructions)
-        # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
         self.textBox.tag_configure("highlight", background="lightskyblue1")
         self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), "3." + \
                              str(len("Insert text and ") + len("Highlight")))
@@ -295,9 +319,11 @@ class LiveThesaurus(object):
     def updateCurrentWord(self):
         try:
             prevWordObj = self.currentWordObj
+            prevWordIndex = self.currentWordIndex
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObj = Word(highlightedWord)
-            # if user picked a new word, reset all indices
+            # if user picked a new word, reset all indices and unhiglight the 
+            # previous word
             if self.currentWordObj != prevWordObj:
                 self.currentDefIndex = 0
                 self.currentListBoxIndex = 0
