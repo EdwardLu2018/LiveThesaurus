@@ -11,20 +11,12 @@ class Word(object):
     def __init__(self, word):
         self.word = word
         self.thesaurusSourceText = self.getThesaurusWebText()
-        self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
+        self.parser = BeautifulSoup(self.thesaurusSourceText, "html.parser")
         self.script = self.getScript()
-        self.wordTense = None
-        try:
-            self.wordTense = verb_tense(self.word)
-            if "singular" in self.wordTense:
-                if "past" in self.wordTense:
-                    self.wordTense = "past"
-                elif "present" in self.wordTense:
-                    self.wordTense = "present"
-        except:
-            pass
+        self.wordTense = getWordTense(self.word)
         self.synonymDict = self.getDict("synonyms", self.wordTense)
         self.antonymDict = self.getDict("antonyms", self.wordTense)
+        self.definitionList = list(self.synonymDict.keys())
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
@@ -65,8 +57,8 @@ class Word(object):
         
         return self.script
     
-    # gets a list of defintions of the word
-    def getDefList(self, tense):
+    # gets a list of defintions of the word in it curretn tense
+    def getInitialDefList(self, tense):
         script = self.script
         definitionList = []
         
@@ -76,24 +68,28 @@ class Word(object):
             pos = ""
             
             # finds definitions
-            startIndexOfDef = script.find("\"definition\":") + len("\"definition\":") + 1
-            endIndexOfDef = startIndexOfDef + script[startIndexOfDef:].find(",\"") - 1
+            startIndexOfDef = script.find("\"definition\":") + \
+                              len("\"definition\":") + 1
+            endIndexOfDef = startIndexOfDef + \
+                            script[startIndexOfDef:].find(",\"") - 1
             definition = script[startIndexOfDef:endIndexOfDef]
             script = script[endIndexOfDef:]
             
             # finds part of speech
             startIndexOfPos = script.find("\"pos\":") + len("\"pos\":") + 1
-            endIndexOfPos = startIndexOfPos + script[startIndexOfPos:].find(",\"") - 1
+            endIndexOfPos = startIndexOfPos + \
+                            script[startIndexOfPos:].find(",\"") - 1
             partOfSpeech = script[startIndexOfPos:endIndexOfPos]
             script = script[endIndexOfPos:]
             
+            # if the word is plural, make all its definitions plural
             if partOfSpeech == "noun":
-                if self.getPOS(self.word) == "plural":
-                    definition = self.makePhrasePlural(definition)
-            
+                if getPOS(self.word) == "plural":
+                    definition = makePhrasePlural(definition)
+            # match definitions to the word tense if word is a verb
             elif partOfSpeech == "verb":
                 wordTense = tense
-                definition = self.conjugatePhrase(definition, wordTense)
+                definition = conjugatePhrase(definition, wordTense)
             
             definitionList += [definition + " (" + partOfSpeech + ")"]
         
@@ -106,8 +102,9 @@ class Word(object):
         result = {}
         
         # updates result, mapping definitions to their synonyms
-        for defn in self.getDefList(tense):
-            startIndex = script.find("\"" + type + "\":") + len("\"" + type + "\":")
+        for defn in self.getInitialDefList(tense):
+            startIndex = script.find("\"" + type + "\":") + \
+                         len("\"" + type + "\":")
             endIndex = startIndex + script[startIndex:].find("]")
             termListStr = script[startIndex:endIndex] + "]"
             termList = eval(termListStr)
@@ -116,16 +113,17 @@ class Word(object):
             posEndIndex = defn.find(")")
             pos = defn[posStartIndex:posEndIndex]
             
+            # if the word is plural, make all its syns and ants plural
             if pos == "noun":
-                if self.getPOS(self.word) == "plural":
+                if getPOS(self.word) == "plural":
                     for termSet in termList:
-                        newTerm = self.makePhrasePlural(termSet["term"])
+                        newTerm = makePhrasePlural(termSet["term"])
                         termSet["term"] = newTerm
-            
+            # match syns and ants to the word tense if word is a verb
             elif pos == "verb" and tense != None:
                 wordTense = tense
                 for termSet in termList:
-                    newTerm = self.conjugatePhrase(termSet["term"], wordTense)
+                    newTerm = conjugatePhrase(termSet["term"], wordTense)
                     termSet["term"] = newTerm
             
             result[defn] = termList
@@ -140,135 +138,12 @@ class Word(object):
                 del dict["targetSlug"]
                 del dict["isVulgar"]
         
-        infinitiveVerbDict = self.getInfinitiveVerbDict(type)
+        infinitiveVerbDict = getInfinitiveVerbDict(self.word, self.wordTense, 
+                                                   type)
         if infinitiveVerbDict != None:
             result.update(infinitiveVerbDict)
         
         return result
-    
-    # returns a syn of ant dict of the infinitive form of a verb
-    def getInfinitiveVerbDict(self, type):
-        infinitiveDict = None
-        try:
-            tense = self.wordTense
-            if tense != "infinitive":
-                infinitive = verb_infinitive(self.word)
-                infinitiveWordObj = Word(infinitive)
-                if type == "synonyms":
-                    infinitiveDict = infinitiveWordObj.getDict("synonyms", tense)
-                elif type == "antonyms":
-                    infinitiveDict = infinitiveWordObj.getDict("antonyms", tense)
-                
-                for defn in reversed(list(infinitiveDict.keys())):
-                    posStartIndex = defn.find("(") + 1
-                    posEndIndex = defn.find(")")
-                    pos = defn[posStartIndex:posEndIndex]
-                    if pos != "verb":
-                        del infinitiveDict[defn]
-        except:
-            pass
-        
-        return infinitiveDict
-    
-    # conjugates a word into a given tense
-    def conjugate(self, word, tense):
-        try:
-            word = verb_conjugate(word, tense)
-        except:
-            pass
-            
-        return word
-    
-    # conjugates a phrase into a certain tense
-    def conjugatePhrase(self, phrase, tense):
-        # splits a phrase into seperate words and conjugates accoringly
-        
-        # if there is a comma, then there are multiple verbs in the 
-        # phrase and each verb must be conjugated
-        if ", " in phrase:
-            phraseWords = phrase.split(", ")
-            for i in range(len(phraseWords)):
-                word = phraseWords[i]
-                word = self.conjugate(word, tense)
-                phraseWords[i] = word
-                # if there are multiple words, conjugate first word
-                if " " in phraseWords[i]:
-                    wordsInPhrase = phraseWords[i].split(" ")
-                    firstWord = wordsInPhrase[0]
-                    firstWord = self.conjugate(firstWord, tense)
-                    wordsInPhrase[0] = firstWord
-                    phraseWords[i] = " ".join(wordsInPhrase)
-            phrase = ", ".join(phraseWords)
-        elif "; " in phrase:
-            phraseWords = phrase.split("; ")
-            for i in range(len(phraseWords)):
-                word = phraseWords[i]
-                word = self.conjugate(word, tense)
-                phraseWords[i] = word
-                # if there are multiple words, conjugate first word
-                if " " in phraseWords[i]:
-                    wordsInPhrase = phraseWords[i].split(" ")
-                    firstWord = wordsInPhrase[0]
-                    firstWord = self.conjugate(firstWord, tense)
-                    wordsInPhrase[0] = firstWord
-                    phraseWords[i] = " ".join(wordsInPhrase)
-            phrase = "; ".join(phraseWords)
-        # if there are no commas, but the phrase has multiple words, only 
-        # conjugate the first verb
-        elif " " in phrase:
-            phraseWords = phrase.split(" ")
-            for i in range(len(phraseWords)):
-                word = phraseWords[0]
-                word = self.conjugate(word, tense)
-                phraseWords[0] = word
-            phrase = " ".join(phraseWords)
-        # if there is only one verb in the phrase, then just conjugate the 
-        # phrase
-        else:
-            phrase = self.conjugate(phrase, tense)
-        
-        return phrase
-        
-    # checks if a noun is singular or plural
-    def getPOS(self, noun):
-        if inflect.singular_noun(noun):
-            return "plural"
-        else:
-            return "singular"
-    
-    # makes a noun plural if it's singular
-    def makePlural(self, noun):
-        try:
-            if self.getPOS(noun) == "singular":
-                noun = inflect.plural(noun)
-        except:
-            pass
-            
-        return noun
-        
-    # pluralizes a phrase
-    def makePhrasePlural(self, phrase):
-        # pluralize with inflect if there is a comma in the phrase
-        if "," in phrase:
-            phrase = inflect.plural(phrase)
-            
-        # tokenizes the words and creates a list of tuples containing words
-        # and their POS
-        phraseList = nltk.word_tokenize(phrase)
-        posTags = nltk.pos_tag(phraseList)
-        
-        # finds index of first noun and makes that noun plural
-        indexOfFirstNoun = 0
-        for i in range(len(posTags)):
-            if posTags[i][1] == "NN":
-                indexOfFirstNoun = i
-                break
-        phraseList[indexOfFirstNoun] = self.makePlural(phraseList[indexOfFirstNoun])
-        
-        phrase = " ".join(phraseList)
-        phrase = phrase.replace(" ,", ",")
-        
-        return phrase
     
     # string representation
     def __repr__(self):
@@ -281,3 +156,132 @@ class Word(object):
     # equivalence check
     def __eq__(self, other):
         return isinstance(other, Word) and self.word == other.word
+
+## Natural Language Processing Helper Methods:
+# gets the tense of a word if it is a verb
+def getWordTense(word):
+    wordTense = None # word is not a verb or has no tense
+    try:
+        wordTense = verb_tense(word)
+        if "singular" in wordTense:
+            if "past" in wordTense:
+                wordTense = "past"
+            elif "present" in wordTense:
+                wordTense = "present"
+    except:
+        pass
+        
+    return wordTense
+
+# returns a syn of ant dict of the infinitive form of a verb
+def getInfinitiveVerbDict(word, tense, type):
+    infinitiveDict = None
+    try:
+        if tense != "infinitive":
+            infinitive = verb_infinitive(word)
+            infinitiveWordObj = Word(infinitive)
+            if type == "synonyms":
+                infinitiveDict = infinitiveWordObj.getDict("synonyms", tense)
+            elif type == "antonyms":
+                infinitiveDict = infinitiveWordObj.getDict("antonyms", tense)
+            
+            for defn in reversed(list(infinitiveDict.keys())):
+                posStartIndex = defn.find("(") + 1
+                posEndIndex = defn.find(")")
+                pos = defn[posStartIndex:posEndIndex]
+                if pos != "verb":
+                    del infinitiveDict[defn]
+    except:
+        pass
+    
+    return infinitiveDict
+
+# conjugates a word into a given tense
+def conjugate(word, tense):
+    try:
+        word = verb_conjugate(word, tense)
+    except:
+        pass
+        
+    return word
+
+# conjugates a phrase into a certain tense
+def conjugatePhrase(phrase, tense):
+    # splits a phrase into seperate words and conjugates accoringly
+    phraseWords = None
+    
+    # if there is a comma or semicolon, then there are multiple phrases in  
+    # the phrase and each phrase within the larger phrase must be conjugated
+    if ", " in phrase or "; " in phrase:   
+        if "; " in phrase:
+            phrases = phrase.split("; ")
+        elif ", " in phrase:
+            phrases = phrase.split(", ")
+        
+        for i in range(len(phrases)):
+            word = phrases[i]
+            word = conjugatePhrase(word, tense)
+            phrases[i] = word
+        
+        if "; " in phrase:
+            phrase = "; ".join(phrases)
+        elif ", " in phrase:
+            phrase = ", ".join(phrases)
+    
+    # if there are no commas, but the phrase has multiple words, only 
+    # conjugate the first verb
+    elif " " in phrase:
+        phraseWords = phrase.split(" ")
+        for i in range(len(phraseWords)):
+            word = phraseWords[0]
+            word = conjugate(word, tense)
+            phraseWords[0] = word
+        phrase = " ".join(phraseWords)
+    
+    # if there is only one verb in the phrase, then just conjugate the 
+    # phrase
+    else:
+        phrase = conjugate(phrase, tense)
+    
+    return phrase
+    
+# checks if a noun is singular or plural
+def getPOS(noun):
+    if inflect.singular_noun(noun):
+        return "plural"
+    else:
+        return "singular"
+
+# makes a noun plural if it's singular
+def makePlural(noun):
+    try:
+        if getPOS(noun) == "singular":
+            noun = inflect.plural(noun)
+    except:
+        pass
+        
+    return noun
+    
+# pluralizes a phrase
+def makePhrasePlural(phrase):
+    # pluralize with inflect if there is a comma in the phrase
+    if "," in phrase:
+        phrase = inflect.plural(phrase)
+        
+    # tokenizes the words and creates a list of tuples containing words
+    # and their POS
+    phraseList = nltk.word_tokenize(phrase)
+    posTags = nltk.pos_tag(phraseList)
+    
+    # finds index of first noun and makes that noun plural
+    indexOfFirstNoun = 0
+    for i in range(len(posTags)):
+        if posTags[i][1] == "NN":
+            indexOfFirstNoun = i
+            break
+    phraseList[indexOfFirstNoun] = makePlural(phraseList[indexOfFirstNoun])
+    
+    phrase = " ".join(phraseList)
+    phrase = phrase.replace(" ,", ",")
+    
+    return phrase

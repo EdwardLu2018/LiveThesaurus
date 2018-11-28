@@ -4,3 +4,4 @@ import LiveThesaurus as application
 root = Tk()
 application = application.LiveThesaurus(root)
 mainloop()
+print("Thank you for using LiveThesaurus!")
