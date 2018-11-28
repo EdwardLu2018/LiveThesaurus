@@ -16,10 +16,11 @@ class Word(object):
         self.wordTense = None
         try:
             self.wordTense = verb_tense(self.word)
-            if "past" in self.wordTense:
-                self.wordTense = "past"
-            elif "present" in self.wordTense:
-                self.wordTense = "present"
+            if "singular" in self.wordTense:
+                if "past" in self.wordTense:
+                    self.wordTense = "past"
+                elif "present" in self.wordTense:
+                    self.wordTense = "present"
         except:
             pass
         self.synonymDict = self.getDict("synonyms", self.wordTense)
@@ -280,6 +281,3 @@ class Word(object):
     # equivalence check
     def __eq__(self, other):
         return isinstance(other, Word) and self.word == other.word
-
-a = Word("was")
-print(a.synonymDict)
