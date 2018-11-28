@@ -225,15 +225,12 @@ class LiveThesaurus(object):
     def undo(self, *args):
         if self.currentWordList != [None]:
             lastWordObj = None
-            if len(self.currentWordList) > 1:
+            if len(self.currentWordList) > 0:
                 poppedWord = self.currentWordList.pop()
                 lastWordObj = self.currentWordList[len(self.currentWordList)-1]
                 self.previousWordList += [poppedWord]
-                print(self.previousWordList)
-            else:
-                lastWordObj = self.currentWordList[0]
-            self.replaceWordInTextBox(lastWordObj.word)
-            self.currentWordObj = lastWordObj
+                self.replaceWordInTextBox(lastWordObj.word)
+                self.currentWordObj = lastWordObj
     
     # undoes an undo
     def redo(self, *args):
@@ -300,8 +297,7 @@ class LiveThesaurus(object):
             if self.currentWordObj != prevWordObj:
                 self.currentDefIndex = 0
                 self.currentListBoxIndex = 0
-            self.currentWordList = [None]
-            self.currentWordList[0] = self.currentWordObj
+                self.currentWordList += [self.currentWordObj]
             if self.currentWordObj.hasSynOrAnt():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
@@ -313,7 +309,8 @@ class LiveThesaurus(object):
                 self.currentWordLabel.config(text="Selected Word has no " + \
                                                   "synonyms")
                 self.currentWordObj = None
-                self.currentWordList = [None]
+                self.currentWordList = []
+                self.previousWordList = []
                 self.currentDefList = [None]
                 self.currentDef = None
                 self.currentDefIndex = 0
