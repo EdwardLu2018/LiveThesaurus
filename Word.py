@@ -207,8 +207,9 @@ class Word(object):
             
         return noun
         
-    # makes a phrase plural
+    # turns a phrase into its plural form
     def makePhrasePlural(self, phrase):
+        # pluralize with inflect if there is a comma in the phrase
         if "," in phrase:
             phrase = inflect.plural(phrase)
             
@@ -241,9 +242,3 @@ class Word(object):
     # equivalence check
     def __eq__(self, other):
         return isinstance(other, Word) and self.word == other.word
-
-a = Word("apples")
-print(a.synonymDict)
-phraseList = nltk.word_tokenize("big blue marbles")
-posTags = nltk.pos_tag(phraseList)
-print(posTags)
