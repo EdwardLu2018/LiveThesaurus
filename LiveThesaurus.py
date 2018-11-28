@@ -133,6 +133,7 @@ class LiveThesaurus(object):
         self.termListBox.bind("<<ListboxSelect>>", self.updateCurrentSynOrAnt)
         self.termListBox.bind("<Return>", self.replaceWordWithSynOrAnt)
         self.termListBox.bind("<Double-Button-1>", self.replaceWordWithSynOrAnt)
+        self.termListBox.bind("<Left>", self.replaceWordWithSynOrAnt)
         
         # packs all widgets in the right frame of the application
         self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), 
