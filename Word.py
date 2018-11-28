@@ -164,6 +164,9 @@ def getWordTense(word):
     wordTense = None # word is not a verb or has no tense
     try:
         wordTense = verb_tense(word)
+        # some words can't be conjugated in singular tenses, so make the tense
+        # past if the word is in singular past and present if word is in
+        # singular present
         if "singular" in wordTense:
             if "past" in wordTense:
                 wordTense = "past"
@@ -174,37 +177,39 @@ def getWordTense(word):
         
     return wordTense
 
-# returns a syn of ant dict of the infinitive form of a verb
+# returns a synonym or antonym dict of the infinitive form of a verb
 def getInfinitiveVerbDict(word, tense, type):
     infinitiveDict = None
     try:
+        # if the tense is infinitive, don't get the infinitive verb dictionary
         if tense != "infinitive":
             infinitive = verb_infinitive(word)
             infinitiveWordObj = Word(infinitive)
+            
             if type == "synonyms":
                 infinitiveDict = infinitiveWordObj.getDict("synonyms", tense)
             elif type == "antonyms":
                 infinitiveDict = infinitiveWordObj.getDict("antonyms", tense)
             
+            # infinitive verb dictionary should not have terms that are not verbs
             for defn in reversed(list(infinitiveDict.keys())):
                 posStartIndex = defn.find("(") + 1
                 posEndIndex = defn.find(")")
                 pos = defn[posStartIndex:posEndIndex]
                 if pos != "verb":
                     del infinitiveDict[defn]
+            
+        return infinitiveDict
     except:
-        pass
-    
-    return infinitiveDict
+        return infinitiveDict
 
 # conjugates a word into a given tense
 def conjugate(word, tense):
     try:
         word = verb_conjugate(word, tense)
+        return word
     except:
-        pass
-        
-    return word
+        return word
 
 # conjugates a phrase into a certain tense
 def conjugatePhrase(phrase, tense):
@@ -258,10 +263,9 @@ def makePlural(noun):
     try:
         if getPOS(noun) == "singular":
             noun = inflect.plural(noun)
+        return noun
     except:
-        pass
-        
-    return noun
+        return noun
     
 # pluralizes a phrase
 def makePhrasePlural(phrase):
