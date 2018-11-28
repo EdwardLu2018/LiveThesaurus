@@ -16,6 +16,7 @@ class Word(object):
         self.wordTense = getWordTense(self.word)
         self.synonymDict = self.getDict("synonyms", self.wordTense)
         self.antonymDict = self.getDict("antonyms", self.wordTense)
+        # definitions are the keys of the synonymDict on thesaurus.com
         self.definitionList = list(self.synonymDict.keys())
     
     # gets the html text of thesaurus.com at a given word
