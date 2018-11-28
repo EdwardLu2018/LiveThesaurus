@@ -14,8 +14,8 @@ class Word(object):
         self.parser = BeautifulSoup(self.thesaurusSourceText, 'html.parser')
         self.script = self.getScript()
         self.definitionList = self.getDefList()
-        self.synonymDict = self.getDict("synonyms")
-        self.antonymDict = self.getDict("antonyms")
+        self.synonymDict = self.getDict(self.word, "synonyms")
+        self.antonymDict = self.getDict(self.word, "antonyms")
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
@@ -79,7 +79,7 @@ class Word(object):
             script = script[endIndexOfPos:]
             
             if partOfSpeech == "noun":
-                if self.checkSingOrPlur(self.word) == "plural":
+                if self.getPOS(self.word) == "plural":
                     definition = self.makePhrasePlural(definition)
             
             elif partOfSpeech == "verb":
@@ -95,7 +95,7 @@ class Word(object):
         
     # returns a dictionary mapping the definition of a given word to its 
     # synonyms or antonyms, depending on the type
-    def getDict(self, type):
+    def getDict(self, word, type):
         script = self.script
         result = {}
         
@@ -111,7 +111,7 @@ class Word(object):
             pos = defn[posStartIndex:posEndIndex]
             
             if pos == "noun":
-                if self.checkSingOrPlur(self.word) == "plural":
+                if self.getPOS(self.word) == "plural":
                     for termSet in termList:
                         newTerm = self.makePhrasePlural(termSet["term"])
                         termSet["term"] = newTerm
@@ -143,6 +143,8 @@ class Word(object):
                         listOfAllTerms.remove(dict)
                     else:
                         del dict["isVulgar"]
+        
+        
         
         return result
     
@@ -192,7 +194,7 @@ class Word(object):
         return phrase
         
     # checks if a noun is singular or plural
-    def checkSingOrPlur(self, noun):
+    def getPOS(self, noun):
         if inflect.singular_noun(noun):
             return "plural"
         else:
@@ -201,14 +203,14 @@ class Word(object):
     # makes a noun plural if it's singular
     def makePlural(self, noun):
         try:
-            if self.checkSingOrPlur(noun) == "singular":
+            if self.getPOS(noun) == "singular":
                 noun = inflect.plural(noun)
         except:
             pass
             
         return noun
         
-    # turns a phrase into its plural form
+    # pluralizes a phrase
     def makePhrasePlural(self, phrase):
         # pluralize with inflect if there is a comma in the phrase
         if "," in phrase:
