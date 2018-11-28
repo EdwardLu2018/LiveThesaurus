@@ -13,6 +13,7 @@ class LiveThesaurus(object):
         self.timerDelay = 100
         self.currentWordObj = None
         self.currentWordList = [None]
+        self.previousWordList = []
         self.currentWordIndex = ""
         
         self.antonymsMode = False
@@ -38,6 +39,7 @@ class LiveThesaurus(object):
         
         self.master.config(background="gainsboro")
         self.master.bind("<Command-z>", self.undo)
+        self.master.bind("<Command-y>", self.redo)
         
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
@@ -197,7 +199,7 @@ class LiveThesaurus(object):
             self.termListBox.insert(END, "After picking a definition, " + \
                                          "Click Here to Browse Terms")
             self.termListBox.insert(END,
-                                "Double Click with the Mouse or Hit the " + \
+                                "Double click with the Mouse or Hit the " + \
                                 "\"ENTER\" key to change the word")
             self.termListBox.insert(END, "Click the \"Synonyms\" button " + \
                                 "above to swap between Synonyms and Antonyms")
@@ -224,12 +226,24 @@ class LiveThesaurus(object):
         if self.currentWordList != [None]:
             lastWordObj = None
             if len(self.currentWordList) > 1:
-                self.currentWordList.pop()
+                poppedWord = self.currentWordList.pop()
                 lastWordObj = self.currentWordList[len(self.currentWordList)-1]
+                self.previousWordList += [poppedWord]
+                print(self.previousWordList)
             else:
                 lastWordObj = self.currentWordList[0]
             self.replaceWordInTextBox(lastWordObj.word)
             self.currentWordObj = lastWordObj
+    
+    # undoes an undo
+    def redo(self, *args):
+        if self.previousWordList != []:
+            lastWordObj = None
+            if len(self.previousWordList) > 0:
+                lastWordObj = self.previousWordList.pop()
+                self.replaceWordInTextBox(lastWordObj.word)
+                self.addToWordList(lastWordObj)
+                self.currentWordObj = lastWordObj
     
     # updates the current synonym/antonym whenever mouse is in the ListBox
     def updateCurrentSynOrAnt(self, event):
@@ -272,7 +286,6 @@ class LiveThesaurus(object):
         textBoxCol = getDigitsAfterDecPt(self.currentWordIndex)
         endofcurrWordCol = textBoxCol + len(self.currentWordObj.word)
         endofcurrWordIndex = str(textBoxLine) + "." + str(endofcurrWordCol)
-        textBoxText = self.textBox.get(self.currentWordIndex, endofcurrWordIndex)
         self.textBox.replace(self.currentWordIndex, endofcurrWordIndex, newWord)
     
     # gets the user's highlighted word, creates a Word object of that word, 
