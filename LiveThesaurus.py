@@ -12,7 +12,7 @@ class LiveThesaurus(object):
         
         self.timerDelay = 100
         self.currentWordObj = None
-        self.currentWordList = [None]
+        self.currentWordList = []
         self.previousWordList = []
         self.currentWordIndex = ""
         
@@ -41,8 +41,8 @@ class LiveThesaurus(object):
         
         self.master.bind("<Command-z>", self.undo)
         self.master.bind("<Command-y>", self.redo)
-        self.master.bind("<Command-d>", self.deleteText)
         self.master.bind("<Command-q>", self.quit)
+        self.master.bind("<Command-a>", self.selectAll)
         
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
@@ -170,11 +170,10 @@ class LiveThesaurus(object):
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
     # adds placeholder text to TextBox
-    def addPlaceHolderText(self, *args):
+    def addPlaceHolderText(self, event):
         textBoxText = self.textBox.get("1.0", END)
         if textBoxText == "\n":
             self.makePlaceHolderText()
-            return True
     
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
@@ -186,7 +185,7 @@ class LiveThesaurus(object):
         self.textScrollBar = Scrollbar(self.textFrame)
     
     # if the placeholdertext is in the TextBox, delete text
-    def checkForPlaceHolderText(self, *args):
+    def checkForPlaceHolderText(self, event):
         textBoxText = self.textBox.get("1.0", END)
         placeHolderText = self.instructions + "\n"
         if textBoxText == placeHolderText:
@@ -225,10 +224,10 @@ class LiveThesaurus(object):
         self.generateTermList()
     
     # undoes a word replacement
-    def undo(self, *args):
-        if self.currentWordList != [None]:
+    def undo(self, event):
+        if self.currentWordList != []:
             lastWordObj = None
-            if len(self.currentWordList) > 0:
+            if len(self.currentWordList) > 1:
                 poppedWord = self.currentWordList.pop()
                 lastWordObj = self.currentWordList[len(self.currentWordList)-1]
                 if lastWordObj != None:
@@ -237,7 +236,7 @@ class LiveThesaurus(object):
                     self.currentWordObj = lastWordObj
     
     # undoes an undo
-    def redo(self, *args):
+    def redo(self, event):
         if self.previousWordList != []:
             lastWordObj = None
             if len(self.previousWordList) > 0:
@@ -301,7 +300,7 @@ class LiveThesaurus(object):
             if self.currentWordObj != prevWordObj:
                 self.currentDefIndex = 0
                 self.currentListBoxIndex = 0
-                self.currentWordList += [self.currentWordObj]
+            self.currentWordList = [self.currentWordObj]
             if self.currentWordObj.hasSynOrAnt():
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
@@ -386,12 +385,19 @@ class LiveThesaurus(object):
         else:
             self.audioLabel.config(text="Unable to Get Audio. Please Try Again.")
     
+    # Code From: https://stackoverflow.com/questions/13801557/select-all-text-in-a-text-widget-using-python-3-with-tkinter
+    # selects all text in a TextBox
+    def selectAll(self, event):
+        self.textBox.tag_add(SEL, "1.0", END)
+        self.textBox.mark_set(INSERT, "1.0")
+        self.textBox.see(INSERT)
+    
     # clears text from TextBox after key press
     def deleteText(self, *args):
         self.textBox.delete("1.0", END)
     
     # exits application
-    def quit(self, *args):
+    def quit(self, event):
         self.master.destroy()
 
 # returns the digits before the decimal point in a string representation of a 
