@@ -4,11 +4,11 @@ import audio as speechRecognizer
 
 class LiveThesaurus(object):
     def __init__(self, master):
-        self.instructions = "Type text here!\n\n" + \
-                            "Highlight a word to get its Synonyms or " + \
-                            "Antonyms on the Menu on the Right.\n\n" + \
-                            "Please read all Instructions here and on the " + \
-                            "Right."
+        self.instructions = "Click HERE to type text!\n" + \
+                            "Please read ALL the Instructions on this " + \
+                            "Text Box and on the Right!\n" + \
+                            "Insert text and Highlight a word to get its " + \
+                            "Synonyms or Antonyms"
         
         self.timerDelay = 100
         self.currentWordObj = None
@@ -181,8 +181,8 @@ class LiveThesaurus(object):
         self.textBox.insert(END, self.instructions)
         # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
         self.textBox.tag_configure("highlight", background="lightskyblue1")
-        self.textBox.tag_add("highlight", "3.0", "3." + \
-                             str(len("Highlight")))
+        self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), "3." + \
+                             str(len("Insert text and ") + len("Highlight")))
         self.textScrollBar = Scrollbar(self.textFrame)
     
     # if the placeholdertext is in the TextBox, delete text
@@ -198,7 +198,7 @@ class LiveThesaurus(object):
             self.termListBox.delete(0, "end")
             self.termListBox.insert(END, "Change definitions with the " + \
                                          "Dropdown Menu above next to " + \
-                                         "\"Definition: \"")
+                                         "\"Definition:\"")
             self.termListBox.insert(END, "After picking a definition, " + \
                                          "Click Here to Browse Terms")
             self.termListBox.insert(END,
