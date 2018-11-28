@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from verb import verb_tense, verb_conjugate
 import inflect
 inflect = inflect.engine()
+import nltk as nltk
 
 class Word(object):
     def __init__(self, word):
@@ -79,7 +80,7 @@ class Word(object):
             
             if partOfSpeech == "noun":
                 if self.checkSingOrPlur(self.word) == "plural":
-                    definition = inflect.plural(definition)
+                    definition = self.makePhrasePlural(definition)
             elif partOfSpeech == "verb":
                 try:
                     wordTense = verb_tense(self.word)
@@ -108,8 +109,13 @@ class Word(object):
             posEndIndex = defn.find(")")
             pos = defn[posStartIndex:posEndIndex]
             
+            if pos == "noun":
+                if self.checkSingOrPlur(self.word) == "plural":
+                    for termSet in termList:
+                        newTerm = self.makePhrasePlural(termSet["term"])
+                        termSet["term"] = newTerm
             # conjugates every term if the part of speech is a verb
-            if pos == "verb":
+            elif pos == "verb":
                 try:
                     wordTense = verb_tense(self.word)
                     for termSet in termList:
@@ -138,48 +144,6 @@ class Word(object):
                         del dict["isVulgar"]
         
         return result
-        
-    # checks if a noun is singular or plural
-    def checkSingOrPlur(self, word):
-        if inflect.singular_noun(word):
-            return "plural"
-        else:
-            return "singular"
-    
-    # conjugates a phrase into a certain tense
-    def conjugatePhrase(self, definition, tense):
-        # splits a phrase into seperate words and conjugates accoringly
-        
-        # if there is a comma, then there are multiple verbs in the 
-        # phrase and each verb must be conjugated
-        if ", " in definition:
-            defWords = definition.split(", ")
-            for i in range(len(defWords)):
-                word = defWords[i]
-                word = self.conjugate(word, tense)
-                defWords[i] = word
-                # if there are multiple words, conjugate first word
-                if " " in defWords[i]:
-                    wordsInPhrase = defWords[i].split(" ")
-                    firstWord = wordsInPhrase[0]
-                    firstWord = self.conjugate(firstWord, tense)
-                    wordsInPhrase[0] = firstWord
-                    defWords[i] = " ".join(wordsInPhrase)
-            definition = ", ".join(defWords)
-        # if there are no commas, but the phrase has multiple words, only 
-        # conjugate the first verb
-        elif " " in definition:
-            defWords = definition.split(" ")
-            for i in range(len(defWords)):
-                word = defWords[i]
-                word = self.conjugate(word, tense)
-                defWords[i] = word
-            definition = " ".join(defWords)
-        # if there is only one verb in the phrase, then just conjugate the 
-        # phrase
-        else:
-            definition = self.conjugate(definition, tense)
-        return definition
     
     # conjugates a word into a given tense
     def conjugate(self, word, tense):
@@ -187,7 +151,82 @@ class Word(object):
             word = verb_conjugate(word, tense)
         except:
             pass
+            
         return word
+    
+    # conjugates a phrase into a certain tense
+    def conjugatePhrase(self, phrase, tense):
+        # splits a phrase into seperate words and conjugates accoringly
+        
+        # if there is a comma, then there are multiple verbs in the 
+        # phrase and each verb must be conjugated
+        if ", " in phrase:
+            phraseWords = phrase.split(", ")
+            for i in range(len(phraseWords)):
+                word = phraseWords[i]
+                word = self.conjugate(word, tense)
+                phraseWords[i] = word
+                # if there are multiple words, conjugate first word
+                if " " in phraseWords[i]:
+                    wordsInPhrase = phraseWords[i].split(" ")
+                    firstWord = wordsInPhrase[0]
+                    firstWord = self.conjugate(firstWord, tense)
+                    wordsInPhrase[0] = firstWord
+                    phraseWords[i] = " ".join(wordsInPhrase)
+            phrase = ", ".join(phraseWords)
+        # if there are no commas, but the phrase has multiple words, only 
+        # conjugate the first verb
+        elif " " in phrase:
+            phraseWords = phrase.split(" ")
+            for i in range(len(phraseWords)):
+                word = phraseWords[i]
+                word = self.conjugate(word, tense)
+                phraseWords[i] = word
+            phrase = " ".join(phraseWords)
+        # if there is only one verb in the phrase, then just conjugate the 
+        # phrase
+        else:
+            phrase = self.conjugate(phrase, tense)
+            
+        return phrase
+        
+    # checks if a noun is singular or plural
+    def checkSingOrPlur(self, noun):
+        if inflect.singular_noun(noun):
+            return "plural"
+        else:
+            return "singular"
+    
+    # makes a noun plural if it's singular
+    def makePlural(self, noun):
+        try:
+            if self.checkSingOrPlur(noun) == "singular":
+                noun = inflect.plural(noun)
+        except:
+            pass
+            
+        return noun
+        
+    # makes a phrase plural
+    def makePhrasePlural(self, phrase):
+        # tokenizes the words and creates a list of tuples containing words
+        # and their POS
+        phraseList = nltk.word_tokenize(phrase)
+        posTags = nltk.pos_tag(phraseList)
+        
+        # finds index of first noun and makes that noun plural
+        indexOfFirstNoun = 0
+        for i in range(len(posTags)):
+            if posTags[i][1] == "NN":
+                indexOfFirstNoun = i
+                break
+        phraseList[indexOfFirstNoun] = self.makePlural(phraseList[indexOfFirstNoun])
+        
+        phrase = " ".join(phraseList)
+        phrase = inflect.plural(phrase)
+        phrase = phrase.replace(" ,", ",")
+        
+        return phrase
     
     # string representation
     def __repr__(self):
@@ -200,3 +239,6 @@ class Word(object):
     # equivalence check
     def __eq__(self, other):
         return isinstance(other, Word) and self.word == other.word
+
+a = Word("apples")
+print(a.synonymDict)
