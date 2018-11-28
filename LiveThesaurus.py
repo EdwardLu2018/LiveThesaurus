@@ -41,8 +41,8 @@ class LiveThesaurus(object):
         
         self.master.bind("<Command-z>", self.undo)
         self.master.bind("<Command-y>", self.redo)
-        self.master.bind("<Command-q>", self.quit)
         self.master.bind("<Command-a>", self.selectAll)
+        self.master.bind("<Command-q>", self.quit)
         
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
