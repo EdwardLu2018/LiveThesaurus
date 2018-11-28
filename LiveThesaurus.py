@@ -12,9 +12,11 @@ class LiveThesaurus(object):
         
         self.timerDelay = 100
         self.currentWordObj = None
+        self.previousWordObj = None
         self.currentWordList = []
         self.previousWordList = []
         self.currentWordIndex = ""
+        self.previousWordIndex = ""
         
         self.antonymsMode = False
         self.currentSynDict = None
@@ -71,6 +73,7 @@ class LiveThesaurus(object):
         
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
+        self.textBox.tag_configure("highlight", background="lightskyblue1")
         self.textBox.bind("<FocusIn>", self.checkForPlaceHolderText)
         self.textBox.bind("<FocusOut>", self.addPlaceHolderText)
 
@@ -165,18 +168,18 @@ class LiveThesaurus(object):
     # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
         self.addTermBoxInstr()
+        
         currentView = self.termListBox.yview()
-        
-        prevWordObj = self.currentWordObj
-        prevWordIndex = self.currentWordIndex
-        
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
-        if self.currentWordObj != prevWordObj or \
-           prevWordIndex != self.currentWordIndex:
-            self.highlight(False, prevWordIndex, prevWordObj)
+        
+        # if index of word changes, remove the highlight from previous location
+        if self.currentWordObj != self.previousWordObj or \
+           self.previousWordIndex != self.currentWordIndex:
+            self.highlight(False, self.previousWordIndex, self.previousWordObj)
         else:
             self.highlight(True, self.currentWordIndex, self.currentWordObj)
+        
         self.master.after(self.timerDelay, self.timerFiredWrapper)
     
     # Highlight Code From: https://stackoverflow.com/questions/29495911/change-color-of-certain-words-in-tkinter-text-widget-based-on-position-in-list
@@ -188,7 +191,6 @@ class LiveThesaurus(object):
             endofcurrWordCol = textBoxCol + len(wordObj.word)
             endofcurrWordIndex = str(textBoxLine) + "." + str(endofcurrWordCol)
             if add == True:
-                self.textBox.tag_configure("highlight", background="lightskyblue1")
                 self.textBox.tag_add("highlight", index, endofcurrWordIndex)
             else:
                 self.textBox.tag_remove("highlight", index, endofcurrWordIndex)
@@ -204,7 +206,6 @@ class LiveThesaurus(object):
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
         self.textBox.insert(END, self.instructions)
-        self.textBox.tag_configure("highlight", background="lightskyblue1")
         self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), "3." + \
                              str(len("Insert text and ") + len("Highlight")))
         self.textScrollBar = Scrollbar(self.textFrame)
@@ -318,13 +319,13 @@ class LiveThesaurus(object):
     # corresponding instance variable of the Word object 
     def updateCurrentWord(self):
         try:
-            prevWordObj = self.currentWordObj
-            prevWordIndex = self.currentWordIndex
+            self.previousWordObj = self.currentWordObj
+            self.previousWordIndex = self.currentWordIndex
             highlightedWord = self.textBox.get(SEL_FIRST, SEL_LAST)
             self.currentWordObj = Word(highlightedWord)
             # if user picked a new word, reset all indices and unhiglight the 
             # previous word
-            if self.currentWordObj != prevWordObj:
+            if self.currentWordObj != self.previousWordObj:
                 self.currentDefIndex = 0
                 self.currentListBoxIndex = 0
             self.currentWordList = [self.currentWordObj]
@@ -338,6 +339,7 @@ class LiveThesaurus(object):
             else:
                 self.currentWordLabel.config(text="Selected Word has no " + \
                                                   "Synonyms or Antonyms!")
+                self.previousWordObj = None
                 self.currentWordObj = None
                 self.currentWordList = []
                 self.previousWordList = []
