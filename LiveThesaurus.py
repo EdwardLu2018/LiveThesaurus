@@ -228,7 +228,7 @@ class LiveThesaurus(object):
         return textBoxText == placeHolderText
     
     # if the placeholdertext is in the TextBox, delete text
-    def deletePlaceHolderText(self, event):
+    def deletePlaceHolderText(self, *args):
         if self.placeholderTextPresent():
             self.deleteText()
     
