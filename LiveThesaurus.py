@@ -162,7 +162,9 @@ class LiveThesaurus(object):
         self.termListBox.pack(side=LEFT, fill=BOTH, expand=YES)
         self.termScrollBar.pack(side=LEFT, fill=Y)
         
+    def run():
         self.timerFiredWrapper()
+        self.master.mainloop()
     
     # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
     # CITATION: Code that Keeps ScrollBar in same location from:
