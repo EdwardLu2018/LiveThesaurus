@@ -370,7 +370,6 @@ class LiveThesaurus(object):
                 self.currentDefList = [None]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                self.definitons.set(self.defInstructions)
                 self.currentSynDict = None
                 self.currentAntDict = None
                 self.termListBox.delete(0, "end")
@@ -389,8 +388,6 @@ class LiveThesaurus(object):
                 self.currentDefList = [self.defInstructions]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                menu = self.definitionMenu["menu"]
-                menu.delete(0, "end")
                 self.definitons.set(self.defInstructions)
                 self.currentSynDict = None
                 self.currentAntDict = None

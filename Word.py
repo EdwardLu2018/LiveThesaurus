@@ -9,7 +9,7 @@ import nltk as nltk
 
 class Word(object):
     def __init__(self, word):
-        self.word = word
+        self.word = word.lower()
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, "html.parser")
         self.script = self.getScript()
@@ -21,7 +21,7 @@ class Word(object):
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
-        HTMLTextWord = self.word.lower()
+        HTMLTextWord = self.word
         if HTMLTextWord == "" or HTMLTextWord.isdigit() or HTMLTextWord.isspace():
             return None
         elif " " in HTMLTextWord:
