@@ -25,7 +25,7 @@ class LiveThesaurus(object):
         self.currentAnt = None
         self.currentListBoxIndex = 0
         
-        self.currentDefList = [None]
+        self.currentDefList = ["Click Here to Choose Definitions"]
         self.currentDef = None
         self.currentDefIndex = 0
         
@@ -74,7 +74,7 @@ class LiveThesaurus(object):
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
         self.textBox.tag_configure("highlight", background="lightskyblue1")
-        self.textBox.bind("<FocusIn>", self.checkForPlaceHolderText)
+        self.textBox.bind("<FocusIn>", self.deletePlaceHolderText)
         self.textBox.bind("<FocusOut>", self.addPlaceHolderText)
 
         self.leftFrame.config(background="orange")
@@ -123,8 +123,8 @@ class LiveThesaurus(object):
         self.definitons = StringVar()
         self.definitionMenu = OptionMenu(self.innerDefFrame, self.definitons,
                               *self.currentDefList)
-        # initially loads definition menu with None
-        self.definitons.set(None)
+        # initially loads definition menu
+        self.definitons.set(self.currentDefList[0])
         
         self.rightFrame.config(background="gainsboro")
         self.wordAndDefFrame.config(background="orange")
@@ -173,9 +173,11 @@ class LiveThesaurus(object):
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
         
-        # if index of word changes, remove the highlight from previous location
+        # if the index of the word or the word changes or if the placeholder 
+        # text is present, remove the highlight from previous location
         if self.currentWordObj != self.previousWordObj or \
-           self.previousWordIndex != self.currentWordIndex:
+           self.previousWordIndex != self.currentWordIndex or \
+           self.placeholderTextPresent():
             self.highlight(False, self.previousWordIndex, self.previousWordObj)
         else:
             self.highlight(True, self.currentWordIndex, self.currentWordObj)
@@ -201,21 +203,27 @@ class LiveThesaurus(object):
     def addPlaceHolderText(self, event):
         textBoxText = self.textBox.get("1.0", END)
         if textBoxText == "\n":
+            self.textBox.tag_remove("highlight", "1.0", END)
             self.makePlaceHolderText()
     
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
         self.textBox.insert(END, self.instructions)
+        self.textBox.tag_remove("highlight", "1.0", END)
         self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), 
                              "3." + str(len("Insert text and ") + \
                              len("Highlight")))
         self.textScrollBar = Scrollbar(self.textFrame)
     
-    # if the placeholdertext is in the TextBox, delete text
-    def checkForPlaceHolderText(self, event):
+    # checks if placeholder text is present
+    def placeholderTextPresent(self):
         textBoxText = self.textBox.get("1.0", END)
         placeHolderText = self.instructions + "\n"
-        if textBoxText == placeHolderText:
+        return textBoxText == placeHolderText
+    
+    # if the placeholdertext is in the TextBox, delete text
+    def deletePlaceHolderText(self, event):
+        if self.placeholderTextPresent():
             self.deleteText()
     
     # adds instructions to TermBox
@@ -226,12 +234,16 @@ class LiveThesaurus(object):
                                          "Dropdown Menu above next to " + \
                                          "\"Definition:\"")
             self.termListBox.insert(END, "After picking a definition, " + \
-                                         "Click Here to Browse Terms")
+                                         "Click HERE to Browse Terms")
             self.termListBox.insert(END,
                                 "Double click with the Mouse or Hit the " + \
                                 "\"ENTER\" key to change the word")
-            self.termListBox.insert(END, "Click the \"Synonyms\" button " + \
-                                "above to swap between Synonyms and Antonyms")
+            synOrAnt = "Synonyms"
+            if self.antonymsMode:
+                synOrAnt = "Anyonyms"
+            self.termListBox.insert(END, "Click the \"" + synOrAnt + "\" " + \
+                                    "button above to swap between " + \
+                                    "Synonyms and Antonyms")
             try:
                 curSelectionTuple = self.termListBox.curselection()
                 self.currentListBoxIndex = curSelectionTuple[0]
@@ -351,7 +363,7 @@ class LiveThesaurus(object):
                 self.currentDefList = [None]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                self.definitons.set(None)
+                self.definitons.set("Click Here to Choose Definitions")
                 self.currentSynDict = None
                 self.currentAntDict = None
                 self.termListBox.delete(0, "end")
@@ -414,7 +426,7 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
-            self.checkForPlaceHolderText()
+            self.deletePlaceHolderText()
             self.textBox.insert(END, audioText)
             self.audioLabel.config(text="Hit Button Below to " + \
                                         "Record Audio")
