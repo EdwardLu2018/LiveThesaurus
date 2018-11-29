@@ -74,6 +74,7 @@ class LiveThesaurus(object):
         self.textScrollBar = Scrollbar(self.textFrame)
         
         self.textScrollBar.config(command=self.textBox.yview)
+        self.audioLabel.config(font=("Arial", 15, "bold"))
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
         self.textBox.tag_configure("highlight", background="lightskyblue1")
         self.textBox.bind("<FocusIn>", self.deletePlaceHolderText)
