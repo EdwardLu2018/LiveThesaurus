@@ -363,8 +363,8 @@ class LiveThesaurus(object):
                 self.currentWordLabel.config(text="Selected Word has no " + \
                                                   "Synonyms or Antonyms!")
                 self.highlight(False, self.previousWordIndex, self.previousWordObj)
-                self.previousWordObj = None
                 self.currentWordObj = None
+                self.previousWordObj = None
                 self.currentWordList = []
                 self.previousWordList = []
                 self.currentDefList = [None]
@@ -382,18 +382,17 @@ class LiveThesaurus(object):
             if self.textBox.get("1.0", END) == "\n":
                 self.highlight(False, self.previousWordIndex, self.previousWordObj)
                 self.currentWordLabel.config(text="Selected Word: None")
-                self.previousWordObj = None
                 self.currentWordObj = None
+                self.previousWordObj = None
                 self.currentWordList = []
                 self.previousWordList = []
                 self.currentDefList = [self.defInstructions]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                menu = self.definitionMenu["menu"]
-                menu.delete(0, "end")
-                self.definitons.set(self.defInstructions)
                 self.currentSynDict = None
                 self.currentAntDict = None
+                self.definitionMenu["menu"].delete(0, "end")
+                self.definitons.set(self.defInstructions)
                 self.addTermBoxInstr()
     
     # CITATION: code from: https://stackoverflow.com/questions/26084620/tkinter-option-menu-update-options-on-fly
