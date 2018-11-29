@@ -71,6 +71,7 @@ class LiveThesaurus(object):
                                 "Record Audio:", borderwidth=2, relief="solid")
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
                                   text="Record Audio", command=self.runAudio)
+        self.textScrollBar = Scrollbar(self.textFrame)
         
         self.textScrollBar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.textScrollBar.set)
@@ -173,7 +174,6 @@ class LiveThesaurus(object):
         currentView = self.termListBox.yview()
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
-        
         # if the index of the word or the word changes or if the placeholder 
         # text is present, remove the highlight from previous location
         if self.currentWordObj != self.previousWordObj or \
@@ -214,7 +214,7 @@ class LiveThesaurus(object):
         self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), 
                              "3." + str(len("Insert text and ") + \
                              len("Highlight")))
-        self.textScrollBar = Scrollbar(self.textFrame)
+        self.currentWordObj = None
     
     # checks if placeholder text is present
     def placeholderTextPresent(self):
