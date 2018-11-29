@@ -380,6 +380,7 @@ class LiveThesaurus(object):
             self.updateDefMenu(self.currentDefList)
         except:
             if self.textBox.get("1.0", END) == "\n":
+                self.highlight(False, self.previousWordIndex, self.previousWordObj)
                 self.currentWordLabel.config(text="Selected Word: None")
                 self.previousWordObj = None
                 self.currentWordObj = None
