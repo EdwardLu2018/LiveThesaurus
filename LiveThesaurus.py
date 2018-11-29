@@ -56,7 +56,7 @@ class LiveThesaurus(object):
         self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         
         self.instructionsFrame.config(background="orange")
-        self.instructionsLabel.config(font=("Helvetica", 22, "bold"))
+        self.instructionsLabel.config(font=("Arial", 22, "bold"))
         
         ## Left Frame
         self.leftFrame = Frame(self.master)
