@@ -378,10 +378,24 @@ class LiveThesaurus(object):
                     self.termListBox.insert(END, "No Synonyms!")
                 else:
                     self.termListBox.insert(END, "No Antonyms!")
-            self.updateDefMenu(self.currentDefList)
         except:
             if self.textBox.get("1.0", END) == "\n":
+                self.currentWordLabel.config(text="Selected Word: None")
+                self.previousWordObj = None
                 self.currentWordObj = None
+                self.currentWordList = []
+                self.previousWordList = []
+                self.currentDefList = [None]
+                self.currentDef = None
+                self.currentDefIndex = 0
+                self.currentSynDict = None
+                self.currentAntDict = None
+                self.termListBox.delete(0, "end")
+                if not self.antonymsMode:
+                    self.termListBox.insert(END, "No Synonyms!")
+                else:
+                    self.termListBox.insert(END, "No Antonyms!")
+        self.updateDefMenu(self.currentDefList)
     
     # CITATION: code from: https://stackoverflow.com/questions/26084620/tkinter-option-menu-update-options-on-fly
     # updates the definition menu according to the user's choice
