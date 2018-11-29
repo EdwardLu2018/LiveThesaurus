@@ -339,6 +339,7 @@ class LiveThesaurus(object):
             else:
                 self.currentWordLabel.config(text="Selected Word has no " + \
                                                   "Synonyms or Antonyms!")
+                self.highlight(False, self.previousWordIndex, self.previousWordObj)
                 self.previousWordObj = None
                 self.currentWordObj = None
                 self.currentWordList = []
