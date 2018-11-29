@@ -110,14 +110,16 @@ class LiveThesaurus(object):
         # creates the widgets on the right side of the screen
         self.currentWordLabel = Label(self.wordInfoFrame, 
                             text="Selected Word: " + str(self.currentWordObj),
-                            anchor=N)
+                            anchor=N, font=("Arial", 15, "bold"))
         self.definitionLabel = Label(self.innerDefFrame, text="Definition: ", 
-                                     anchor=N)
-        self.synonymTitle = Label(self.modeFrame, text="List", anchor=N)
+                                     anchor=N, font=("Arial", 15, "bold"))
+        self.synonymTitle = Label(self.modeFrame, text="List", anchor=N,
+                                  font=("Arial", 15, "bold"))
         self.toggleSynOrAntButton = Button(self.modeFrame, width=8, height=1, 
                                            text="Synonyms", 
                                            command=self.switchModes)
-        self.colonLabel = Label(self.modeFrame, text=":", anchor=N)
+        self.colonLabel = Label(self.modeFrame, text=":", anchor=N,
+                                font=("Arial", 15, "bold"))
         self.termListBox = Listbox(self.listBoxFrame, borderwidth=0, 
                                    relief="solid", cursor="hand2")
         self.termScrollBar = Scrollbar(self.listBoxFrame)

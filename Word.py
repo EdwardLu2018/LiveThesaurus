@@ -137,7 +137,10 @@ class Word(object):
                 del dict["isInformal"]
                 del dict["targetTerm"]
                 del dict["targetSlug"]
-                del dict["isVulgar"]
+                if dict["isVulgar"] != None:
+                    listOfAllTerms.remove(dict)
+                if dict["term"] == "":
+                    listOfAllTerms.remove(dict)
         
         infinitiveVerbDict = getInfinitiveVerbDict(self.word, self.wordTense, 
                                                    type)
