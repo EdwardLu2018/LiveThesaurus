@@ -380,7 +380,8 @@ class LiveThesaurus(object):
                     self.termListBox.insert(END, "No Antonyms!")
             self.updateDefMenu(self.currentDefList)
         except:
-            pass
+            if self.textBox.get("1.0", END) == "\n":
+                self.currentWordObj = None
     
     # CITATION: code from: https://stackoverflow.com/questions/26084620/tkinter-option-menu-update-options-on-fly
     # updates the definition menu according to the user's choice
