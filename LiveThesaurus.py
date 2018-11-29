@@ -468,3 +468,7 @@ def getDigitsAfterDecPt(strNum):
     indexOfDecPt = strNum.find(".")
     afterDecimal = int(strNum[indexOfDecPt + 1:])
     return afterDecimal
+
+root = Tk()
+application = LiveThesaurus(root)
+application.run()
