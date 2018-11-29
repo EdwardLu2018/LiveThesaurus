@@ -161,10 +161,12 @@ class LiveThesaurus(object):
                                                                 pady=(0,3))
         self.termListBox.pack(side=LEFT, fill=BOTH, expand=YES)
         self.termScrollBar.pack(side=LEFT, fill=Y)
-        
-    def run():
+    
+    # run function
+    def run(self):
         self.timerFiredWrapper()
         self.master.mainloop()
+        print("Thank you for using LiveThesaurus!")
     
     # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
     # CITATION: Code that Keeps ScrollBar in same location from:
@@ -465,7 +467,3 @@ def getDigitsAfterDecPt(strNum):
     indexOfDecPt = strNum.find(".")
     afterDecimal = int(strNum[indexOfDecPt + 1:])
     return afterDecimal
-
-root = Tk()
-application = LiveThesaurus(root)
-mainloop()
