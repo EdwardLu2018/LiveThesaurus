@@ -178,6 +178,7 @@ class LiveThesaurus(object):
         currentView = self.termListBox.yview()
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
+        
         # if the index of the word or the word changes or if the placeholder 
         # text is present, remove the highlight from previous location
         if self.currentWordObj != self.previousWordObj or \
