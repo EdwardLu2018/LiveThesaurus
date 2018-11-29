@@ -50,7 +50,7 @@ class LiveThesaurus(object):
         self.instructionsFrame = Frame(self.master)
         self.instructionsLabel = Label(self.instructionsFrame, 
                                     text="Welcome to LiveThesaurus!",
-                                    anchor=N, borderwidth=2, relief="solid")
+                                    anchor=N, borderwidth=5, relief="ridge")
         self.instructionsFrame.pack(side=TOP, fill=BOTH, padx=5, pady=(5,0))
         self.instructionsLabel.pack(side=TOP, fill=BOTH, padx=3, pady=3)
         
@@ -67,7 +67,7 @@ class LiveThesaurus(object):
                             cursor="pencil", wrap=WORD)
         self.makePlaceHolderText()
         self.audioLabel = Label(self.audioFrame, text="Hit Button Below to " + \
-                                "Record Audio:", borderwidth=1, relief="solid")
+                                "Record Audio:", borderwidth=2, relief="solid")
         self.audioButton = Button(self.audioFrame, width=35, height=1, 
                                   text="Record Audio", command=self.runAudio)
         
@@ -331,10 +331,11 @@ class LiveThesaurus(object):
                 self.currentListBoxIndex = 0
             self.currentWordList = [self.currentWordObj]
             if self.currentWordObj.hasSynOrAnt():
+                wordObjStr = self.currentWordObj.word
                 if "\n" in self.currentWordObj.word[-1]:
                     wordObjStr = self.currentWordObj.word[:-1]
                 self.currentWordLabel.config(text="Selected Word: \"" + \
-                                             self.currentWordObj.word + "\"")
+                                             wordObjStr + "\"")
                 self.currentWordIndex = self.textBox.index("sel.first")
                 self.currentSynDict = self.currentWordObj.synonymDict
                 self.currentAntDict = self.currentWordObj.antonymDict
