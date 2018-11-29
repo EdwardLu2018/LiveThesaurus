@@ -25,7 +25,8 @@ class LiveThesaurus(object):
         self.currentAnt = None
         self.currentListBoxIndex = 0
         
-        self.currentDefList = ["Click Here to Choose Definitions"]
+        self.defInstructions = "Click HERE to Choose Definitions!"
+        self.currentDefList = [self.defInstructions]
         self.currentDef = None
         self.currentDefIndex = 0
         
@@ -228,19 +229,19 @@ class LiveThesaurus(object):
     
     # adds instructions to TermBox
     def addTermBoxInstr(self, *args):
-        if self.currentSynDict == None and self.currentAntDict == None:
+        if self.currentSynDict == None and self.currentAntDict == None and \
+           self.currentDefList == None:
             self.termListBox.delete(0, "end")
-            self.termListBox.insert(END, "Change definitions with the " + \
-                                         "Dropdown Menu above next to " + \
-                                         "\"Definition:\"")
             self.termListBox.insert(END, "After picking a definition, " + \
                                          "Click HERE to Browse Terms")
             self.termListBox.insert(END,
                                 "Double click with the Mouse or Hit the " + \
                                 "\"ENTER\" key to change the word")
+            
             synOrAnt = "Synonyms"
             if self.antonymsMode:
                 synOrAnt = "Anyonyms"
+                
             self.termListBox.insert(END, "Click the \"" + synOrAnt + "\" " + \
                                     "button above to swap between " + \
                                     "Synonyms and Antonyms")
@@ -302,14 +303,15 @@ class LiveThesaurus(object):
     # replaces word in text box with the chosen synonym
     def replaceWordWithSynOrAnt(self, event):
         try:
-            synOrAnt = None
-            if not self.antonymsMode:
-                synOrAnt = self.currentSyn
-            else:
-                synOrAnt = self.currentAnt
-            self.replaceWordInTextBox(synOrAnt)
-            self.currentWordObj = Word(synOrAnt)
-            self.addToWordList(self.currentWordObj)
+            if not self.placeholderTextPresent():
+                synOrAnt = None
+                if not self.antonymsMode:
+                    synOrAnt = self.currentSyn
+                else:
+                    synOrAnt = self.currentAnt
+                self.replaceWordInTextBox(synOrAnt)
+                self.currentWordObj = Word(synOrAnt)
+                self.addToWordList(self.currentWordObj)
         except:
             pass
     
@@ -363,7 +365,7 @@ class LiveThesaurus(object):
                 self.currentDefList = [None]
                 self.currentDef = None
                 self.currentDefIndex = 0
-                self.definitons.set("Click Here to Choose Definitions")
+                self.definitons.set(self.defInstructions)
                 self.currentSynDict = None
                 self.currentAntDict = None
                 self.termListBox.delete(0, "end")
@@ -393,10 +395,10 @@ class LiveThesaurus(object):
     # Changes the definition label according to the user's choice
     def updateCurrentDef(self, *args):
         if self.currentDefList != [None]:
-            preDef = self.currentDef
+            prevDef = self.currentDef
             self.currentDef = str(self.definitons.get())
             # if user picked a new def, reset the ListBox Index
-            if self.currentDef != preDef:
+            if self.currentDef != prevDef:
                 self.currentListBoxIndex = 0
             self.currentDefIndex = self.currentDefList.index(self.currentDef)
             self.generateTermList()
