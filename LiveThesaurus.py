@@ -206,8 +206,9 @@ class LiveThesaurus(object):
     # makes the instructions/placeholder text
     def makePlaceHolderText(self):
         self.textBox.insert(END, self.instructions)
-        self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), "3." + \
-                             str(len("Insert text and ") + len("Highlight")))
+        self.textBox.tag_add("highlight", "3." + str(len("Insert text and ")), 
+                             "3." + str(len("Insert text and ") + \
+                             len("Highlight")))
         self.textScrollBar = Scrollbar(self.textFrame)
     
     # if the placeholdertext is in the TextBox, delete text
@@ -255,7 +256,7 @@ class LiveThesaurus(object):
             lastWordObj = None
             if len(self.currentWordList) > 1:
                 poppedWord = self.currentWordList.pop()
-                lastWordObj = self.currentWordList[len(self.currentWordList)-1]
+                lastWordObj = self.currentWordList[-1]
                 if lastWordObj != None:
                     self.previousWordList += [poppedWord]
                     self.replaceWordInTextBox(lastWordObj.word)
@@ -330,6 +331,8 @@ class LiveThesaurus(object):
                 self.currentListBoxIndex = 0
             self.currentWordList = [self.currentWordObj]
             if self.currentWordObj.hasSynOrAnt():
+                if "\n" in self.currentWordObj.word[-1]:
+                    wordObjStr = self.currentWordObj.word[:-1]
                 self.currentWordLabel.config(text="Selected Word: \"" + \
                                              self.currentWordObj.word + "\"")
                 self.currentWordIndex = self.textBox.index("sel.first")

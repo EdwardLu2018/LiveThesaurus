@@ -33,7 +33,7 @@ class Word(object):
     # checks if word has synonyms or antonyms
     def hasSynOrAnt(self):
         return not ("no thesaurus results" in self.thesaurusSourceText or \
-                    "\n" in self.word or "\t" in self.word)
+                    "\t" in self.word)
     
     # gets a javascript dictionary containing defintions, parts of speech, 
     # synonyms and antonyms
