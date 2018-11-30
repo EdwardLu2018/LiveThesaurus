@@ -171,7 +171,7 @@ class LiveThesaurus(object):
         self.master.mainloop()
         print("Thank you for using LiveThesaurus!")
     
-    # CITATION: timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
+    # CITATION: Code below is a modifid timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
     # CITATION: Code that Keeps ScrollBar in same location from:
     # https://stackoverflow.com/questions/36086474/python-tkinter-update-scrolled-listbox-wandering-scroll-position
     # constantly updates highlighted words in TextBox every 100 milliseconds
@@ -469,7 +469,8 @@ class LiveThesaurus(object):
     
     # exits application
     def quit(self, event):
-        self.master.destroy()
+        self.master.quit()
+        print("Thank you for using LiveThesaurus!")
 
 # returns the digits before the decimal point in a string representation of a 
 # float
