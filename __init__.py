@@ -1,4 +1,4 @@
-## Runs LiveThesaurus
+## Runs LiveThesaurus application
 
 from tkinter import *
 import LiveThesaurus as application
