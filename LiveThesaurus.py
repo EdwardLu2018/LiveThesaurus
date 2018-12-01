@@ -49,6 +49,14 @@ class LiveThesaurus(object):
         self.master.bind("<Command-a>", self.selectAll)
         self.master.bind("<Command-q>", self.quit)
         
+        # uncomment below if you are on windows:
+        """
+        self.master.bind("<Control-z>", self.undo)
+        self.master.bind("<Control-y>", self.redo)
+        self.master.bind("<Control-a>", self.selectAll)
+        # Control-q (quit) option not working on windows
+        """
+        
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
         self.instructionsLabel = Label(self.instructionsFrame, 
@@ -331,7 +339,7 @@ class LiveThesaurus(object):
         if word != self.currentWordList[len(self.currentWordList)-1]:
             self.currentWordList += [word]
     
-    # repalces the current word with another word in the textBox
+    # replaces the current word with another word in the textBox
     def replaceWordInTextBox(self, newWord):
         textBoxLine = getDigitsBeforeDecPt(self.currentWordIndex)
         textBoxCol = getDigitsAfterDecPt(self.currentWordIndex)
