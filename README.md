@@ -6,10 +6,10 @@ A. LiveThesaurus is an application that allows users to input any type of Englis
 <br>
 Q. How do I run LiveThesaurus?<br>
 A. Before running LiveThesaurus you need to download a few modules.<br>
-	1. requests: "$ python3 -m pip install requests"<br>
-	2. BeautifulSoup: "$ python3 -m pip install beautifulsoup4"<br>
-	3. inflect: "pip3 install inflect"<br>
-	4. nltk: "sudo pip install -U nltk"<br>
+	1. requests: '''$ python3 -m pip install requests'''<br>
+	2. BeautifulSoup: '''$ python3 -m pip install beautifulsoup4'''<br>
+	3. inflect: '''pip3 install inflect'''<br>
+	4. nltk: '''sudo pip install -U nltk'''<br>
 	5. Run the nltkInstall.py file<br>
 After doing this, please run the __init__.py file to run LiveThesaurus
 <br>
