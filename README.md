@@ -8,7 +8,6 @@ LiveThesaurus is an application that allows users to input any type of English t
 ## How do I run LiveThesaurus?
 
 Before running LiveThesaurus you need to download a few modules:
-In your favorite terminal, please run
 1. requests: ```$ python3 -m pip install requests```
 2. BeautifulSoup: ```$ python3 -m pip install beautifulsoup4```
 3. inflect: ```$ pip3 install inflect```
