@@ -366,9 +366,9 @@ class LiveThesaurus(object):
     def replaceWordInTextBox(self, newWord):
         textBoxLine = getDigitsBeforeDecPt(self.currentWordIndex)
         textBoxCol = getDigitsAfterDecPt(self.currentWordIndex)
-        endofcurrWordCol = textBoxCol + len(self.currentWordObj.word)
-        endofcurrWordIndex = str(textBoxLine) + "." + str(endofcurrWordCol)
-        self.textBox.replace(self.currentWordIndex, endofcurrWordIndex, newWord)
+        endOfCurrWordCol = textBoxCol + len(self.currentWordObj.word)
+        endOfCurrWordIndex = str(textBoxLine) + "." + str(endOfCurrWordCol)
+        self.textBox.replace(self.currentWordIndex, endOfCurrWordIndex, newWord)
     
     # gets the user's highlighted word, creates a Word object of that word, 
     # updates the current word label, and sets all variables to the 
