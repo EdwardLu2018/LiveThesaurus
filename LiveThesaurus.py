@@ -1,3 +1,5 @@
+## LiveThesaurus class. Creates the main application
+
 from tkinter import *
 from Word import *
 import audio as speechRecognizer
@@ -382,6 +384,8 @@ class LiveThesaurus(object):
                     self.termListBox.insert(END, "No Antonyms!")
             self.updateDefMenu(self.currentDefList)
         except:
+            # if there is no text in the TextBox, reset everything and show
+            # instructions
             if self.textBox.get("1.0", END) == "\n":
                 self.highlight(False, self.previousWordIndex, self.previousWordObj)
                 self.currentWordLabel.config(text="Selected Word: None")

@@ -1,3 +1,6 @@
+## Word class. Creates a class that has the synonyms/antonyms, definitions, and
+## tense of a word, given that the word has those properties on thesaurus.com
+
 import requests
 from bs4 import BeautifulSoup
 # verb file from NodeBox Linguistics:
@@ -160,7 +163,7 @@ class Word(object):
         return isinstance(other, Word) and self.word == other.word
 
 ## Natural Language Processing Helper Methods:
-# gets the tense of a word if it is a verb
+# gets the tense of a word if the word is a verb
 def getWordTense(word):
     wordTense = None # word is not a verb or has no tense
     try:

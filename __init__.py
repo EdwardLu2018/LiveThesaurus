@@ -1,3 +1,5 @@
+## Runs LiveThesaurus
+
 from tkinter import *
 import LiveThesaurus as application
 
