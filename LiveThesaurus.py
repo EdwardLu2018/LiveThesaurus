@@ -89,6 +89,7 @@ class LiveThesaurus(object):
         self.textBox.tag_configure("highlight", background="lightskyblue1")
         self.textBox.bind("<FocusIn>", self.deletePlaceHolderText)
         self.textBox.bind("<FocusOut>", self.addPlaceHolderText)
+        self.textBox.bind("<KeyPress>", self.checkForTyping)
 
         self.leftFrame.config(background="orange")
         self.textFrame.config(background="gainsboro")
@@ -217,6 +218,29 @@ class LiveThesaurus(object):
                 self.textBox.tag_remove("highlight", index, endofcurrWordIndex)
         except:
             pass
+    
+    # if user types something, remove highlight
+    def checkForTyping(self, event):
+        if event.keysym != "Left" and event.keysym != "Right" and \
+           event.keysym != "Up" and event.keysym != "Down": 
+            self.textBox.tag_remove("highlight", "1.0", END)
+            self.currentWordLabel.config(text="Selected Word has no " + \
+                                                "Synonyms or Antonyms!")
+            self.currentWordObj = None
+            self.previousWordObj = None
+            self.currentWordList = []
+            self.previousWordList = []
+            self.currentDefList = [None]
+            self.currentDef = None
+            self.currentDefIndex = 0
+            self.currentSynDict = None
+            self.currentAntDict = None
+            self.termListBox.delete(0, "end")
+            if not self.antonymsMode:
+                self.termListBox.insert(END, "No Synonyms!")
+            else:
+                self.termListBox.insert(END, "No Antonyms!")
+            self.updateDefMenu(self.currentDefList)
     
     # adds placeholder text to TextBox
     def addPlaceHolderText(self, event):
