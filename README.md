@@ -24,7 +24,7 @@ After doing this, please run the __init__.py file to run LiveThesaurus
 
 ## Shortcuts and commands:
 
-1. Pressing "ENTER", double clicking and pressing the left arrow all switch words with the selected 
-   synonym or antonym<br>
+1. Pressing "ENTER", double clicking and pressing the left arrow all switch words with the 
+   selected synonym or antonym<br>
 2. Command-a (or Control-a) selects all user entered text<br>
 3. Command-q quits the application<br>
