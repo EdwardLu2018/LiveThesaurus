@@ -6,6 +6,7 @@ A. LiveThesaurus is an application that allows users to input any type of Englis
 
 
 Q. How do I run LiveThesaurus?
+
 A. Before running LiveThesaurus you need to download a few modules.
 1. requests: ```$ python3 -m pip install requests```
 2. BeautifulSoup: ```$ python3 -m pip install beautifulsoup4```
