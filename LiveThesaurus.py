@@ -178,6 +178,7 @@ class LiveThesaurus(object):
     
     # run function
     def run(self):
+        print("Running LiveThesaurus...")
         self.timerFiredWrapper()
         self.master.mainloop()
         print("Thank you for using LiveThesaurus!")
