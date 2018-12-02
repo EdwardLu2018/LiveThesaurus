@@ -223,7 +223,6 @@ class LiveThesaurus(object):
     def removeHighlightWhenTyping(self, event):
         if event.keysym != "Left" and event.keysym != "Right" and \
            event.keysym != "Up" and event.keysym != "Down" and \
-           event.keysym != "space" and event.keysym != "Return" and \
            self.textBox.get("1.0", END) != "\n":
             self.textBox.tag_remove("highlight", "1.0", END)
             self.currentWordLabel.config(text="Selected Word has no " + \
