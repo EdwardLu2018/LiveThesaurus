@@ -16,7 +16,7 @@ class Word(object):
         self.thesaurusSourceText = self.getThesaurusWebText()
         self.parser = BeautifulSoup(self.thesaurusSourceText, "html.parser")
         self.script = self.getScript()
-        self.wordTense = getWordTense(self.word)
+        self.wordTense = getVerbTense(self.word)
         self.synonymDict = self.getDict("synonyms", self.wordTense)
         self.antonymDict = self.getDict("antonyms", self.wordTense)
         # definitions are the keys of the synonymDict on thesaurus.com
@@ -125,9 +125,8 @@ class Word(object):
                         termSet["term"] = newTerm
             # match syns and ants to the word tense if word is a verb
             elif pos == "verb" and tense != None:
-                wordTense = tense
                 for termSet in termList:
-                    newTerm = conjugatePhrase(termSet["term"], wordTense)
+                    newTerm = conjugatePhrase(termSet["term"], tense)
                     termSet["term"] = newTerm
             
             result[defn] = termList
@@ -164,18 +163,10 @@ class Word(object):
 
 ## Natural Language Processing Helper Methods:
 # gets the tense of a word if the word is a verb
-def getWordTense(word):
+def getVerbTense(word):
     wordTense = None # word is not a verb or has no tense
     try:
         wordTense = verb_tense(word)
-        # some words can't be conjugated in singular tenses, so make the tense
-        # past if the word is in singular past and present if word is in
-        # singular present
-        if "singular" in wordTense:
-            if "past" in wordTense:
-                wordTense = "past"
-            elif "present" in wordTense:
-                wordTense = "present"
     except:
         pass
         

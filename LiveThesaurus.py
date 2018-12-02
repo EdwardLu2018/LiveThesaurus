@@ -189,7 +189,7 @@ class LiveThesaurus(object):
     # constantly updates highlighted words in TextBox every 100 milliseconds
     def timerFiredWrapper(self):
         self.addTermBoxInstr()
-        
+
         currentView = self.termListBox.yview()
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
@@ -222,7 +222,8 @@ class LiveThesaurus(object):
     # if user types something, remove highlight
     def removeHighlightWhenTyping(self, event):
         if event.keysym != "Left" and event.keysym != "Right" and \
-           event.keysym != "Up" and event.keysym != "Down": 
+           event.keysym != "Up" and event.keysym != "Down" and \
+           self.textBox.get("1.0", END) != "\n": 
             self.textBox.tag_remove("highlight", "1.0", END)
             self.currentWordLabel.config(text="Selected Word has no " + \
                                                 "Synonyms or Antonyms!")
