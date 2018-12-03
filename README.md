@@ -17,7 +17,7 @@ Before running LiveThesaurus, you need to download a few modules:
 1. requests: ```$ python3 -m pip install requests```
 2. BeautifulSoup: ```$ python3 -m pip install beautifulsoup4```
 3. inflect: ```$ pip3 install inflect```
-4. nltk: ```$ sudo pip install -U nltk```
+4. nltk: ```$ sudo pip3 install -U nltk```
 Lastly, run the nltkInstall.py file
 
 After doing this, please run the __init__.py file to run LiveThesaurus
