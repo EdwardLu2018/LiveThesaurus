@@ -225,8 +225,7 @@ class LiveThesaurus(object):
            event.keysym != "Up" and event.keysym != "Down" and \
            self.textBox.get("1.0", END) != "\n":
             self.textBox.tag_remove("highlight", "1.0", END)
-            self.currentWordLabel.config(text="Selected Word has no " + \
-                                                "Synonyms or Antonyms!")
+            self.currentWordLabel.config(text="Selected Word: None")
             self.currentWordObj = None
             self.previousWordObj = None
             self.currentWordList = []
