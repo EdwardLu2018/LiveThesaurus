@@ -23,7 +23,7 @@ class LiveThesaurus(object):
         self.antonymsMode = False
         self.currentSynDict = None
         self.currentSyn = None
-        self.currentAntDict = None        
+        self.currentAntDict = None
         self.currentAnt = None
         self.currentListBoxIndex = 0
         

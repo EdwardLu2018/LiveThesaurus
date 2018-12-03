@@ -167,13 +167,15 @@ def getVerbTense(word):
     wordTense = None # word is not a verb or has no tense
     try:
         wordTense = verb_tense(word)
-        # some words can't be conjugated in first-person singular, 
-        # so make the tense past if the original word is in first-person
-        # singular past, and present if word is in first-person
+        # some words can't be conjugated in first/second-person singular, 
+        # so make the tense past if the original word is in 1st/2nd-person
+        # singular past, and present if word is in 1st/2nd-person
         # singular present
-        if "1st singular past" == wordTense:
+        if "1st singular past" == wordTense or \
+           "2nd singular past" == wordTense:
             wordTense = "past"
-        elif "1st singular present" == wordTense:
+        elif "1st singular present" == wordTense or \
+             "2nd singular present" == wordTense:
             wordTense = "present"
     except:
         pass
