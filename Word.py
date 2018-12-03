@@ -275,7 +275,7 @@ def makePhrasePlural(phrase):
     # pluralize with inflect if there is a comma in the phrase
     if "," in phrase:
         phrase = inflect.plural(phrase)
-        
+    
     # tokenizes the words and creates a list of tuples containing words
     # and their POS
     phraseList = nltk.word_tokenize(phrase)
