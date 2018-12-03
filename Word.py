@@ -286,7 +286,7 @@ def makePhrasePlural(phrase):
     # finds index of first noun and makes that noun plural
     indexOfFirstNoun = 0
     for i in range(len(posTags)):
-        if posTags[i][1] == "NN":
+        if "NN" in posTags[i][1]:
             indexOfFirstNoun = i
             break
     phraseList[indexOfFirstNoun] = makePlural(phraseList[indexOfFirstNoun])
