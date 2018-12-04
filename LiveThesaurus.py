@@ -483,59 +483,60 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
-            if "synonyms for " in audioText or "antonyms for " in audioText or \
-               "synonyms of " in audioText or "antonyms of " in audioText or \
-               "synonym for " in audioText or "antonym for " in audioText or \
-               "synonym of " in audioText or "antonym of " in audioText:
-                if "synonyms for " in audioText:
+            if "synonyms for" in audioText or "antonyms for" in audioText or \
+               "synonyms of" in audioText or "antonyms of" in audioText or \
+               "synonym for" in audioText or "antonym for" in audioText or \
+               "synonym of" in audioText or "antonym of" in audioText:
+                word = ""
+                if "synonyms for" in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonyms for ") + len("synonyms for ")
+                    indexOfWord = audioText.find("synonyms for") + len("synonyms for")
                     word = audioText[indexOfWord:]
                 elif "antonyms for " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonyms for ") + len("antonyms for ")
+                    indexOfWord = audioText.find("antonyms for") + len("antonyms for")
                     word = audioText[indexOfWord:]
                 elif "synonyms of " in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonyms of ") + len("synonyms of ")
+                    indexOfWord = audioText.find("synonyms of") + len("synonyms of")
                     word = audioText[indexOfWord:]
                 elif "antonyms of " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonyms of ") + len("antonyms of ")
+                    indexOfWord = audioText.find("antonyms of") + len("antonyms of")
                     word = audioText[indexOfWord:]
                 elif "synonym for " in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonym for ") + len("synonym for ")
+                    indexOfWord = audioText.find("synonym for") + len("synonym for")
                     word = audioText[indexOfWord:]
                 elif "antonym for " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonym for ") + len("antonym for ")
+                    indexOfWord = audioText.find("antonym for") + len("antonym for")
                     word = audioText[indexOfWord:]
                 elif "synonym of " in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonyms of ") + len("synonyms of ")
+                    indexOfWord = audioText.find("synonym of") + len("synonym of")
                     word = audioText[indexOfWord:]
                 elif "antonym of " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonym of ") + len("antonym of ")
+                    indexOfWord = audioText.find("antonym of") + len("antonym of")
                     word = audioText[indexOfWord:]
 
                 self.previousWordObj = self.currentWordObj
                 self.previousWordIndex = self.currentWordIndex
-                self.currentWordObj = Word(word)
+                self.currentWordObj = Word(word) if word != "" else None
                 if self.currentWordObj != self.previousWordObj:
                     self.currentDefIndex = 0
                     self.currentListBoxIndex = 0
                 self.currentWordList = [self.currentWordObj]
-                if self.currentWordObj.hasSynOrAnt():
+                if self.currentWordObj != None and self.currentWordObj.hasSynOrAnt():
                     self.deletePlaceHolderText()
                     audioText = self.currentWordObj.word
                     self.currentWordLabel.config(text="Selected Word: \"" + \
