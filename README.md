@@ -1,7 +1,5 @@
 # LiveThesaurus
 
-LiveThesaurus is a Term Project for the course 15-112 Fundamentals of Programming and Computer Science at Carnegie Mellon Univeristy.
-
 ## What is LiveThesaurus?
 
 LiveThesaurus is an application that allows users to input any type of English text and 
