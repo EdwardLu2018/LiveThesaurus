@@ -50,13 +50,10 @@ class LiveThesaurus(object):
         self.master.bind("<Command-a>", self.selectAll)
         self.master.bind("<Command-q>", self.quit)
         
-        # uncomment below if you are on windows:
-        """
         self.master.bind("<Control-z>", self.undo)
         self.master.bind("<Control-y>", self.redo)
         self.master.bind("<Control-a>", self.selectAll)
-        # Control-q (quit) option not working on windows
-        """
+        self.master.bind("<Control-q>", self.quit)
         
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
