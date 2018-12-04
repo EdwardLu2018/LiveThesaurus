@@ -497,7 +497,7 @@ class LiveThesaurus(object):
         self.textBox.mark_set(INSERT, "1.0")
         self.textBox.see(INSERT)
     
-    # clears text from TextBox after key press
+    # clears text from TextBox
     def deleteText(self, *args):
         self.textBox.delete("1.0", END)
     
