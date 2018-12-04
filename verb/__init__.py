@@ -5,7 +5,7 @@
 # http://www.cis.upenn.edu/~xtag/
 
 # Each verb and its tenses is a list,
-# indexed according to the following keys:
+# indexed according to the following keys: 
 verb_tenses_keys = {
     "infinitive"           : 0,
     "1st singular present" : 1,
