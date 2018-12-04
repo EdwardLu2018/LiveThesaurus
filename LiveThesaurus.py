@@ -1,6 +1,7 @@
 ## LiveThesaurus class. Creates the main application
 
 from tkinter import *
+from tkinter import messagebox
 from Word import *
 import audio as speechRecognizer
 
@@ -48,12 +49,10 @@ class LiveThesaurus(object):
         self.master.bind("<Command-z>", self.undo)
         self.master.bind("<Command-y>", self.redo)
         self.master.bind("<Command-a>", self.selectAll)
-        self.master.bind("<Command-q>", self.quit)
         
         self.master.bind("<Control-z>", self.undo)
         self.master.bind("<Control-y>", self.redo)
         self.master.bind("<Control-a>", self.selectAll)
-        self.master.bind("<Control-q>", self.quit)
         
         ## Instructions Frame
         self.instructionsFrame = Frame(self.master)
@@ -211,6 +210,7 @@ class LiveThesaurus(object):
             endofcurrWordCol = textBoxCol + len(wordObj.word)
             endofcurrWordIndex = str(textBoxLine) + "." + str(endofcurrWordCol)
             if add == True:
+                self.textBox.tag_remove("highlight", "1.0", END)
                 self.textBox.tag_add("highlight", index, endofcurrWordIndex)
             else:
                 self.textBox.tag_remove("highlight", index, endofcurrWordIndex)
@@ -221,7 +221,7 @@ class LiveThesaurus(object):
     def removeHighlightWhenTyping(self, event):
         if event.keysym != "Left" and event.keysym != "Right" and \
            event.keysym != "Up" and event.keysym != "Down" and \
-           self.textBox.get("1.0", END) != "\n":
+           self.textBox.get("1.0", "end-1c") != "":
             self.textBox.tag_remove("highlight", "1.0", END)
             self.currentWordLabel.config(text="Selected Word: None")
             self.currentWordObj = None
@@ -242,8 +242,8 @@ class LiveThesaurus(object):
     
     # adds placeholder text to TextBox
     def addPlaceHolderText(self, event):
-        textBoxText = self.textBox.get("1.0", END)
-        if textBoxText == "\n":
+        textBoxText = self.textBox.get("1.0", "end-1c")
+        if textBoxText == "":
             self.textBox.tag_remove("highlight", "1.0", END)
             self.makePlaceHolderText()
     
@@ -258,8 +258,8 @@ class LiveThesaurus(object):
     
     # checks if placeholder text is present
     def placeholderTextPresent(self):
-        textBoxText = self.textBox.get("1.0", END)
-        placeHolderText = self.instructions + "\n"
+        textBoxText = self.textBox.get("1.0", "end-1c")
+        placeHolderText = self.instructions
         return textBoxText == placeHolderText
     
     # if the placeholdertext is in the TextBox, delete text
@@ -416,7 +416,7 @@ class LiveThesaurus(object):
         except:
             # if there is no text in the TextBox and nothing is highlighted, 
             # reset everything and show instructions
-            if self.textBox.get("1.0", END) == "\n":
+            if self.textBox.get("1.0", "end-1c") == "":
                 self.highlight(False, self.previousWordIndex, self.previousWordObj)
                 self.currentWordLabel.config(text="Selected Word: None")
                 self.currentWordObj = None
@@ -483,12 +483,83 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
-            self.deletePlaceHolderText()
-            self.textBox.insert(END, audioText)
-            self.audioLabel.config(text="Hit Button Below to " + \
-                                        "Record Audio")
+            if "synonyms for " in audioText or "antonyms for " in audioText or \
+               "synonyms of " in audioText or "antonyms of " in audioText or \
+               "synonym for " in audioText or "antonym for " in audioText or \
+               "synonym of " in audioText or "antonym of " in audioText:
+                if "synonyms for " in audioText:
+                    if self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("synonyms for ") + len("synonyms for ")
+                    word = audioText[indexOfWord:]
+                elif "antonyms for " in audioText:
+                    if not self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("antonyms for ") + len("antonyms for ")
+                    word = audioText[indexOfWord:]
+                elif "synonyms of " in audioText:
+                    if self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("synonyms of ") + len("synonyms of ")
+                    word = audioText[indexOfWord:]
+                elif "antonyms of " in audioText:
+                    if not self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("antonyms of ") + len("antonyms of ")
+                    word = audioText[indexOfWord:]
+                elif "synonym for " in audioText:
+                    if self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("synonym for ") + len("synonym for ")
+                    word = audioText[indexOfWord:]
+                elif "antonym for " in audioText:
+                    if not self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("antonym for ") + len("antonym for ")
+                    word = audioText[indexOfWord:]
+                elif "synonym of " in audioText:
+                    if self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("synonyms of ") + len("synonyms of ")
+                    word = audioText[indexOfWord:]
+                elif "antonym of " in audioText:
+                    if not self.antonymsMode:
+                        self.switchModes()
+                    indexOfWord = audioText.find("antonym of ") + len("antonym of ")
+                    word = audioText[indexOfWord:]
+
+                self.previousWordObj = self.currentWordObj
+                self.previousWordIndex = self.currentWordIndex
+                self.currentWordObj = Word(word)
+                if self.currentWordObj != self.previousWordObj:
+                    self.currentDefIndex = 0
+                    self.currentListBoxIndex = 0
+                self.currentWordList = [self.currentWordObj]
+                if self.currentWordObj.hasSynOrAnt():
+                    self.deletePlaceHolderText()
+                    audioText = self.currentWordObj.word
+                    self.currentWordLabel.config(text="Selected Word: \"" + \
+                                             audioText + "\"")
+                    if self.placeholderTextPresent():
+                        self.currentWordIndex = "1.0"
+                        self.textBox.insert(END, audioText)
+                    elif audioText in self.textBox.get("1.0", "end-1c"):
+                        self.currentWordIndex = self.textBox.search(audioText, "1.0", END)
+                    else:
+                        self.currentWordIndex = self.textBox.index("end-1c")
+                        self.textBox.insert(END, audioText)
+                    self.currentSynDict = self.currentWordObj.synonymDict
+                    self.currentAntDict = self.currentWordObj.antonymDict
+                    self.currentDefList = self.currentWordObj.definitionList
+                    self.updateDefMenu(self.currentDefList)
+                    self.audioLabel.config(text="Hit Button Below to " + \
+                                                "Record Audio")
+                else:
+                    messagebox.showerror("ERROR!", "Invalid Word! Please Try Again.")
+            else:
+                self.textBox.insert(END, audioText)
         else:
-            self.audioLabel.config(text="Unable to Get Audio. Please Try Again.")
+            messagebox.showerror("ERROR!", "Unable to Get Audio! Please Try Again.")
     
     # Code From: https://stackoverflow.com/questions/13801557/select-all-text-in-a-text-widget-using-python-3-with-tkinter
     # selects all text in a TextBox
@@ -500,11 +571,6 @@ class LiveThesaurus(object):
     # clears text from TextBox
     def deleteText(self, *args):
         self.textBox.delete("1.0", END)
-    
-    # exits application
-    def quit(self, event):
-        self.master.quit()
-        print("Thank you for using LiveThesaurus!")
 
 # returns the digits before the decimal point in a string representation of a 
 # float

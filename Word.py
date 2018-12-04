@@ -284,12 +284,25 @@ def makePhrasePlural(phrase):
     posTags = nltk.pos_tag(phraseList)
     
     # finds index of first noun and makes that noun plural
+    # finds index of first verb and turns that verb into infinitive tense
     indexOfFirstNoun = 0
+    indexOfFirstVerb = 0
+    if "one" not in posTags[0]:
+        for i in range(len(posTags)):
+            if "NN" in posTags[i][1]:
+                indexOfFirstNoun = i
+                break
     for i in range(len(posTags)):
-        if "NN" in posTags[i][1]:
-            indexOfFirstNoun = i
+        if "VB" in posTags[i][1]:
+            indexOfFirstVerb = i
             break
-    phraseList[indexOfFirstNoun] = makePlural(phraseList[indexOfFirstNoun])
+
+    if "one" in posTags[0]:
+        phraseList[indexOfFirstNoun] = "ones"
+    else:
+        phraseList[indexOfFirstNoun] = makePlural(phraseList[indexOfFirstNoun])
+
+    phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], "infinitive")
     
     phrase = " ".join(phraseList)
     phrase = phrase.replace(" ,", ",")
