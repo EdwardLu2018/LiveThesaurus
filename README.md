@@ -1,6 +1,6 @@
 # LiveThesaurus
 
-This is a Term Project for 15-112 Fundamentals of Programming and Computer Science course at Carnegie Mellon Univeristy.
+This is a Term Project for the course 15-112 Fundamentals of Programming and Computer Science at Carnegie Mellon Univeristy.
 
 ## What is LiveThesaurus?
 
