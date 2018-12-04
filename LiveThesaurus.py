@@ -557,6 +557,7 @@ class LiveThesaurus(object):
                 else:
                     messagebox.showerror("ERROR!", "Invalid Word! Please Try Again.")
             else:
+                self.deletePlaceHolderText()
                 self.textBox.insert(END, audioText)
         else:
             messagebox.showerror("ERROR!", "Unable to Get Audio! Please Try Again.")
