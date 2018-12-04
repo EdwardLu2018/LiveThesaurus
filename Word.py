@@ -287,24 +287,32 @@ def makePhrasePlural(phrase):
     # finds index of first verb and turns that verb into infinitive tense
     indexOfFirstNoun = 0
     indexOfFirstVerb = 0
-    if "one" != posTags[0]:
+    if "one" != posTags[0][0]:
         for i in range(len(posTags)):
             if "NN" in posTags[i][1]:
                 indexOfFirstNoun = i
                 break
+
     for i in range(len(posTags)):
         if "VB" in posTags[i][1]:
             indexOfFirstVerb = i
             break
 
-    if "one" == posTags[0]:
+    # if the first noun is "one", make "one" plural
+    if "one" == posTags[0][0]:
         phraseList[indexOfFirstNoun] = "ones"
     else:
+        while indexOfFirstNoun + 1 < len(posTags) and \
+              "NN" in posTags[indexOfFirstNoun][1]:
+            indexOfFirstNoun += 1
+        if phraseList[indexOfFirstNoun] == "who":
+            indexOfFirstNoun -= 1
         phraseList[indexOfFirstNoun] = makePlural(phraseList[indexOfFirstNoun])
 
     if indexOfFirstNoun != indexOfFirstVerb:
-        phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], "infinitive")
-    
+        phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], 
+                                                 "infinitive")
+
     phrase = " ".join(phraseList)
     phrase = phrase.replace(" ,", ",")
     
