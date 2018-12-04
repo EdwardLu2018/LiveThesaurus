@@ -16,12 +16,12 @@ def getAudio():
         # key="GOOGLE_SPEECH_RECOGNITION_API_KEY")"
         # instead of `r.recognize_google(audio)"
         audioText = r.recognize_google(audio)
-        print("Speech to Text: " + audioText)
+        # print("Speech to Text: " + audioText)
         return audioText
     except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand audio")
+        # print("Google Speech Recognition could not understand audio")
         return None
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition" + \
-              "service; {0}".format(e))
+        # print("Could not request results from Google Speech Recognition" + \
+        #       "service; {0}".format(e))
         return None
