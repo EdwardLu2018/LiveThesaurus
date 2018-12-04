@@ -13,6 +13,7 @@ class LiveThesaurus(object):
                             "Synonyms or Antonyms"
         
         self.timerDelay = 100
+        
         self.currentWordObj = None
         self.previousWordObj = None
         self.currentWordList = []
