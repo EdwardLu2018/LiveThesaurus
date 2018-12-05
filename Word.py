@@ -319,12 +319,11 @@ def makePhrasePlural(phrase):
     else:
         # finds the index of the last noun before the first verb
         while indexOfLastNounUntilVerb + 1 < len(posTags) and \
-              "NN" in posTags[indexOfLastNounUntilVerb][1]:
+              "NN" in posTags[indexOfLastNounUntilVerb + 1][1]:
             indexOfLastNounUntilVerb += 1
         if phraseList[indexOfLastNounUntilVerb] == "who" or \
            phraseList[indexOfLastNounUntilVerb] == "," or \
-           phraseList[indexOfLastNounUntilVerb] == ";" or \
-           "NN" not in posTags[indexOfLastNounUntilVerb][1]:
+           phraseList[indexOfLastNounUntilVerb] == ";":
             indexOfLastNounUntilVerb -= 1
         phraseList[indexOfLastNounUntilVerb] = makePlural(phraseList[indexOfLastNounUntilVerb])
 
