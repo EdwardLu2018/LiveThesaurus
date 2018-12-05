@@ -23,8 +23,10 @@ Before running LiveThesaurus, you need to download a few modules:
 	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
 	- ```$ cd pyaudio```<br>
 	- ```$ sudo python setup.py install```<br>
-	- ```$ sudo pip3 install SpeechRecognition```<br>
-If modules are not installed, try pip[your python version], for example, pip3.6<br>
+	- ```$ sudo pip3 install SpeechRecognition```
+
+If modules are not installed, try pip[your python version], for example, pip3.6
+
 After doing this, please run the __init__.py file to run LiveThesaurus
 
 
