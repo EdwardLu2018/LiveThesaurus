@@ -321,9 +321,7 @@ def makePhrasePlural(phrase):
         while indexOfLastNounUntilVerb + 1 < len(posTags) and \
               "NN" in posTags[indexOfLastNounUntilVerb + 1][1]:
             indexOfLastNounUntilVerb += 1
-        if phraseList[indexOfLastNounUntilVerb] == "who" or \
-           phraseList[indexOfLastNounUntilVerb] == "," or \
-           phraseList[indexOfLastNounUntilVerb] == ";":
+        if phraseList[indexOfLastNounUntilVerb] == "who":
             indexOfLastNounUntilVerb -= 1
         phraseList[indexOfLastNounUntilVerb] = makePlural(phraseList[indexOfLastNounUntilVerb])
 
