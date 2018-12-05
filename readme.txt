@@ -34,4 +34,4 @@ Shortcuts and commands:
 	   You can also say "synonyms of [word]", "synonym for [word]", or "synonym of [word]". You can also
 	   say "antonyms" instead of "synonyms".
 	3. Command-a (or Control-a) selects all user entered text
-	4. Command-q quits the application
+	4. Command-q (or Control-q) quits the application
