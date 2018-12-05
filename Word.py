@@ -266,6 +266,9 @@ def getPOS(noun):
 
 # makes a noun plural if it's singular
 def makePlural(noun):
+    # these words do not have plural forms
+    if noun == "somebody" or noun == "something" or noun == "someone":
+        return noun
     try:
         if getPOS(noun) == "singular":
             noun = inflect.plural(noun)
