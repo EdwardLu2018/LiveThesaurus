@@ -88,7 +88,7 @@ class LiveThesaurus(object):
         self.textBox.tag_configure("highlight", background="lightskyblue1")
         self.textBox.bind("<FocusIn>", self.deletePlaceHolderText)
         self.textBox.bind("<FocusOut>", self.addPlaceHolderText)
-        self.textBox.bind("<KeyPress>", self.removeHighlightWhenTyping)
+        self.textBox.bind("<KeyPress>", self.keyPressedInTextBox)
 
         self.leftFrame.config(background="orange")
         self.textFrame.config(background="gainsboro")
@@ -216,8 +216,8 @@ class LiveThesaurus(object):
         except:
             pass
     
-    # if user types something, remove highlight
-    def removeHighlightWhenTyping(self, event):
+    # handles key pressed events in the textBox
+    def keyPressedInTextBox(self, event):
         self.prevKey = event.keysym
         if event.keysym != "Left" and event.keysym != "Right" and \
            event.keysym != "Up" and event.keysym != "Down" and \
