@@ -26,7 +26,8 @@ class Word(object):
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
         HTMLTextWord = self.word
-        if HTMLTextWord == "" or HTMLTextWord.isdigit() or HTMLTextWord.isspace():
+        if HTMLTextWord == "" or HTMLTextWord.isdigit() or \
+                                 HTMLTextWord.isspace():
             return None
         elif " " in HTMLTextWord:
             HTMLTextWord = HTMLTextWord.replace(" ", "%20")
@@ -199,7 +200,8 @@ def getInfinitiveVerbDict(word, tense, type):
             elif type == "antonyms":
                 infinitiveDict = infinitiveWordObj.getDict("antonyms", tense)
             
-            # infinitive verb dictionary should not have terms that are not verbs
+            # infinitive verb dictionary should not have terms that are not 
+            # verbs
             for defn in reversed(list(infinitiveDict.keys())):
                 posStartIndex = defn.find("(") + 1
                 posEndIndex = defn.find(")")
@@ -329,8 +331,9 @@ def makePhrasePlural(phrase):
         phraseList[indexOfLastNounUntilVerb] = makePlural(phraseList[indexOfLastNounUntilVerb])
 
     if indexOfLastNounUntilVerb != indexOfFirstVerb:
-        if posTags[indexOfFirstVerb][1] != "VBN": # for verbs that end in "en", singular and 
-                                                  # plural subjects do not matter
+        if posTags[indexOfFirstVerb][1] != "VBN": # for verbs that end in "en", 
+                                                  # singular and plural
+                                                  # subjects do not matter
             phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], 
                                                      "infinitive")
 

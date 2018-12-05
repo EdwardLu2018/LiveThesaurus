@@ -154,7 +154,8 @@ class LiveThesaurus(object):
         self.termListBox.bind("<Left>", self.replaceWordWithSynOrAnt) 
         
         # packs all widgets in the right frame of the application
-        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), pady=2)
+        self.rightFrame.pack(side=RIGHT, fill=BOTH, expand=YES, padx=(0,5), 
+                                                                pady=2)
         self.wordAndDefFrame.pack(side=TOP, fill=BOTH, padx=(3,0), pady=3)
         self.wordInfoFrame.pack(side=TOP, fill=BOTH, padx=3, pady=(3,0))
         self.currentWordLabel.pack(side=TOP, padx=2, pady=2)
@@ -163,12 +164,14 @@ class LiveThesaurus(object):
         self.definitionLabel.pack(side=LEFT, fill=BOTH, pady=(2,0))
         self.definitionMenu.pack(side=LEFT)
         self.termFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=(3,0), pady=3)
-        self.innerTermFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=3)
+        self.innerTermFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
+                                                                  pady=3)
         self.modeFrame.pack(side=TOP, padx=2)
         self.synonymTitle.pack(side=LEFT, pady=2)
         self.toggleSynOrAntButton.pack(side=LEFT, pady=2)
         self.colonLabel.pack(side=LEFT, pady=2)
-        self.listBoxFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, pady=(0,3))
+        self.listBoxFrame.pack(side=TOP, fill=BOTH, expand=YES, padx=3, 
+                                                                pady=(0,3))
         self.termListBox.pack(side=LEFT, fill=BOTH, expand=YES)
         self.termScrollBar.pack(side=LEFT, fill=Y)
     
@@ -399,7 +402,8 @@ class LiveThesaurus(object):
             else:
                 self.currentWordLabel.config(text="Selected Word has no " + \
                                                   "Synonyms or Antonyms!")
-                self.highlight(False, self.previousWordIndex, self.previousWordObj)
+                self.highlight(False, self.previousWordIndex, 
+                                      self.previousWordObj)
                 self.currentWordObj = None
                 self.previousWordObj = None
                 self.currentWordList = []
@@ -419,7 +423,8 @@ class LiveThesaurus(object):
             # if there is no text in the TextBox and nothing is highlighted, 
             # reset everything and show instructions
             if self.textBox.get("1.0", "end-1c") == "":
-                self.highlight(False, self.previousWordIndex, self.previousWordObj)
+                self.highlight(False, self.previousWordIndex, 
+                                      self.previousWordObj)
                 self.currentWordLabel.config(text="Selected Word: None")
                 self.currentWordObj = None
                 self.previousWordObj = None
@@ -496,42 +501,50 @@ class LiveThesaurus(object):
                 if "synonyms for" in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonyms for") + len("synonyms for")
+                    indexOfWord = audioText.find("synonyms for") + \
+                                            len("synonyms for")
                     word = audioText[indexOfWord:]
                 elif "antonyms for " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonyms for") + len("antonyms for")
+                    indexOfWord = audioText.find("antonyms for") + \
+                                            len("antonyms for")
                     word = audioText[indexOfWord:]
                 elif "synonyms of " in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonyms of") + len("synonyms of")
+                    indexOfWord = audioText.find("synonyms of") + \
+                                            len("synonyms of")
                     word = audioText[indexOfWord:]
                 elif "antonyms of " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonyms of") + len("antonyms of")
+                    indexOfWord = audioText.find("antonyms of") + \
+                                            len("antonyms of")
                     word = audioText[indexOfWord:]
                 elif "synonym for " in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonym for") + len("synonym for")
+                    indexOfWord = audioText.find("synonym for") + \
+                                            len("synonym for")
                     word = audioText[indexOfWord:]
                 elif "antonym for " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonym for") + len("antonym for")
+                    indexOfWord = audioText.find("antonym for") + \
+                                            len("antonym for")
                     word = audioText[indexOfWord:]
                 elif "synonym of " in audioText:
                     if self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("synonym of") + len("synonym of")
+                    indexOfWord = audioText.find("synonym of") + \
+                                            len("synonym of")
                     word = audioText[indexOfWord:]
                 elif "antonym of " in audioText:
                     if not self.antonymsMode:
                         self.switchModes()
-                    indexOfWord = audioText.find("antonym of") + len("antonym of")
+                    indexOfWord = audioText.find("antonym of") + \
+                                            len("antonym of")
                     word = audioText[indexOfWord:]
 
                 # update the current word
@@ -549,7 +562,8 @@ class LiveThesaurus(object):
                 self.currentWordList = [self.currentWordObj]
 
                 # checks if current word is valid
-                if self.currentWordObj != None and self.currentWordObj.hasSynOrAnt():
+                if self.currentWordObj != None and \
+                   self.currentWordObj.hasSynOrAnt():
                     self.deletePlaceHolderText()
                     audioWord = self.currentWordObj.word
                     self.currentWordLabel.config(text="Selected Word: \"" + \
@@ -558,7 +572,8 @@ class LiveThesaurus(object):
                         self.currentWordIndex = "1.0"
                         self.textBox.insert(END, audioWord)
                     elif audioWord in self.textBox.get("1.0", "end-1c"):
-                        self.currentWordIndex = self.textBox.search(audioWord, "1.0", END)
+                        self.currentWordIndex = self.textBox.search(audioWord, 
+                                                                    "1.0", END)
                     else:
                         self.currentWordIndex = self.textBox.index("end-1c")
                         self.textBox.insert(END, audioWord)
@@ -574,16 +589,19 @@ class LiveThesaurus(object):
                     partOfWord = word[1:revealedChars]
                     if revealedChars <= len(word[1:]):
                         partOfWord += "..."
-                    messagebox.showerror("ERROR!", "\"" + partOfWord + "\" has no " + \
-                                                   "Synonyms or Antonyms. Please Try Again.")
+                    messagebox.showerror("ERROR!", "\"" + partOfWord + \
+                                                   "\" has no " + \
+                                                   "Synonyms or Antonyms. " + \
+                                                   "Please Try Again.")
 
-            # if user did not ask for synonyms or antonyms, then just insert the audio
-            # at the end of the text
+            # if user did not ask for synonyms or antonyms, then just insert the
+            # audio at the end of the text
             else:
                 self.deletePlaceHolderText()
                 self.textBox.insert(END, audioText)
         else:
-            messagebox.showerror("ERROR!", "Unable to Get Audio! Please Try Again.")
+            messagebox.showerror("ERROR!", "Unable to Get Audio! Please Try "+\
+                                           "Again.")
     
     # Code From: https://stackoverflow.com/questions/13801557/select-all-text-in-a-text-widget-using-python-3-with-tkinter
     # selects all text in a TextBox
