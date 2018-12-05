@@ -20,10 +20,10 @@ Before running LiveThesaurus, you need to download a few modules:
 4. nltk: ```$ sudo pip3 install -U nltk```
 5. run the nltkInstall.py file
 6. Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
-	- $ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git<br>
-	- $ cd pyaudio<br>
-	- $ sudo python setup.py install<br>
-	- $ sudo pip3 install SpeechRecognition
+	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
+	- ```$ cd pyaudio```<br>
+	- ```$ sudo python setup.py install```<br>
+	- ```$ sudo pip3 install SpeechRecognition```
 
 After doing this, please run the __init__.py file to run LiveThesaurus
 
