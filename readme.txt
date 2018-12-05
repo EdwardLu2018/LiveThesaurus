@@ -1,6 +1,7 @@
 ###################
    LiveThesaurus   
 ###################
+https://github.com/EdwardLu2018/LiveThesaurus
 
 Q. What is LiveThesaurus?
 A. LiveThesaurus is an application that allows users to input any type of English text and 
@@ -18,7 +19,13 @@ A. Before running LiveThesaurus, you need to download a few modules.
 	3. inflect: $ pip3 install inflect
 	4. nltk: $ sudo pip3 install -U nltk
 	5. Run the nltkInstall.py file
-After doing this, please run the __init__.py file to run LiveThesaurus
+	6. Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):
+		- $ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git
+		- $ cd pyaudio
+		- $ sudo python setup.py install
+		- $ sudo pip3 install SpeechRecognition
+	If modules are not installed, try pip[your python version], for example, pip3.6
+	After doing this, please run the __init__.py file to run LiveThesaurus
 
 Shortcuts and commands:
 	1. Pressing "ENTER", double clicking and pressing the left arrow all switch words with the 
