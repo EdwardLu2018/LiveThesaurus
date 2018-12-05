@@ -23,5 +23,8 @@ After doing this, please run the __init__.py file to run LiveThesaurus
 Shortcuts and commands:
 	1. Pressing "ENTER", double clicking and pressing the left arrow all switch words with the 
 	   selected synonym or antonym
-	2. Command-a (or Control-a) selects all user entered text
-	3. Command-q quits the application
+	2. Pressing the audio button and saying "synonyms for [word]" will give you the synonyms for the word.
+	   You can also say "synonyms of [word]", "synonym for [word]", or "synonym of [word]". You can also
+	   say "antonyms" instead of "synonyms".
+	3. Command-a (or Control-a) selects all user entered text
+	4. Command-q quits the application

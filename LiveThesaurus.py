@@ -531,7 +531,7 @@ class LiveThesaurus(object):
 
                 self.previousWordObj = self.currentWordObj
                 self.previousWordIndex = self.currentWordIndex
-                self.currentWordObj = Word(word) if word != "" else None
+                self.currentWordObj = Word(word[1:]) if word != "" else None
                 if self.currentWordObj != self.previousWordObj:
                     self.currentDefIndex = 0
                     self.currentListBoxIndex = 0
