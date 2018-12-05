@@ -562,7 +562,8 @@ class LiveThesaurus(object):
                     self.currentAntDict = self.currentWordObj.antonymDict
                     self.currentDefList = self.currentWordObj.definitionList
                     self.updateDefMenu(self.currentDefList)
-                    self.audioLabel.config(text="Hit Button Below to Record Audio")
+                    self.audioLabel.config(text="Hit Button Below to " + \
+                                                "Record Audio")
                 else:
                     revealedChars = 44
                     partOfWord = word[1:revealedChars]
