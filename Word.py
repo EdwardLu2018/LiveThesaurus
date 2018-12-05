@@ -14,13 +14,14 @@ class Word(object):
     def __init__(self, word):
         self.word = word.lower()
         self.thesaurusSourceText = self.getThesaurusWebText()
-        self.parser = BeautifulSoup(self.thesaurusSourceText, "html.parser")
-        self.script = self.getScript()
-        self.wordTense = getVerbTense(self.word)
-        self.synonymDict = self.getDict("synonyms", self.wordTense)
-        self.antonymDict = self.getDict("antonyms", self.wordTense)
-        # definitions are the keys of the synonymDict on thesaurus.com
-        self.definitionList = list(self.synonymDict.keys())
+        if self.thesaurusSourceText != None:
+            self.parser = BeautifulSoup(self.thesaurusSourceText, "html.parser")
+            self.script = self.getScript()
+            self.wordTense = getVerbTense(self.word)
+            self.synonymDict = self.getDict("synonyms", self.wordTense)
+            self.antonymDict = self.getDict("antonyms", self.wordTense)
+            # definitions are the keys of the synonymDict on thesaurus.com
+            self.definitionList = list(self.synonymDict.keys())
     
     # gets the html text of thesaurus.com at a given word
     def getThesaurusWebText(self):
@@ -35,6 +36,8 @@ class Word(object):
     
     # checks if word has synonyms or antonyms
     def hasSynOrAnt(self):
+        if self.thesaurusSourceText == None:
+            return False
         return not ("no thesaurus results" in self.thesaurusSourceText or \
                     "\t" in self.word)
     

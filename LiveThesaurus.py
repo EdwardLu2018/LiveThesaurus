@@ -530,7 +530,12 @@ class LiveThesaurus(object):
                 # update the current word
                 self.previousWordObj = self.currentWordObj
                 self.previousWordIndex = self.currentWordIndex
-                self.currentWordObj = Word(word[1:]) if word != "" else None
+
+                if word != "":
+                    self.currentWordObj = Word(word[1:])
+                else:
+                    self.currentWordObj = None
+
                 if self.currentWordObj != self.previousWordObj:
                     self.currentDefIndex = 0
                     self.currentListBoxIndex = 0
@@ -558,7 +563,12 @@ class LiveThesaurus(object):
                     self.audioLabel.config(text="Hit Button Below to " + \
                                                 "Record Audio")
                 else:
-                    messagebox.showerror("ERROR!", "Invalid Word! Please Try Again.")
+                    revealedChars = 44
+                    partOfWord = word[1:revealedChars]
+                    if revealedChars <= len(word[1:]):
+                        partOfWord += "..."
+                    messagebox.showerror("ERROR!", "\"" + partOfWord + "\" has no " + \
+                                                   "Synonyms or Antonyms. Please Try Again.")
             # if user did not ask for synonyms or antonyms, then just insert the audio
             # at the end of the text
             else:
