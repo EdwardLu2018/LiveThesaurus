@@ -34,7 +34,7 @@ class LiveThesaurus(object):
         self.currentDef = None
         self.currentDefIndex = 0
 
-        self.prevKey = "??"
+        self.prevKey = ""
         
         ## Master
         self.master = master
@@ -218,11 +218,12 @@ class LiveThesaurus(object):
     
     # if user types something, remove highlight
     def removeHighlightWhenTyping(self, event):
-        if self.prevKey != "??" and event.keysym != "z" and \
-           event.keysym != "y" and event.keysym != "a":
-            if event.keysym != "Left" and event.keysym != "Right" and \
-               event.keysym != "Up" and event.keysym != "Down" and \
-               self.textBox.get("1.0", "end-1c") != "":
+        self.prevKey = event.keysym
+        if event.keysym != "Left" and event.keysym != "Right" and \
+           event.keysym != "Up" and event.keysym != "Down" and \
+           self.textBox.get("1.0", "end-1c") != "":
+            if self.prevKey != "??" and event.keysym != "z" and \
+               event.keysym != "y" and event.keysym != "a":
                 self.textBox.tag_remove("highlight", "1.0", END)
                 self.currentWordLabel.config(text="Selected Word: None")
                 self.currentWordObj = None
@@ -240,7 +241,6 @@ class LiveThesaurus(object):
                 else:
                     self.termListBox.insert(END, "No Antonyms!")
                 self.updateDefMenu(self.currentDefList)
-                self.prevKey = event.keysym
     
     # adds placeholder text to TextBox
     def addPlaceHolderText(self, event):

@@ -39,7 +39,7 @@ class Word(object):
         if self.thesaurusSourceText == None:
             return False
         return not ("no thesaurus results" in self.thesaurusSourceText or \
-                    "\t" in self.word)
+                    "\t" in self.word or "\n" in self.word)
     
     # gets a javascript dictionary containing defintions, parts of speech, 
     # synonyms and antonyms
