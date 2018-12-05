@@ -187,7 +187,7 @@ class LiveThesaurus(object):
         currentView = self.termListBox.yview()
         self.updateCurrentWord()
         self.termListBox.yview_moveto(currentView[0])
-        
+
         # if the index of the word or the word changes, remove the highlight 
         # from previous location
         if self.currentWordObj != self.previousWordObj or \
@@ -480,6 +480,7 @@ class LiveThesaurus(object):
     def runAudio(self):
         audioText = speechRecognizer.getAudio()
         if audioText != None:
+            self.textBox.tag_remove(SEL, "1.0", END)
             # checks if user asks for synonyms and antonyms
             if "synonyms for" in audioText or "antonyms for" in audioText or \
                "synonyms of" in audioText or "antonyms of" in audioText or \
@@ -527,6 +528,7 @@ class LiveThesaurus(object):
                         self.switchModes()
                     indexOfWord = audioText.find("antonym of") + len("antonym of")
                     word = audioText[indexOfWord:]
+
                 # update the current word
                 self.previousWordObj = self.currentWordObj
                 self.previousWordIndex = self.currentWordIndex
@@ -544,17 +546,17 @@ class LiveThesaurus(object):
                 # checks if current word is valid
                 if self.currentWordObj != None and self.currentWordObj.hasSynOrAnt():
                     self.deletePlaceHolderText()
-                    audioText = self.currentWordObj.word
+                    audioWord = self.currentWordObj.word
                     self.currentWordLabel.config(text="Selected Word: \"" + \
-                                             audioText + "\"")
+                                             audioWord + "\"")
                     if self.placeholderTextPresent():
                         self.currentWordIndex = "1.0"
-                        self.textBox.insert(END, audioText)
-                    elif audioText in self.textBox.get("1.0", "end-1c"):
-                        self.currentWordIndex = self.textBox.search(audioText, "1.0", END)
+                        self.textBox.insert(END, audioWord)
+                    elif audioWord in self.textBox.get("1.0", "end-1c"):
+                        self.currentWordIndex = self.textBox.search(audioWord, "1.0", END)
                     else:
                         self.currentWordIndex = self.textBox.index("end-1c")
-                        self.textBox.insert(END, audioText)
+                        self.textBox.insert(END, audioWord)
                     # updates the synDict, antDict, and defList
                     self.currentSynDict = self.currentWordObj.synonymDict
                     self.currentAntDict = self.currentWordObj.antonymDict
@@ -569,6 +571,7 @@ class LiveThesaurus(object):
                         partOfWord += "..."
                     messagebox.showerror("ERROR!", "\"" + partOfWord + "\" has no " + \
                                                    "Synonyms or Antonyms. Please Try Again.")
+
             # if user did not ask for synonyms or antonyms, then just insert the audio
             # at the end of the text
             else:
