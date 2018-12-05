@@ -325,6 +325,7 @@ def makePhrasePlural(phrase):
         # ignore cases where the last noun before a verb is "who"
         if phraseList[indexOfLastNounUntilVerb] == "who":
             indexOfLastNounUntilVerb -= 1
+        
         phraseList[indexOfLastNounUntilVerb] = makePlural(phraseList[indexOfLastNounUntilVerb])
 
     if indexOfLastNounUntilVerb != indexOfFirstVerb:
