@@ -33,6 +33,8 @@ class LiveThesaurus(object):
         self.currentDefList = [self.defInstructions]
         self.currentDef = None
         self.currentDefIndex = 0
+
+        self.prevKey = "??"
         
         ## Master
         self.master = master
@@ -216,26 +218,29 @@ class LiveThesaurus(object):
     
     # if user types something, remove highlight
     def removeHighlightWhenTyping(self, event):
-        if event.keysym != "Left" and event.keysym != "Right" and \
-           event.keysym != "Up" and event.keysym != "Down" and \
-           event.keysym != "??" and self.textBox.get("1.0", "end-1c") != "":
-            self.textBox.tag_remove("highlight", "1.0", END)
-            self.currentWordLabel.config(text="Selected Word: None")
-            self.currentWordObj = None
-            self.previousWordObj = None
-            self.currentWordList = []
-            self.previousWordList = []
-            self.currentDefList = [None]
-            self.currentDef = None
-            self.currentDefIndex = 0
-            self.currentSynDict = None
-            self.currentAntDict = None
-            self.termListBox.delete(0, "end")
-            if not self.antonymsMode:
-                self.termListBox.insert(END, "No Synonyms!")
-            else:
-                self.termListBox.insert(END, "No Antonyms!")
-            self.updateDefMenu(self.currentDefList)
+        if self.prevKey != "??" and event.keysym != "z" and \
+           event.keysym != "y" and event.keysym != "a":
+            if event.keysym != "Left" and event.keysym != "Right" and \
+               event.keysym != "Up" and event.keysym != "Down" and \
+               self.textBox.get("1.0", "end-1c") != "":
+                self.textBox.tag_remove("highlight", "1.0", END)
+                self.currentWordLabel.config(text="Selected Word: None")
+                self.currentWordObj = None
+                self.previousWordObj = None
+                self.currentWordList = []
+                self.previousWordList = []
+                self.currentDefList = [None]
+                self.currentDef = None
+                self.currentDefIndex = 0
+                self.currentSynDict = None
+                self.currentAntDict = None
+                self.termListBox.delete(0, "end")
+                if not self.antonymsMode:
+                    self.termListBox.insert(END, "No Synonyms!")
+                else:
+                    self.termListBox.insert(END, "No Antonyms!")
+                self.updateDefMenu(self.currentDefList)
+                self.prevKey = event.keysym
     
     # adds placeholder text to TextBox
     def addPlaceHolderText(self, event):
