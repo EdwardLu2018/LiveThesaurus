@@ -277,9 +277,20 @@ def makePlural(noun):
     
 # pluralizes a phrase
 def makePhrasePlural(phrase):
-    # pluralize with inflect if there is a comma in the phrase
-    if "," in phrase:
-        phrase = inflect.plural(phrase)
+    # split the phrase if there is a comma/semicolon in the phrase
+    if ", " in phrase or "; " in phrase:
+        if "; " in phrase:
+            phrases = phrase.split("; ")
+        elif ", " in phrase:
+            phrases = phrase.split(", ")
+
+        for i in range(len(phrases)):
+            phrases[i] = makePhrasePlural(phrases[i])
+
+        if "; " in phrase:
+            phrase = "; ".join(phrases)
+        elif ", " in phrase:
+            phrase = ", ".join(phrases)
     
     # tokenizes the words and creates a list of tuples containing words
     # and their POS
@@ -301,22 +312,29 @@ def makePhrasePlural(phrase):
             indexOfFirstVerb = i
             break
 
+    indexOfLastNounUntilVerb = indexOfFirstNoun
     # if the first noun is "one", make "one" plural
     if "one" == posTags[0][0]:
         phraseList[indexOfFirstNoun] = "ones"
     else:
-        while indexOfFirstNoun + 1 < len(posTags) and \
-              "NN" in posTags[indexOfFirstNoun][1]:
-            indexOfFirstNoun += 1
-        if phraseList[indexOfFirstNoun] == "who":
-            indexOfFirstNoun -= 1
-        phraseList[indexOfFirstNoun] = makePlural(phraseList[indexOfFirstNoun])
+        # finds the index of the last noun before the first verb
+        while indexOfLastNounUntilVerb + 1 < len(posTags) and \
+              "NN" in posTags[indexOfLastNounUntilVerb][1]:
+            indexOfLastNounUntilVerb += 1
+        if phraseList[indexOfLastNounUntilVerb] == "who" or \
+           phraseList[indexOfLastNounUntilVerb] == "," or \
+           phraseList[indexOfLastNounUntilVerb] == ";" or \
+           "NN" not in posTags[indexOfLastNounUntilVerb][1]:
+            indexOfLastNounUntilVerb -= 1
+        phraseList[indexOfLastNounUntilVerb] = makePlural(phraseList[indexOfLastNounUntilVerb])
 
-    if indexOfFirstNoun != indexOfFirstVerb:
-        phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], 
-                                                 "infinitive")
+    if indexOfLastNounUntilVerb != indexOfFirstVerb:
+        if posTags[indexOfFirstVerb][1] != "VBN":
+            phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], 
+                                                     "infinitive")
 
     phrase = " ".join(phraseList)
     phrase = phrase.replace(" ,", ",")
+    phrase = phrase.replace(" ;", ";")
     
     return phrase
