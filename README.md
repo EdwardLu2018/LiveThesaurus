@@ -18,7 +18,7 @@ Before running LiveThesaurus, you need to download a few modules:
 2. BeautifulSoup: ```$ python3 -m pip install beautifulsoup4```
 3. inflect: ```$ pip3 install inflect```
 4. nltk: ```$ sudo pip3 install -U nltk```
-5. run the nltkInstall.py file
+	- run the nltkInstall.py file
 6. Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
 	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
 	- ```$ cd pyaudio```<br>
