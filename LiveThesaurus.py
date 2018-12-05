@@ -11,7 +11,10 @@ class LiveThesaurus(object):
                             "Please read ALL the Instructions on this " + \
                             "Text Box and on the Right!\n" + \
                             "Insert text and Highlight a word to get its " + \
-                            "Synonyms or Antonyms"
+                            "Synonyms or Antonyms\n" + \
+                            "Try clicking on the \"Record Audio\" button " + \
+                            "below and asking for the Syonyms or Antonyms " + \
+                            "of a specific word!"
         
         self.timerDelay = 100
 
