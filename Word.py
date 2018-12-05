@@ -233,9 +233,7 @@ def conjugatePhrase(phrase, tense):
             phrases = phrase.split(", ")
         
         for i in range(len(phrases)):
-            word = phrases[i]
-            word = conjugatePhrase(word, tense)
-            phrases[i] = word
+            phrases[i] = conjugatePhrase(phrases[i], tense)
         
         if "; " in phrase:
             phrase = "; ".join(phrases)
@@ -321,12 +319,14 @@ def makePhrasePlural(phrase):
         while indexOfLastNounUntilVerb + 1 < len(posTags) and \
               "NN" in posTags[indexOfLastNounUntilVerb + 1][1]:
             indexOfLastNounUntilVerb += 1
+        # ignore cases where the last noun before a verb is "who"
         if phraseList[indexOfLastNounUntilVerb] == "who":
             indexOfLastNounUntilVerb -= 1
         phraseList[indexOfLastNounUntilVerb] = makePlural(phraseList[indexOfLastNounUntilVerb])
 
     if indexOfLastNounUntilVerb != indexOfFirstVerb:
-        if posTags[indexOfFirstVerb][1] != "VBN":
+        if posTags[indexOfFirstVerb][1] != "VBN": # for verbs that end in "en", singular and 
+                                                  # plural subjects do not matter
             phraseList[indexOfFirstVerb] = conjugate(phraseList[indexOfFirstVerb], 
                                                      "infinitive")
 
