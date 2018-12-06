@@ -16,10 +16,13 @@ Q. How do I run LiveThesaurus?
 A. Before running LiveThesaurus, you need to download a few modules:
 	1. Run the modulesInstaller.py file in the "modules" folder
 	2. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):
-		$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git
-		$ cd pyaudio
-		$ sudo python setup.py install
-		$ sudo pip3 install SpeechRecognition
+		- Install homebrew (https://brew.sh/)
+		- $ brew install portaudio
+		- $ pip3 install pyaudio
+		- $ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git
+		- $ cd pyaudio
+		- $ sudo python setup.py install
+		- $ sudo pip3 install SpeechRecognition
 	After doing this, please run the init.py file to run LiveThesaurus.
 
 Shortcuts and commands:
