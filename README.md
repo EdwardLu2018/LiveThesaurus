@@ -8,7 +8,9 @@ LiveThesaurus uses web-scraping to parse a javascript dictionary from thesaurus.
 definitions of words mapping to various synonyms. Users can highlight specific words and will 
 be given a list of synonyms and antonyms taken from that dictionary. They can click on the synonym
 or antonym they want, select a term, and the word turn into the selected term in the text. There 
-is also an option to record voice audio, convert it into text, and manipulate the text. 
+is also an option to record voice audio, convert it into text, and manipulate the text.
+
+Video: https://youtu.be/QUXn-8Eoq7w
 
 
 ## How do I run LiveThesaurus?
