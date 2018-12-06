@@ -22,8 +22,6 @@ A. Before running LiveThesaurus, you need to download a few modules:
 		$ sudo pip3 install SpeechRecognition
 	After doing this, please run the init.py file to run LiveThesaurus.
 
-
-
 Shortcuts and commands:
 	1. Pressing "ENTER", double clicking and pressing the left arrow all switch words with the 
 	   selected synonym or antonym
