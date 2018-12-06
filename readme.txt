@@ -13,19 +13,16 @@ or antonym they want, select a term, and the word turn into the selected term in
 is also an option to record voice audio, convert it into text, and manipulate the text. 
 
 Q. How do I run LiveThesaurus?
-A. Before running LiveThesaurus, you need to download a few modules. 
-	1. requests: $ python3 -m pip install requests
-	2. BeautifulSoup: $ python3 -m pip install beautifulsoup4
-	3. inflect: $ pip3 install inflect
-	4. nltk: $ sudo pip3 install -U nltk
-		- Run the nltkInstall.py file
-	6. Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):
-		- $ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git
-		- $ cd pyaudio
-		- $ sudo python setup.py install
-		- $ sudo pip3 install SpeechRecognition
-	If the modules are not installed and you get an error, try pip[your python version], for example, pip3.6
-	After doing this, please run the __init__.py file to run LiveThesaurus.
+A. Before running LiveThesaurus, you need to download a few modules:
+	1. Run the modulesInstaller.py file
+	2. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):
+		$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git
+		$ cd pyaudio
+		$ sudo python setup.py install
+		$ sudo pip3 install SpeechRecognition
+	After doing this, please run the init.py file to run LiveThesaurus.
+
+
 
 Shortcuts and commands:
 	1. Pressing "ENTER", double clicking and pressing the left arrow all switch words with the 
