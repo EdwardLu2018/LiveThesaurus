@@ -14,7 +14,7 @@ is also an option to record voice audio, convert it into text, and manipulate th
 ## How do I run LiveThesaurus?
 
 Before running LiveThesaurus, you need to download a few modules:
-1. Run the modulesInstaller.py file
+1. Run the modulesInstaller.py file in the "modules" folder
 2. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
 	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
 	- ```$ cd pyaudio```<br>
