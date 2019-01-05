@@ -185,7 +185,7 @@ class LiveThesaurus(object):
         self.master.mainloop()
         print("Thank you for using LiveThesaurus!")
     
-    # CITATION: Code below is a modifid timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
+    # CITATION: Code below is a modified timerFiredWrapper from Course Notes: Animation Part 2: Time-Based Animations in Tkinter
     # CITATION: Code that Keeps ScrollBar in same location from:
     # https://stackoverflow.com/questions/36086474/python-tkinter-update-scrolled-listbox-wandering-scroll-position
     # constantly updates highlighted words in TextBox every 100 milliseconds
