@@ -2,8 +2,8 @@
 
 from tkinter import *
 from tkinter import messagebox
-from Word import *
-import audio as speechRecognizer
+from src.Word import *
+import src.audio as speechRecognizer
 
 class LiveThesaurus(object):
     def __init__(self, master):

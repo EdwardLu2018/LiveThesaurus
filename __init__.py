@@ -1,7 +1,7 @@
 ## Runs LiveThesaurus application
 
 from tkinter import *
-import LiveThesaurus as application
+import src.LiveThesaurus as application
 
 # creates a LiveThesaurus application and runs it
 root = Tk()

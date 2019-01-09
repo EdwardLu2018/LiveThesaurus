@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 # verb file from NodeBox Linguistics:
 # https://www.nodebox.net/code/index.php/Linguistics#verb_conjugation
-from verb import *
+from src.verb import *
 import inflect
 inflect = inflect.engine()
 import nltk as nltk
