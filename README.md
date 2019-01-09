@@ -12,10 +12,6 @@ is also an option to record voice audio, convert it into text, and manipulate th
 
 Video: https://youtu.be/QUXn-8Eoq7w
 
-<video width="320" height="240" controls>
-  <source src="https://youtu.be/QUXn-8Eoq7w" type="video/mp4">
-</video>
-
 
 ## How do I run LiveThesaurus?
 
