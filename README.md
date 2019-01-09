@@ -18,7 +18,8 @@ Video: https://youtu.be/QUXn-8Eoq7w
 
 Before running LiveThesaurus, you need to download a few modules:
 1. Run the modulesInstaller.py file in the "modules" folder
-2. ```$ pip3 install nltk```
+2. Install NLTK (https://www.nltk.org/install.html)
+	- ```$ pip3 install nltk```
 3. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
 	- For Macs, install homebrew (https://brew.sh/) then do:
 		- ```$ brew install portaudio```
