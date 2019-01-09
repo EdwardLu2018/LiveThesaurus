@@ -11,7 +11,7 @@ or antonym they want, select a term, and the word turn into the selected term in
 is also an option to record voice audio, convert it into text, and manipulate the text.
 
 Video: https://youtu.be/QUXn-8Eoq7w
-[![Video](image-for-readme/image)](https://youtu.be/QUXn-8Eoq7w)
+[![Video](https://img.youtube.com/vi/QUXn-8Eoq7w/maxresdefault.jpg)](https://youtu.be/QUXn-8Eoq7w)
 
 ## How do I run LiveThesaurus?
 
