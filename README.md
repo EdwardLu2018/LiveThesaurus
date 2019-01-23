@@ -10,6 +10,9 @@ be given a list of synonyms and antonyms taken from that dictionary. They can cl
 or antonym they want, select a term, and the word turn into the selected term in the text. There 
 is also an option to record voice audio, convert it into text, and manipulate the text.
 
+LiveThesaurus is a Term Project for the course 15-112 "Fundamentals of Programming and Computer 
+Science" at Carnegie Mellon University.
+
 ## Video (https://youtu.be/QUXn-8Eoq7w):
 
 [![Video Link](https://github.com/EdwardLu2018/LiveThesaurus/blob/master/image-for-readme/img.png)](https://youtu.be/QUXn-8Eoq7w)
