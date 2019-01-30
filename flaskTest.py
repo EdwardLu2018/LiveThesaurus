@@ -8,17 +8,28 @@ app = Flask(__name__)
 # sudo lsof -i:5000
 # kill PID
 
-@app.route("/", methods=['GET', 'POST'])
-def init():
+@app.route("/")
+def index():
     return render_template("LiveThesaurus.html")
 
-# @app.route('/', methods=['POST'])
+# @app.route('/')
+# @app.route('/<word>')
+# def my_form_post(name=None):
+#     return render_template('LiveThesaurus.html', name=word)
+
+# @app.route("/#app", methods=["POST"])
 # def my_form_post():
 #     text = request.form['text']
-#     processed_text = text.upper()
-#     inputVar = processed_text
-#     print(inputVar, file=sys.stderr)
+#     print(text, file=sys.stderr)
 #     return redirect("/")
+
+@app.route('/handle_data', methods=['POST'])
+def handle_data():
+    projectpath = request.form['text']
+    # your code
+    # return a response
+    print(projectpath, file=sys.stderr)
+    return redirect("/#app")
 
 if __name__ == '__main__':
 	app.run(debug=True)
