@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="icon" href="book.png">
+		<link href="https://fonts.googleapis.com/css?family=Fira+Sans|Roboto+Mono|Sarabun" rel="stylesheet">
+
+		<title style="font-family: "ira+Sans", Times, serif;">LiveThesaurus</title>
+
+		<style type="text/css">
+			body {
+			  background: #FF7F50;
+			}
+			h1 {
+			  font-family: "Sarabun";
+			  font-size: 50px;
+			  letter-spacing: 7px;
+			}
+			#title {
+				text-align: center;
+				position: absolute;
+		    top: 45%;
+		    left: 50%;
+		    margin-right: -50%;
+		    transform: translate(-50%, -50%);
+			}
+			textarea {
+				margin-top: 20px;
+				margin-left: 20px;
+				resize: none;
+				font-size: 15px;
+			}
+			#about {
+				text-align: center;
+				position: absolute;
+		    top: 37%;
+		    left: 100%;
+		    margin-right: -50%;
+		    transform: translate(-50%, -50%);
+			}
+			#go-to-app {
+				text-align: center;
+				position: absolute;
+		    top: 750px;
+		    left: 50%;
+		    margin-right: -50%;
+		    transform: translate(-50%, -50%);
+			}
+			a:hover {
+				opacity: 0.5;
+			}
+			.parallax {
+			  min-height: 775px; 
+			  background-attachment: fixed;
+			  background-position: center;
+			  background-repeat: no-repeat;
+			  background-size: cover;
+			}
+			#semi-circle {
+				background: red;
+			  display: inline-block;
+				height: 75px;
+				width: 150px;
+			  border-top-left-radius: 150px;
+			  border-top-right-radius: 150px;
+			  z-index: -1;
+			}
+			#up-arrow {
+				position: absolute;
+				top: 55%;
+				left: 50%;
+				margin-right: -50%;
+		    transform: translate(-50%, -50%);
+				font-size: 75px;
+				z-index: 1;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="title" style="text-align: center;">
+			<h1>LiveThesaurus</h1>
+			<a href="about.html" id="about" class="option">
+				<img src="about.png" alt="unavailable" height="17" width="17">
+			</a>
+		</div>
+
+		<div class="parallax"></div>
+
+		<a href="#app" id="go-to-app">
+			<div id="semi-circle">
+				<img id="up-arrow" src="up.png" alt="unavailable" height="53" width="50">
+			</div>
+		</a>
+		<a name="app"></a>
+		<div id="text" style="height:775px; background-color:red;">
+			<textarea rows="40" cols="80"></textarea>
+		</div>
+	</body>
+</html>
