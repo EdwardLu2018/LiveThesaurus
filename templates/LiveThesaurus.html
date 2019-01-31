@@ -161,13 +161,13 @@
 				</div>
 				<div id="definition-container">
 					<div id="definition-title">Definition:</div>
-					<select name="definitions">
-						<option value="none">none</option>
+					<select id="definitions">
+						<option>none</option>
 					</select>
 				</div>
 				<div id="term-container">
 					<div id="term-title">Synonyms:</div>
-					<select name="terms" size="20">
+					<select id="terms" size="25">
 					  <option>none</option>
 					</select>
 				</div>
@@ -175,6 +175,11 @@
 		</div>
 
 		<script type="text/javascript">
+			var word = null;
+			var currDef = null;
+			var defList = null;
+			var synDict = null;
+
 			document.querySelector("textarea").addEventListener("mouseup", function () {
 			  window.mySelection = this.value.substring(this.selectionStart, this.selectionEnd)
 
@@ -187,15 +192,42 @@
 					    data: JSON.stringify({currWord:window.mySelection}),
 					    dataType: "json",
 					    success: function(response) {
-					        document.getElementById("selected-word").innerHTML = response.currWord;
-					        console.log(response);
+					    	console.log(response.synList);
+					    	if (response.currWord != 0){
+					    		word = response.currWord;
+					    		defList = response.defList;
+					    		synDict = response.synList;
+
+					        document.getElementById("selected-word").innerHTML = "\"" + word + "\"";
+
+					        $('#definitions').find('option').remove()
+					        for (var i = 0; i < defList.length; i++){
+					        	$("#definitions").append("<option>" + defList[i] + "</option>");
+						    	}
+
+						    	currDef = defList[0];
+						    	
+						    	$('#terms').find('option').remove()
+									for (var i = 0; i < synDict[currDef].length; i++){
+					    	    	$("#terms").append("<option>" + synDict[currDef][i].term + "</option>");
+					    		}
+						    }
+						    else {
+						    	word = null;
+						    }
 					    },
 					    error: function(err) {
 					        console.log(err);
 					    }
 					});
-					//document.getElementById("selected-word").innerHTML = {{ word }};
 				}
+			});
+			document.getElementById("definitions").addEventListener("mouseup", function (){
+				currDef = document.getElementById("definitions").value;
+				$('#terms').find('option').remove()
+				for (var i = 0; i < synDict[currDef].length; i++){
+    	    	$("#terms").append("<option>" + synDict[currDef][i].term + "</option>");
+    		}
 			});
 		</script>
 	</body>
