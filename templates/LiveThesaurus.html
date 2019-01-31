@@ -177,7 +177,7 @@
 			document.querySelector("textarea").addEventListener("mouseup", function () {
 			  window.mySelection = this.value.substring(this.selectionStart, this.selectionEnd)
 
-			  if (window.mySelection != "" && window.mySelection != null){
+			  if (window.mySelection != "" && window.mySelection != null && window.mySelection.search(/\n/) == -1){
 					document.getElementById("selected-word").innerHTML = window.mySelection;
 					$.ajax({
 					    type: "POST",

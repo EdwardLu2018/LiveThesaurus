@@ -23,7 +23,6 @@ def getData():
 	data = request.get_json()
 	word = data["currWord"]
 	print(word, file=sys.stderr)
-	send()
 	return jsonify(status="success", data=data)
 
 if __name__ == '__main__':
