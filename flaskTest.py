@@ -1,5 +1,5 @@
 from __future__ import print_function
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, Response, jsonify
 import sys
 # from src.Word import *
 
@@ -12,27 +12,19 @@ app = Flask(__name__)
 # def index():
 #     return render_template("LiveThesaurus.html")
 
+word = "none"
+
 @app.route('/', methods=['POST', "GET"])
 def send():
-    word = ""
     return render_template('LiveThesaurus.html', word=word)
 
-# @app.route('/')
-# @app.route('/<word>')
-# def my_form_post(name=None):
-#     return render_template('LiveThesaurus.html', name=word)
-
-# @app.route("/#app", methods=["POST"])
-# def my_form_post():
-#     text = request.form['text']
-#     print(text, file=sys.stderr)
-#     return redirect("/")
-
-# @app.route('/handle_data', methods=['POST', "GET"])
-# def handle_data():
-#     projectpath = request.form['text']
-#     print(projectpath, file=sys.stderr)
-#     return redirect("/#app")
+@app.route('/getData', methods=['POST', 'GET'])
+def getData():
+	data = request.get_json()
+	word = data["currWord"]
+	print(word, file=sys.stderr)
+	send()
+	return jsonify(status="success", data=data)
 
 if __name__ == '__main__':
 	app.run(debug=True)

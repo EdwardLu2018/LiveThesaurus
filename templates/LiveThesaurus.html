@@ -176,14 +176,24 @@
 		<script type="text/javascript">
 			document.querySelector("textarea").addEventListener("mouseup", function () {
 			  window.mySelection = this.value.substring(this.selectionStart, this.selectionEnd)
-			  document.getElementById("word").value = window.mySelection
 
-			  if (window.mySelection != ""){
+			  if (window.mySelection != "" && window.mySelection != null){
 					document.getElementById("selected-word").innerHTML = window.mySelection;
+					$.ajax({
+					    type: "POST",
+					    url: "{{ url_for("getData") }}",
+					    contentType: "application/json",
+					    data: JSON.stringify({currWord:window.mySelection}),
+					    dataType: "json",
+					    success: function(response) {
+					        console.log(response);
+					    },
+					    error: function(err) {
+					        console.log(err);
+					    }
+					});
 				}
-				else {
-					document.getElementById("selected-word").innerHTML = "none";
-				}
+
 			});
 		</script>
 	</body>
