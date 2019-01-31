@@ -127,6 +127,7 @@
 				width: 90%;
 				margin: 10px;
 				border-radius: 3px;
+				text-align-last:center;
 			}
 		</style>
 	</head>
@@ -206,7 +207,7 @@
 						    	}
 
 						    	currDef = defList[0];
-						    	
+
 						    	$('#terms').find('option').remove()
 									for (var i = 0; i < synDict[currDef].length; i++){
 					    	    	$("#terms").append("<option>" + synDict[currDef][i].term + "</option>");
