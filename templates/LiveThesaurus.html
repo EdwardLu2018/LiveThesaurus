@@ -157,7 +157,7 @@
 			<div id="info">
 				<div id="selected-word-container" style="margin-top: 0px;">
 					<div id="selected-word-title">Selected Word:</div>
-					<div id="selected-word">{{ word }}</div>
+					<div id="selected-word">{{word}}</div>
 				</div>
 				<div id="definition-container">
 					<div id="definition-title">Definition:</div>
@@ -188,12 +188,13 @@
 					    dataType: "json",
 					    success: function(response) {
 					        console.log(response);
+					        document.getElementById("selected-word").innerHTML = {{word}};
 					    },
 					    error: function(err) {
 					        console.log(err);
 					    }
 					});
-					document.getElementById("selected-word").innerHTML = {{ newWord }};
+					//document.getElementById("selected-word").innerHTML = {{ word }};
 				}
 			});
 		</script>

@@ -8,10 +8,6 @@ app = Flask(__name__)
 # sudo lsof -i:5000
 # kill PID
 
-# @app.route("/")
-# def index():
-#     return render_template("LiveThesaurus.html")
-
 word = "none"
 
 @app.route('/', methods=['POST', "GET"])
@@ -21,9 +17,9 @@ def sendData():
 @app.route('/getData', methods=['POST', 'GET'])
 def getData():
 	data = request.get_json()
-	newWord = str(data["currWord"])
-	print(newWord, file=sys.stderr)
-	return render_template('LiveThesaurus.html', newWord=newWord)
+	word = str(data["currWord"])
+	print(word, file=sys.stderr)
+	return render_template('LiveThesaurus.html', word=word)
 
 if __name__ == '__main__':
 	app.run(debug=True)
