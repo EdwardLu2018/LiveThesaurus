@@ -13,7 +13,6 @@ app = Flask(__name__)
 #     return render_template("LiveThesaurus.html")
 
 word = "none"
-
 @app.route('/', methods=['POST', "GET"])
 def sendData():
     return render_template('LiveThesaurus.html', word=word)
@@ -23,7 +22,7 @@ def getData():
 	data = request.get_json()
 	word = data["currWord"]
 	print(word, file=sys.stderr)
-	return jsonify(status="success", data=data)
+	return render_template('LiveThesaurus.html', word=word)
 
 if __name__ == '__main__':
 	app.run(debug=True)

@@ -179,7 +179,7 @@
 			  window.mySelection = this.value.substring(this.selectionStart, this.selectionEnd)
 
 			  if (window.mySelection != "" && window.mySelection != null && window.mySelection.search(/\n/) == -1){
-					document.getElementById("selected-word").innerHTML = window.mySelection;
+					//document.getElementById("selected-word").innerHTML = window.mySelection;
 					$.ajax({
 					    type: "POST",
 					    url: "{{ url_for("getData") }}",
@@ -193,8 +193,8 @@
 					        console.log(err);
 					    }
 					});
+					alert({{ word }});
 				}
-
 			});
 		</script>
 	</body>
