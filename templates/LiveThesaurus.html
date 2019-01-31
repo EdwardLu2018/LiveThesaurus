@@ -187,8 +187,8 @@
 					    data: JSON.stringify({currWord:window.mySelection}),
 					    dataType: "json",
 					    success: function(response) {
-					        console.log(response);
 					        document.getElementById("selected-word").innerHTML = response.currWord;
+					        console.log(response);
 					    },
 					    error: function(err) {
 					        console.log(err);

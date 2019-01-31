@@ -65,7 +65,7 @@ class Word(object):
         
         return self.script
     
-    # gets a list of defintions of the word in it curretn tense
+    # gets a list of defintions of the word in it current tense
     def getInitialDefList(self, tense):
         script = self.script
         definitionList = []
