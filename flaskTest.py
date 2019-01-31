@@ -15,7 +15,7 @@ app = Flask(__name__)
 word = "none"
 
 @app.route('/', methods=['POST', "GET"])
-def send():
+def sendData():
     return render_template('LiveThesaurus.html', word=word)
 
 @app.route('/getData', methods=['POST', 'GET'])
