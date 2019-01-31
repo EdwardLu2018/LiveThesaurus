@@ -10,10 +10,12 @@ app = Flask(__name__)
 
 word = "none"
 
+# initial load
 @app.route("/", methods=["POST", "GET"])
 def sendData():
     return render_template("LiveThesaurus.html", word=word)
 
+# when POST method is called from website
 @app.route("/getData", methods=["POST", "GET"])
 def getData():
 	data = request.get_json()
@@ -25,7 +27,7 @@ def getData():
 		print(wordObj.word, file=sys.stderr)
 		defList = wordObj.definitionList
 		synList = wordObj.synonymDict
-		return jsonify({ "currWord":word, "defList": defList, "synList": synList})
+		return jsonify({ "currWord":word, "defList":defList, "synList":synList})
 
 if __name__ == '__main__':
 	app.run(debug=True)
