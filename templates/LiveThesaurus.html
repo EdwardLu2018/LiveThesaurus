@@ -188,7 +188,7 @@
 					    dataType: "json",
 					    success: function(response) {
 					        console.log(response);
-					        document.getElementById("selected-word").innerHTML = {{word}};
+					        document.getElementById("selected-word").innerHTML = response.currWord;
 					    },
 					    error: function(err) {
 					        console.log(err);

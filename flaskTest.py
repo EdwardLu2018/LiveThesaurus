@@ -19,7 +19,7 @@ def getData():
 	data = request.get_json()
 	word = str(data["currWord"])
 	print(word, file=sys.stderr)
-	return render_template('LiveThesaurus.html', word=word)
+	return jsonify({ 'currWord': word })
 
 if __name__ == '__main__':
 	app.run(debug=True)
