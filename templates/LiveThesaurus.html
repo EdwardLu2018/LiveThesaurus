@@ -156,7 +156,7 @@
 			<div id="info">
 				<div id="selected-word-container" style="margin-top: 0px;">
 					<div id="selected-word-title">Selected Word:</div>
-					  <div id="selected-word">None</div>
+					<div id="selected-word">{{ word }}</div>
 				</div>
 				<div id="definition-container">
 					<div id="definition-title">Definition:</div>
@@ -171,18 +171,12 @@
 					</select>
 				</div>
 			</div>
-			<form method="POST" action="{{ url_for('handle_data') }}">
-				<input id="word" style="display: none" name="text">
-				<input type="submit">
-			</form>
 		</div>
 
 		<script type="text/javascript">
 			document.querySelector("textarea").addEventListener("mouseup", function () {
 			  window.mySelection = this.value.substring(this.selectionStart, this.selectionEnd)
 			  document.getElementById("word").value = window.mySelection
-
-				$.post( requestURL, dataObj );
 
 			  if (window.mySelection != ""){
 					document.getElementById("selected-word").innerHTML = window.mySelection;
