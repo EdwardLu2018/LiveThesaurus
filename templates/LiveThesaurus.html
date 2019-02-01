@@ -200,14 +200,14 @@
 
 					        document.getElementById("selected-word").innerHTML = "\"" + word + "\"";
 
-					        $('#definitions').find('option').remove()
+					        $("#definitions").find("option").remove()
 					        for (var i = 0; i < defList.length; i++){
 					        	$("#definitions").append("<option>" + defList[i] + "</option>");
 						    	}
 
 						    	currDef = defList[0];
 
-						    	$('#terms').find('option').remove()
+						    	$("#terms").find("option").remove()
 									for (var i = 0; i < synDict[currDef].length; i++){
 					    	    	$("#terms").append("<option>" + synDict[currDef][i].term + "</option>");
 					    		}
@@ -224,7 +224,7 @@
 			});
 			document.getElementById("definitions").addEventListener("mouseup", function (){
 				currDef = document.getElementById("definitions").value;
-				$('#terms').find('option').remove()
+				$("#terms").find("option").remove()
 				for (var i = 0; i < synDict[currDef].length; i++){
     	    	$("#terms").append("<option>" + synDict[currDef][i].term + "</option>");
     		}
