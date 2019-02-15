@@ -69,6 +69,7 @@
 			};
 
 			var currDef = null;
+			var currSyn = null;
 			var defList = null;
 			var synDict = null;
 
@@ -78,7 +79,7 @@
 			  selectedWord.startIndex = this.selectionStart;
 				selectedWord.endIndex = this.selectionEnd;
 
-			  if (selectedWord.word != "" && selectedWord.word != null && selectedWord.word.search(/\n/) == -1) {
+			  if (selectedWord.word != "none" && selectedWord.word != null && selectedWord.word.search(/\n/) == -1) {
 
 					$.ajax({
 					    type: "POST",
@@ -109,6 +110,7 @@
 						    else {
 						    	selectedWord.reset();
 						    	currDef = null;
+						    	currSyn = null;
 						    	defList = null;
 					    		synDict = null;
 
@@ -125,16 +127,20 @@
 			});
 
 			$("#definitions").on('change', function () {
-				currDef = $("#definitions").find(":selected").text();
+				currDef = this.find(":selected").text();
 				$("#terms").find("option").remove();
 				for (var i = 0; i < synDict[currDef].length; i++){
     	    	$("#terms").append("<option>" + synDict[currDef][i].term + "</option>");
     		}
 			});
 
-			$("#terms").mouseup(function() {
+			$("#terms").keyup(function() {
 				var text = $("#insert-text").val();
-				
+				currSyn = $("#terms").find(":selected").text();
+				var newText = text.substring(0, selectedWord.startIndex) + currSyn + text.substring(selectedWord.endIndex);
+				$("#insert-text").val(newText);
+				selectedWord.word = currSyn;
+				selectedWord.endIndex = selectedWord.startIndex + currSyn.length;
 			});
 		</script>
 	</body>

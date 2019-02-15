@@ -5,6 +5,7 @@ from src.Word import *
 
 app = Flask(__name__)
 
+
 # sudo lsof -i:5000
 # kill PID
 
@@ -24,7 +25,7 @@ def getData():
 	if not wordObj.hasSynOrAnt():
 		return jsonify({ "currWord": 0 })
 	else:
-		print(wordObj.word, file=sys.stderr)
+		# print(wordObj.word, file=sys.stderr)
 		defList = wordObj.definitionList
 		synList = wordObj.synonymDict
 		return jsonify({ "currWord":word, "defList":defList, "synList":synList})
