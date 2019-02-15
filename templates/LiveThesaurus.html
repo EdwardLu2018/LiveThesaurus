@@ -79,7 +79,7 @@
 			  selectedWord.startIndex = this.selectionStart;
 				selectedWord.endIndex = this.selectionEnd;
 
-			  if (selectedWord.word != "none" && selectedWord.word != null && selectedWord.word.search(/\n/) == -1) {
+			  if (selectedWord.word != "" && selectedWord.word != null && selectedWord.word.search(/\n/) == -1) {
 
 					$.ajax({
 					    type: "POST",
@@ -115,8 +115,12 @@
 					    		synDict = null;
 
 					    		$("#selected-word").html("none");
-					    		$("#definitions").append("<option>" + none + "</option>");
-					    		$("#terms").append("<option>" + none + "</option>");
+
+					    		$("#definitions").find("option").remove();
+					    		$("#definitions").append("<option>none</option>");
+
+					    		$("#terms").find("option").remove();
+					    		$("#terms").append("<option>none</option>");
 						    }
 					    },
 					    error: function(err) {
@@ -124,6 +128,21 @@
 					    }
 					});
 				}
+				else {
+		    	selectedWord.reset();
+		    	currDef = null;
+		    	currSyn = null;
+		    	defList = null;
+	    		synDict = null;
+
+	    		$("#selected-word").html("none");
+					
+	    		$("#definitions").find("option").remove();
+	    		$("#definitions").append("<option>none</option>");
+
+	    		$("#terms").find("option").remove();
+	    		$("#terms").append("<option>none</option>");
+		    }
 			});
 
 			$("#definitions").on('change', function () {
@@ -134,7 +153,7 @@
     		}
 			});
 
-			$("#terms").keyup(function() {
+			$("#terms").dblclick(function() {
 				var text = $("#insert-text").val();
 				currSyn = $("#terms").find(":selected").text();
 				var newText = text.substring(0, selectedWord.startIndex) + currSyn + text.substring(selectedWord.endIndex);
