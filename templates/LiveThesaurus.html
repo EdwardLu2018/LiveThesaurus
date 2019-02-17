@@ -23,19 +23,13 @@
 			</a>
 		</div>
 
-		<a href="#app" id="go-to-app">
-			<div id="semi-circle">
-				<img id="up-arrow" src="../static/up.png" alt="unavailable" height="53" width="50">
-			</div>
-		</a>
-
 		<a name="app"></a>
 		<div id="live-thesaurus">
-			<div id="text-box">
+			<div id="text-box-container">
 				<textarea id="insert-text" rows="40" cols="82"></textarea>
 			</div>
 
-			<div id="info">
+			<div id="word-info">
 				<div id="selected-word-container" style="margin-top: 0px;">
 					<div id="selected-word-title">Selected Word:</div>
 					<div id="selected-word">{{word}}</div>
@@ -48,7 +42,7 @@
 				</div>
 				<div id="term-container">
 					<div id="term-title">Synonyms:</div>
-					<select id="terms" size="25">
+					<select id="terms" style= "height: 53vh;" size="25">
 					  <option>none</option>
 					</select>
 				</div>
