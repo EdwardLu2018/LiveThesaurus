@@ -2,6 +2,7 @@ html,
 body {
   background: #FF7F50;
   scroll-behavior: smooth;
+  font-family: "Sarabun";
 }
 #main-title {
   font-family: "Sarabun";
@@ -81,12 +82,10 @@ select {
 #definition-title,
 #term-title {
 	width: 47vw;
-	font-family: "Sarabun";
   font-size: 30px;
   letter-spacing: 5px;
 }
 #selected-word {
-	font-family: "Sarabun";
   font-size: 28px;
   letter-spacing: 1px;
 }
