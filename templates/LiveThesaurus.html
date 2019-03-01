@@ -17,7 +17,7 @@
 		<div class="parallax"></div>
 
 		<div id="title">
-			<h1>LiveThesaurus</h1>
+			<h1 id="main-title"></h1>
 			<a href="https://github.com/EdwardLu2018/LiveThesaurus" target="_blank" id="about">
 				<img src="../static/about.png" alt="unavailable" height="17" width="17">
 			</a>
@@ -54,6 +54,21 @@
 		</div>
 
 		<script type="text/javascript">
+			var title = "LiveThesaurus";
+			var speed = 200;
+			var i = 0;
+			function typeTitle() {
+			  if (i < title.length) {
+			    document.getElementById("main-title").innerHTML += title.charAt(i);
+			    i++;
+			    window.setTimeout(typeTitle, speed);
+			  }
+			}
+
+			window.onload = function() {
+				typeTitle();
+			}
+
 			var selectedWord = {
 				word: null, 
 				startIndex: 0, 
