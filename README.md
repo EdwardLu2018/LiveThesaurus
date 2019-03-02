@@ -36,7 +36,7 @@ Before running LiveThesaurus, you need to download a few modules:
 	- ```$ sudo python setup.py install```<br>
 	- ```$ sudo pip3 install SpeechRecognition```
 
-After doing this, please run the __init__.py file to run LiveThesaurus.
+After doing this, please run the app.py file to run LiveThesaurus.
 
 
 ## Shortcuts and commands:
