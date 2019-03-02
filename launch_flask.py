@@ -5,9 +5,6 @@ from src.Word import *
 
 app = Flask(__name__)
 
-# sudo lsof -i:5000
-# kill PID
-
 word = "none"
 
 # initial load
