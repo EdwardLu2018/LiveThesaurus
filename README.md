@@ -10,8 +10,6 @@ be given a list of synonyms and antonyms taken from that dictionary. They can cl
 or antonym they want, select a term, and the word turn into the selected term in the text. There 
 is also an option to record voice audio, convert it into text, and manipulate the text.
 
-Adding an HTML webpage extension using Flask server.
-
 LiveThesaurus is a Term Project for the course 15-112 "Fundamentals of Programming and Computer 
 Science" at Carnegie Mellon University.
 
@@ -36,7 +34,7 @@ Before running LiveThesaurus, you need to download a few modules:
 	- ```$ sudo python setup.py install```<br>
 	- ```$ sudo pip3 install SpeechRecognition```
 
-After doing this, please run the __init__.py file to run LiveThesaurus.
+After doing this, please run the python_app.py file to run LiveThesaurus.
 
 
 ## Shortcuts and commands:
