@@ -19,7 +19,9 @@ Science" at Carnegie Mellon University.
 
 ## How do I run LiveThesaurus?
 
-Before running LiveThesaurus, you need to download a few modules:
+### Python
+
+Before running LiveThesaurus on Python, you need to download a few modules:
 1. Run the modulesInstaller.py file in the "modules" folder
 2. Install NLTK (https://www.nltk.org/install.html)
 	- ```$ pip3 install nltk```
@@ -35,6 +37,9 @@ Before running LiveThesaurus, you need to download a few modules:
 	- ```$ sudo pip3 install SpeechRecognition```
 
 After doing this, please run the python_app.py file to run LiveThesaurus.
+
+### Web
+Visit this [website](https://livethesaurus.herokuapp.com/)
 
 
 ## Shortcuts and commands:
