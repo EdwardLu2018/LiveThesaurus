@@ -9,6 +9,7 @@
 		<link rel="icon" href="../static/book.png">
 		<link href="https://fonts.googleapis.com/css?family=Fira+Sans|Roboto+Mono|Sarabun" rel="stylesheet">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 		<title>LiveThesaurus</title>
 	</head>
@@ -21,7 +22,7 @@
 			<a href="https://github.com/EdwardLu2018/LiveThesaurus" target="_blank" id="about">
 				<img src="../static/about.png" alt="unavailable" height="17" width="17">
 			</a>
-			<h5>By Edward Lu.</h5>
+			<h5 style="font-size:1vw">By Edward Lu.</h5>
 		</div>
 
 		<a href="#app" id="scroll">
@@ -29,13 +30,13 @@
 		</a>
 
 		<a name="app"></a>
-		<div id="live-thesaurus">
+		<div id="live-thesaurus" class="w3-container w3-padding-16">
 			<div id="text-box-container">
-				<textarea id="insert-text" rows="40" cols="82"></textarea>
+				<textarea id="insert-text" rows="40" cols="80"></textarea>
 			</div>
 
 			<div id="word-info">
-				<div id="selected-word-container" style="margin-top: 0px;">
+				<div id="selected-word-container">
 					<div id="selected-word-title">Selected Word:</div>
 					<div id="selected-word">{{word}}</div>
 				</div>
@@ -45,9 +46,9 @@
 						<option>none</option>
 					</select>
 				</div>
-				<div id="term-container">
+				<div id="term-container" style="height: 67vh;">
 					<div id="term-title">Synonyms:</div>
-					<select id="terms" style= "height: 53vh;" size="25">
+					<select id="terms" style="height:86%;" size="25">
 					  <option>none</option>
 					</select>
 				</div>

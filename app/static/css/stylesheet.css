@@ -5,8 +5,8 @@ body {
   font-family: "Sarabun";
 }
 #main-title {
-  font-size: 50px;
-  letter-spacing: 7px;
+  font-size: 3vw;
+  letter-spacing: 0.5vw;
   z-index: -1;
 }
 a:hover {
@@ -39,7 +39,7 @@ a:hover {
   to {top: 87%; opacity: 0;}
 }
 .parallax {
-	height: 101vh;
+	height: 100vh;
 	width: 100vh;
   background-attachment: fixed;
   background-position: center;
@@ -49,55 +49,45 @@ a:hover {
 }
 #live-thesaurus {
 	height: 95vh;
-	width: 98vw;
+	width: 99vw;
 	position: absolute;
 	background-color: red;
 	border-radius: 10px;
-	margin-bottom: 10px;
 	z-index: 1;
 }
 textarea {
-	height: 86vh;
+	height: 90vh;
 	width: 47vw;
-	margin-top: 25px;
-	margin-left: 20px;
-	margin-bottom: 25px;
-	margin-right: 5px;
 	resize: none;
-	font-size: 15px;
+	font-size: 7vw;
 	border-radius: 5px;
 	float: left;
 }
 #word-info {
 	height: 86vh;
-	width: 47vw;
+	width: 48vw;
 	text-align: center;
-	margin-top: 25px;
-	margin-left: 5px;
-	margin-right: 20px;
 	float: right;
 }
 select {
-	font-size: 15px;
 	width: 90%;
-	margin: 10px;
 	border-radius: 3px;
-}
-#selected-word-title,
-#definition-title,
-#term-title {
-	width: 47vw;
-  font-size: 30px;
-  letter-spacing: 5px;
-}
-#selected-word {
-  font-size: 28px;
-  letter-spacing: 1px;
 }
 #selected-word-container,
 #definition-container,
 #term-container {
-	margin-top: 10px;
+	height: 10vh;
 	background: #FF7F50;
 	border-radius: 15px;
+	margin-bottom: 10px;
+}
+#selected-word-title,
+#definition-title,
+#term-title {
+  font-size: 1.75vw;
+	letter-spacing: 0.25vw;
+}
+#selected-word {
+  font-size: 1.5vw;
+  letter-spacing: 0.1vw;
 }
