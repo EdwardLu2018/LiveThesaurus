@@ -1,1 +1,1 @@
-tokenize
+nltk.tokenize
