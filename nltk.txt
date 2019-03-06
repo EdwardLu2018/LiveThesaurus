@@ -1,4 +1,2 @@
-nltk.downloader
 punkt
 wordnet
-nltk.tokenize
