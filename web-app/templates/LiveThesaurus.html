@@ -141,20 +141,8 @@
 					});
 				}
 				else {
-		    	selectedWord.reset();
-		    	currDef = null;
-		    	currSyn = null;
-		    	defList = null;
-	    		synDict = null;
-
-	    		$("#selected-word").html("none");
-					
-	    		$("#definitions").find("option").remove();
-	    		$("#definitions").append("<option>none</option>");
-
-	    		$("#terms").find("option").remove();
-	    		$("#terms").append("<option>none</option>");
-		    }
+			   	resetApp();
+		   	}
 			});
 
 			$("#definitions").on('change', function () {
@@ -175,6 +163,26 @@
 					selectedWord.endIndex = selectedWord.startIndex + currSyn.length;
 				}
 			});
+
+			window.onkeydown = function() {
+		    	resetApp();
+			}
+
+			function resetApp() {
+		    	selectedWord.reset();
+		    	currDef = null;
+		    	currSyn = null;
+		    	defList = null;
+	    		synDict = null;
+
+	    		$("#selected-word").html("none");
+
+	    		$("#definitions").find("option").remove();
+	    		$("#definitions").append("<option>none</option>");
+
+	    		$("#terms").find("option").remove();
+	    		$("#terms").append("<option>none</option>");
+			}
 		</script>
 	</body>
 </html>
