@@ -1,4 +1,4 @@
-## gets audio from the user
+## Gets audio from the user
 
 # CITATION: Audio code from: https://pythonspot.com/speech-recognition-using-google-speech-api/
 import speech_recognition as sr
