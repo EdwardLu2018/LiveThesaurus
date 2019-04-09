@@ -69,8 +69,8 @@
 			}
 
 			var selectedWord = {
-				word: null, 
-				startIndex: 0, 
+				word: null,
+				startIndex: 0,
 				endIndex: 0,
 
 				reset: function() {
@@ -156,7 +156,7 @@
 			$("#terms").dblclick(function() {
 				var text = $("#insert-text").val();
 				currSyn = $("#terms").find(":selected").text();
-				if(currSyn != "none"){ 
+				if(currSyn != "none"){
 					var newText = text.substring(0, selectedWord.startIndex) + currSyn + text.substring(selectedWord.endIndex);
 					$("#insert-text").val(newText);
 					selectedWord.word = currSyn;

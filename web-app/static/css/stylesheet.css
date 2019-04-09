@@ -4,8 +4,8 @@ body {
 	font-family: "Sarabun";
 	scroll-behavior: smooth;
 }
-::-webkit-scrollbar { 
-    display: none; 
+::-webkit-scrollbar {
+    display: none;
 }
 #main-title {
   font-size: 3vw;
