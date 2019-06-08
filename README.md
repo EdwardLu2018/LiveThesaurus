@@ -17,9 +17,6 @@ Science" at Carnegie Mellon University.
 Install dependencies:
 ```
 $ pip3 install -r python-app/requirements.txt
-$ cd python-app/lib/pyaudio/
-$ python3 setup.py install
-$ cd ../../..  # return to root
 ```
 Run application:
 ```
