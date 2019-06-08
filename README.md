@@ -32,7 +32,7 @@ Before running LiveThesaurus on Python, you need to download a few modules:
 After doing this, please run the python_app.py file to run LiveThesaurus.
 
 ### Web (Work in progress):
-Visit this [website](https://livethesaurus.herokuapp.com/)
+Visit this [website](https://livethesaurus.herokuapp.com/)<br>
 [![Website Link](https://github.com/EdwardLu2018/LiveThesaurus/blob/master/readme/web-app.gif)](https://livethesaurus.herokuapp.com/)
 
 ## Video:
