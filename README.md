@@ -1,13 +1,7 @@
 # LiveThesaurus
 
-## What is LiveThesaurus?
-LiveThesaurus is an application that allows users to input any type of English text and
-manipulate specific words in their text according to synonyms and antonyms from thesaurus.com.
-LiveThesaurus uses web scraping to parse a javascript dictionary from thesaurus.com containing
-definitions of words mapping to various synonyms. Users can highlight specific words and will
-be given a list of synonyms and antonyms taken from that dictionary. They can click on the synonym
-or antonym they want, select a term, and the word turn into the selected term in the text. There
-is also an option to record voice audio, convert it into text, and manipulate the text.
+## What is LiveThesaurus? 
+LiveThesaurus is an application that allows users to input any type of English text and manipulate specific words in their text according to synonyms and antonyms from thesaurus.com. LiveThesaurus uses web scraping to parse a javascript dictionary from [thesaurus.com](thesaurus.com) containing definitions of words mapping to various synonyms. Users can highlight specific words and will be given a list of synonyms and antonyms taken from that dictionary. Then, they can double-click on the synonym or antonym they want, select a term, and their highlighted word will swap with the selected term in the text. There is also an option to record voice audio, convert it into text, and manipulate the text.
 
 LiveThesaurus is a Term Project for the course 15-112 "Fundamentals of Programming and Computer
 Science" at Carnegie Mellon University.
