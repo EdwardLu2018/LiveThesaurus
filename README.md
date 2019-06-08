@@ -14,15 +14,14 @@ Science" at Carnegie Mellon University.
 
 ## How do I run LiveThesaurus?
 ### Python:
-1. Inside the python-app folder, run:
-	- ```$ pip3 install -r requirements.txt```
+1. Run:
+	- ```$ pip3 install -r python-app/requirements.txt```
 2. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
 	- For Macs, install homebrew (https://brew.sh/) then do:
 		- ```$ brew install portaudio```
-	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
-	- ```$ cd pyaudio```<br>
-	- ```$ sudo python setup.py install```<br>
-	- ```$ sudo pip3 install SpeechRecognition```
+	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git
+		 $ cd pyaudio
+		 $ sudo python setup.py install```
 3. Inside the root directory, run:
 	- ```$ python3 python-app/```
 4. Enjoy!
