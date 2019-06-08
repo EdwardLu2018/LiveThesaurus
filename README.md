@@ -19,10 +19,10 @@ Science" at Carnegie Mellon University.
 2. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
 	- For Macs, install homebrew (https://brew.sh/) then do:
 		- ```$ brew install portaudio```
-	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
-	- ```$ cd pyaudio```<br>
-	- ```$ sudo python setup.py install```<br>
-3. Inside the root directory, run:
+	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```
+	- ```$ cd pyaudio```
+	- ```$ sudo python setup.py install```
+3. Run:
 	- ```$ python3 python-app/```
 4. Enjoy!
 
