@@ -14,24 +14,20 @@ Science" at Carnegie Mellon University.
 
 ## How do I run LiveThesaurus?
 ### Python:
-Before running LiveThesaurus on Python, you need to download a few modules:
-1. Run the modulesInstaller.py file in the "modules" folder
-2. Install NLTK (https://www.nltk.org/install.html)
-	- ```$ pip3 install nltk```
-3. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
+1. Inside the python-app folder, run:
+	- ```$ pip3 install -r requirements.txt```
+2. Download Google Speech API (tutorial from: https://pythonspot.com/speech-recognition-using-google-speech-api/):<br>
 	- For Macs, install homebrew (https://brew.sh/) then do:
 		- ```$ brew install portaudio```
-		- ```$ pip3 install pyaudio```
-	- For Windows do:
-		- ```$ python -m pip3 install pyaudio```
 	- ```$ git clone http://people.csail.mit.edu/hubert/git/pyaudio.git```<br>
 	- ```$ cd pyaudio```<br>
 	- ```$ sudo python setup.py install```<br>
 	- ```$ sudo pip3 install SpeechRecognition```
+3. Inside the root directory, run:
+	- ```$ python3 python-app/```
+4. Enjoy!
 
-After doing this, please run the python_app.py file to run LiveThesaurus.
-
-### Web (Work in progress):
+### Website (Work in progress):
 Visit this [website](https://livethesaurus.herokuapp.com/)<br>
 [![Website Link](https://github.com/EdwardLu2018/LiveThesaurus/blob/master/readme/web-app.gif)](https://livethesaurus.herokuapp.com/)
 
@@ -39,10 +35,9 @@ Visit this [website](https://livethesaurus.herokuapp.com/)<br>
 [![Video Link](https://github.com/EdwardLu2018/LiveThesaurus/blob/master/readme/img.png)](https://youtu.be/QUXn-8Eoq7w)
 
 ## Shortcuts and commands (for Python version only):
-1. Pressing "ENTER", double clicking, and pressing the left arrow all switch words with the
-   selected synonym or antonym<br>
-2. Pressing the audio button and saying "synonyms for [word]" will give you the synonyms for the word.
-   You can also say "synonyms of [word]", "synonym for [word]", or "synonym of [word]". You can also
-   say "antonyms" instead of "synonyms".
-3. Command-a (or Control-a) selects all user entered text<br>
-4. Command-q (or Control-q) quits the application<br>
+- Pressing "ENTER", double clicking, and pressing the left arrow all switch words with the selected synonym or antonym<br>
+- Pressing the audio button and saying "synonyms for [word]" will give you the synonyms for the word.
+    - You can also say "synonyms of [word]", "synonym for [word]", or "synonym of [word]". You can also
+    - say "antonyms" instead of "synonyms".
+- Command-a (or Control-a) selects all user entered text<br>
+- Command-q (or Control-q) quits the application<br>
