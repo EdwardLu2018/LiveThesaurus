@@ -33,7 +33,7 @@ After doing this, please run the python_app.py file to run LiveThesaurus.
 
 ### Web (Work in progress):
 Visit this [website](https://livethesaurus.herokuapp.com/)
-[![Website Link]()](https://livethesaurus.herokuapp.com/)
+[![Website Link](https://github.com/EdwardLu2018/LiveThesaurus/blob/master/readme/web-app.gif)](https://livethesaurus.herokuapp.com/)
 
 ## Video:
 [![Video Link](https://github.com/EdwardLu2018/LiveThesaurus/blob/master/readme/img.png)](https://youtu.be/QUXn-8Eoq7w)
