@@ -1,9 +1,6 @@
 from __future__ import print_function
 from flask import Flask, request, render_template, jsonify
-import sys
-import os.path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from src.word import *
+from .src.word import *
 
 app = Flask(__name__)
 
