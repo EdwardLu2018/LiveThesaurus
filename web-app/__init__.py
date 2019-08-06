@@ -1,6 +1,6 @@
 from __future__ import print_function
 from flask import Flask, request, render_template, jsonify
-from src import word
+from .src.word import Word
 
 app = Flask(__name__)
 
