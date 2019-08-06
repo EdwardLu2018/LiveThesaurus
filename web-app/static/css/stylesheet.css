@@ -5,6 +5,11 @@ body {
   scroll-behavior: smooth;
   background-image: linear-gradient(to bottom right, red, orange);
 }
+@media screen and (max-width: 600px) {
+  body {
+    visibility: hidden;
+  }
+}
 ::-webkit-scrollbar {
   display: none;
 }

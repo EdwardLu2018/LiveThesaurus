@@ -1,7 +1,6 @@
 from __future__ import print_function
-from flask import Flask, request, redirect, url_for, render_template, Response, jsonify
-import sys
-from src.Word import *
+from flask import Flask, request, render_template, jsonify, url_for
+from src.Word import Word
 
 app = Flask(__name__)
 
@@ -21,7 +20,6 @@ def getData():
 	if not wordObj.hasSynOrAnt():
 		return jsonify({ "currWord": 0 })
 	else:
-		# print(wordObj.word, file=sys.stderr)
 		defList = wordObj.definitionList
 		synList = wordObj.synonymDict
 		return jsonify({ "currWord":word, "defList":defList, "synList":synList})
