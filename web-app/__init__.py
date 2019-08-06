@@ -1,5 +1,8 @@
 from __future__ import print_function
 from flask import Flask, request, render_template, jsonify
+import sys
+import os.path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from word import Word
 
 app = Flask(__name__)
